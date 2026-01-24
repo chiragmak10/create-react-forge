@@ -1,6 +1,6 @@
-import { useRoutes } from 'react-router-dom';
 import { Landing } from '@/features/misc/routes/Landing';
 import { NotFound } from '@/features/misc/routes/NotFound';
+import { useRoutes } from 'react-router-dom';
 
 export function AppRouter() {
   const routes = useRoutes([

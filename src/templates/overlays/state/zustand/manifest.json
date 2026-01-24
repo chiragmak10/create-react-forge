@@ -1,0 +1,16 @@
+{
+  "name": "state-zustand",
+  "version": "1.0.0",
+  "description": "Zustand state management following bulletproof-react patterns",
+  "compatibleWith": ["runtime-vite", "runtime-nextjs"],
+  "dependencies": {
+    "zustand": "^4.5.0"
+  },
+  "devDependencies": {},
+  "scripts": {},
+  "filePatterns": {
+    "include": ["**/*"],
+    "exclude": ["manifest.json"]
+  }
+}
+

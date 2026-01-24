@@ -1,8 +1,8 @@
+import { ErrorFallback } from '@/components/errors/ErrorFallback';
+import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { Suspense } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import { BrowserRouter } from 'react-router-dom';
-import { ErrorFallback } from '@/components/errors/ErrorFallback';
-import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 
 type AppProviderProps = {
   children: React.ReactNode;

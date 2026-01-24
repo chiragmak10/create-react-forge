@@ -1,13 +1,13 @@
 # AI Progress Tracker
 
 > This document is designed for AI tools to understand project state and continue development.
-> Last updated: 2026-01-23
+> Last updated: 2026-01-24
 
 ---
 
-## CURRENT_PHASE: phase-2-templates
+## CURRENT_PHASE: phase-3-generation
 
-## NEXT_ACTION: Create base Vite runtime template files in src/templates/overlays/runtime/vite/
+## NEXT_ACTION: Connect CLI to template loading and implement project generation flow
 
 ---
 
@@ -44,6 +44,48 @@
 | `src/dependencies/resolver.ts` | DONE | 5 | DependencyResolver, VERSION_REGISTRY |
 | `src/testing/configurer.ts` | DONE | 7 | TestingConfigurer, script generation |
 
+### Phase 2: Template Files (DONE)
+
+#### Runtime Templates
+
+| Template | Status | Files |
+|----------|--------|-------|
+| `runtime/vite` | DONE | manifest.json, vite.config.ts, index.html, tsconfig.json, tsconfig.node.json, src/main.tsx, src/app/App.tsx, src/app/provider.tsx, src/app/router.tsx, src/features/misc/routes/Landing.tsx, src/features/misc/routes/NotFound.tsx, src/components/ui/LoadingSpinner.tsx, src/components/errors/ErrorFallback.tsx, src/styles/globals.css, public/vite.svg |
+| `runtime/nextjs` | DONE | manifest.json, next.config.js, tsconfig.json, next-env.d.ts, src/app/layout.tsx, src/app/providers.tsx, src/app/page.tsx, src/app/not-found.tsx, src/app/error.tsx, src/app/loading.tsx, src/styles/globals.css |
+
+#### Base Template
+
+| Template | Status | Files |
+|----------|--------|-------|
+| `base` | DONE | manifest.json, src/lib/utils.ts, src/lib/api-client.ts, src/types/api.ts, src/hooks/use-disclosure.ts, src/hooks/use-local-storage.ts, src/components/ui/Button.tsx, src/components/ui/Input.tsx, src/components/ui/index.ts |
+
+#### Styling Templates
+
+| Template | Status | Files |
+|----------|--------|-------|
+| `styling/tailwind` | DONE | manifest.json, tailwind.config.js, postcss.config.js, src/styles/globals.css |
+| `styling/css-modules` | DONE | manifest.json, src/styles/globals.css, src/components/ui/Button.module.css |
+
+#### State Management Templates
+
+| Template | Status | Files |
+|----------|--------|-------|
+| `state/zustand` | DONE | manifest.json, src/stores/notifications.ts, src/stores/auth.ts, src/stores/index.ts |
+| `state/redux` | DONE | manifest.json, src/stores/store.ts, src/stores/hooks.ts, src/stores/slices/notifications.ts, src/stores/slices/auth.ts, src/stores/index.ts, src/stores/Provider.tsx |
+
+#### Testing Templates
+
+| Template | Status | Files |
+|----------|--------|-------|
+| `testing/vitest` | DONE | manifest.json, vitest.config.ts, src/testing/setup.ts, src/testing/test-utils.tsx, src/testing/mocks/handlers.ts, src/testing/mocks/server.ts, src/testing/mocks/browser.ts, src/components/ui/__tests__/Button.test.tsx |
+| `testing/playwright` | DONE | manifest.json, playwright.config.ts, tests/e2e/home.spec.ts, tests/e2e/accessibility.spec.ts |
+
+#### Feature Templates
+
+| Template | Status | Files |
+|----------|--------|-------|
+| `features/tanstack-query` | DONE | manifest.json, src/lib/react-query.ts, src/lib/QueryProvider.tsx, src/hooks/use-query-config.ts, src/features/users/api/get-users.ts, src/features/users/api/get-user.ts, src/features/users/api/create-user.ts |
+
 ### Test Files
 
 | File | Tests | Status |
@@ -78,143 +120,42 @@
 
 ## PENDING TASKS (Priority Order)
 
-### Phase 2: Template Files
-
-```
-PRIORITY: HIGH
-BLOCKING: Project generation cannot work without templates
-```
-
-#### 2.1 Runtime Templates
-
-- [ ] **Create `src/templates/overlays/runtime/vite/`**
-  - DEPENDS_ON: none
-  - REFERENCE: `bulletproof-react/apps/react-vite/`
-  - FILES_TO_CREATE:
-    - `manifest.json` — Template metadata, dependencies
-    - `vite.config.ts` — Vite configuration
-    - `index.html` — HTML entry point
-    - `src/main.tsx` — React entry point
-    - `src/app/provider.tsx` — App providers wrapper
-    - `src/app/router.tsx` — React Router setup
-    - `tsconfig.json` — TypeScript config
-    - `tsconfig.node.json` — Node TypeScript config
-
-- [ ] **Create `src/templates/overlays/runtime/nextjs/`**
-  - DEPENDS_ON: none (can be parallel with vite)
-  - REFERENCE: `bulletproof-react/apps/nextjs-app/`
-  - FILES_TO_CREATE:
-    - `manifest.json` — Template metadata
-    - `next.config.js` — Next.js configuration
-    - `app/layout.tsx` — Root layout
-    - `app/page.tsx` — Home page
-    - `app/providers.tsx` — Client providers
-    - `tsconfig.json` — TypeScript config
-
-#### 2.2 Base Template (Shared)
-
-- [ ] **Create `src/templates/overlays/base/`**
-  - DEPENDS_ON: none
-  - FILES_TO_CREATE:
-    - `manifest.json`
-    - `src/components/ui/button.tsx` — Base button component
-    - `src/components/errors/error-boundary.tsx`
-    - `src/lib/utils.ts` — Utility functions
-    - `src/types/api.ts` — API type definitions
-    - `src/hooks/use-disclosure.ts` — Common hook example
-
-#### 2.3 Styling Templates
-
-- [ ] **Create `src/templates/overlays/styling/tailwind/`**
-  - DEPENDS_ON: base
-  - FILES_TO_CREATE:
-    - `manifest.json`
-    - `tailwind.config.js`
-    - `postcss.config.js`
-    - `src/styles/globals.css`
-
-- [ ] **Create `src/templates/overlays/styling/css-modules/`**
-  - DEPENDS_ON: base
-  - FILES_TO_CREATE:
-    - `manifest.json`
-    - `src/styles/globals.css`
-    - `src/components/ui/button.module.css`
-
-#### 2.4 State Management Templates
-
-- [ ] **Create `src/templates/overlays/state/zustand/`**
-  - DEPENDS_ON: base
-  - REFERENCE: bulletproof-react stores pattern
-  - FILES_TO_CREATE:
-    - `manifest.json`
-    - `src/stores/notifications.ts` — Example store
-    - `src/stores/index.ts` — Store exports
-
-- [ ] **Create `src/templates/overlays/state/redux/`**
-  - DEPENDS_ON: base
-  - FILES_TO_CREATE:
-    - `manifest.json`
-    - `src/stores/store.ts` — Redux store setup
-    - `src/stores/hooks.ts` — Typed hooks
-    - `src/stores/slices/` — Slice examples
-
-#### 2.5 Testing Templates
-
-- [ ] **Create `src/templates/overlays/testing/vitest/`**
-  - DEPENDS_ON: base
-  - REFERENCE: bulletproof-react testing setup
-  - FILES_TO_CREATE:
-    - `manifest.json`
-    - `vitest.config.ts`
-    - `src/testing/setup.ts` — Test setup
-    - `src/testing/test-utils.tsx` — Custom render
-    - `src/testing/mocks/handlers.ts` — MSW handlers
-
-- [ ] **Create `src/templates/overlays/testing/playwright/`**
-  - DEPENDS_ON: none
-  - FILES_TO_CREATE:
-    - `manifest.json`
-    - `playwright.config.ts`
-    - `tests/e2e/example.spec.ts`
-
-#### 2.6 Feature Templates
-
-- [ ] **Create `src/templates/overlays/features/tanstack-query/`**
-  - DEPENDS_ON: base
-  - FILES_TO_CREATE:
-    - `manifest.json`
-    - `src/lib/react-query.ts` — Query client setup
-    - `src/hooks/use-query.ts` — Query hook patterns
-
----
-
 ### Phase 3: Project Generation Flow
 
 ```
 PRIORITY: HIGH
 BLOCKING: Cannot generate projects without this
-DEPENDS_ON: Phase 2 templates
+STATUS: READY TO START
 ```
 
 - [ ] **Connect CLI to template loading**
   - FILE: `src/cli/index.ts`
   - TASK: Load templates based on ProjectConfig
+  - DETAILS: Use TemplateRegistry to load overlays from `src/templates/overlays/`
 
 - [ ] **Implement template file reading**
   - FILE: `src/templates/registry.ts`
   - TASK: Read actual template files from disk
+  - DETAILS: Walk template directories, read file contents, handle binary files
 
 - [ ] **Implement file writing**
   - FILE: `src/assembler/index.ts`
   - TASK: Write assembled files to target directory
+  - DETAILS: Create directories, write files, handle existing files
 
 - [ ] **Generate package.json**
   - FILE: `src/assembler/index.ts`
   - TASK: Merge dependencies from all templates
+  - DETAILS: Use ConfigMerger to combine all manifest dependencies
 
 - [ ] **Add progress indicators**
   - LIBRARY: ora (spinner)
   - TASK: Show progress during generation
+  - DETAILS: "Creating project...", "Installing dependencies...", etc.
+
+- [ ] **Template variable substitution**
+  - TASK: Replace `{{PROJECT_NAME}}` placeholders in templates
+  - DETAILS: index.html title, package.json name, etc.
 
 ---
 
@@ -276,6 +217,68 @@ Before making changes, AI should read these files:
 
 ---
 
+## TEMPLATE DIRECTORY STRUCTURE
+
+```
+src/templates/overlays/
+├── base/                           # Shared utilities and components
+│   ├── manifest.json
+│   └── src/
+│       ├── components/ui/
+│       ├── hooks/
+│       ├── lib/
+│       └── types/
+├── runtime/
+│   ├── vite/                       # Vite SPA template
+│   │   ├── manifest.json
+│   │   ├── vite.config.ts
+│   │   ├── index.html
+│   │   ├── tsconfig.json
+│   │   ├── tsconfig.node.json
+│   │   ├── public/
+│   │   └── src/
+│   │       ├── app/
+│   │       ├── components/
+│   │       ├── features/
+│   │       └── styles/
+│   └── nextjs/                     # Next.js App Router template
+│       ├── manifest.json
+│       ├── next.config.js
+│       ├── tsconfig.json
+│       └── src/app/
+├── styling/
+│   ├── tailwind/
+│   │   ├── manifest.json
+│   │   ├── tailwind.config.js
+│   │   ├── postcss.config.js
+│   │   └── src/styles/globals.css
+│   └── css-modules/
+│       ├── manifest.json
+│       └── src/
+├── state/
+│   ├── zustand/
+│   │   ├── manifest.json
+│   │   └── src/stores/
+│   └── redux/
+│       ├── manifest.json
+│       └── src/stores/
+├── testing/
+│   ├── vitest/
+│   │   ├── manifest.json
+│   │   ├── vitest.config.ts
+│   │   └── src/testing/
+│   └── playwright/
+│       ├── manifest.json
+│       ├── playwright.config.ts
+│       └── tests/e2e/
+└── features/
+    └── tanstack-query/
+        ├── manifest.json
+        └── src/
+```
+
+---
+
 ## PATTERNS TO FOLLOW
 
 ### Template Manifest Format
@@ -285,6 +288,7 @@ Before making changes, AI should read these files:
   "name": "template-name",
   "version": "1.0.0",
   "description": "Template description",
+  "compatibleWith": ["runtime-vite", "runtime-nextjs"],
   "dependencies": {
     "package-name": "^version"
   },
@@ -299,28 +303,6 @@ Before making changes, AI should read these files:
     "exclude": ["manifest.json"]
   }
 }
-```
-
-### File Path Convention
-
-```
-src/templates/overlays/
-├── runtime/
-│   ├── vite/
-│   │   ├── manifest.json
-│   │   └── [template files...]
-│   └── nextjs/
-├── styling/
-│   ├── tailwind/
-│   └── css-modules/
-├── state/
-│   ├── zustand/
-│   └── redux/
-├── testing/
-│   ├── vitest/
-│   └── playwright/
-└── features/
-    └── tanstack-query/
 ```
 
 ### Test File Naming
@@ -367,13 +349,13 @@ When adding template dependencies, use these pinned versions from `src/dependenc
   'vite': '^5.4.0',
   '@vitejs/plugin-react': '^4.2.0',
   'next': '^14.2.0',
-  'typescript': '^5.6.0',
+  'typescript': '^5.3.0',
   'tailwindcss': '^3.4.0',
-  'zustand': '^5.0.0',
-  '@reduxjs/toolkit': '^2.3.0',
+  'zustand': '^4.5.0',
+  '@reduxjs/toolkit': '^2.2.0',
   'vitest': '^2.0.0',
   '@tanstack/react-query': '^5.60.0',
-  'playwright': '^1.48.0'
+  'playwright': '^1.45.0'
 }
 ```
 
@@ -389,16 +371,28 @@ To continue development:
 4. **Follow PATTERNS** section for consistency
 5. **Update this file** after completing tasks
 
-### Starting Phase 2
+### Starting Phase 3
 
-```bash
-# 1. Create the vite template directory structure
-mkdir -p src/templates/overlays/runtime/vite
+The next step is to implement the project generation flow:
 
-# 2. Create manifest.json first
-# 3. Then create template files following bulletproof-react patterns
-# 4. Update this file to mark tasks complete
-```
+1. **Update `src/templates/registry.ts`** to:
+   - Walk template directories and read files
+   - Parse manifest.json for each template
+   - Return file contents mapped to relative paths
+
+2. **Update `src/cli/index.ts`** to:
+   - Load templates based on user's ProjectConfig
+   - Merge all template dependencies
+   - Call assembler to write files
+
+3. **Update `src/assembler/index.ts`** to:
+   - Create target directory structure
+   - Write all files to disk
+   - Generate final package.json
+
+4. **Add variable substitution** for:
+   - `{{PROJECT_NAME}}` in templates
+   - Dynamic paths based on runtime
 
 ---
 
@@ -409,4 +403,6 @@ mkdir -p src/templates/overlays/runtime/vite
 | 2026-01-23 | Initial AI-PROGRESS.md created | AI |
 | 2026-01-23 | Added bulletproof-react to ARCHITECTURE.md | AI |
 | 2026-01-23 | Phase 1 complete, Phase 2 ready to start | - |
-
+| 2026-01-24 | Phase 2 complete - All template files created | AI |
+| 2026-01-24 | Created 9 template overlays with 60+ files | AI |
+| 2026-01-24 | Ready for Phase 3 - Project Generation Flow | AI |

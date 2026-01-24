@@ -1,0 +1,17 @@
+{
+  "name": "feature-tanstack-query",
+  "version": "1.0.0",
+  "description": "TanStack Query (React Query) data fetching setup",
+  "compatibleWith": ["runtime-vite", "runtime-nextjs"],
+  "dependencies": {
+    "@tanstack/react-query": "^5.60.0",
+    "@tanstack/react-query-devtools": "^5.60.0"
+  },
+  "devDependencies": {},
+  "scripts": {},
+  "filePatterns": {
+    "include": ["**/*"],
+    "exclude": ["manifest.json"]
+  }
+}
+

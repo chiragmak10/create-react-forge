@@ -1,0 +1,17 @@
+{
+  "name": "state-redux",
+  "version": "1.0.0",
+  "description": "Redux Toolkit state management with typed hooks",
+  "compatibleWith": ["runtime-vite", "runtime-nextjs"],
+  "dependencies": {
+    "@reduxjs/toolkit": "^2.2.0",
+    "react-redux": "^9.1.0"
+  },
+  "devDependencies": {},
+  "scripts": {},
+  "filePatterns": {
+    "include": ["**/*"],
+    "exclude": ["manifest.json"]
+  }
+}
+
