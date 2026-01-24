@@ -1,0 +1,18 @@
+{
+  "name": "styling-tailwind",
+  "version": "1.0.0",
+  "description": "Tailwind CSS styling setup with modern configuration",
+  "compatibleWith": ["runtime-vite", "runtime-nextjs"],
+  "dependencies": {},
+  "devDependencies": {
+    "tailwindcss": "^3.4.0",
+    "postcss": "^8.4.0",
+    "autoprefixer": "^10.4.0"
+  },
+  "scripts": {},
+  "filePatterns": {
+    "include": ["**/*"],
+    "exclude": ["manifest.json"]
+  }
+}
+

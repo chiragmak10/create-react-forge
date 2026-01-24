@@ -1,0 +1,14 @@
+{
+  "name": "styling-css-modules",
+  "version": "1.0.0",
+  "description": "CSS Modules styling with scoped CSS",
+  "compatibleWith": ["runtime-vite", "runtime-nextjs"],
+  "dependencies": {},
+  "devDependencies": {},
+  "scripts": {},
+  "filePatterns": {
+    "include": ["**/*"],
+    "exclude": ["manifest.json"]
+  }
+}
+
