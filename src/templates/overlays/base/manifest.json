@@ -1,0 +1,16 @@
+{
+  "name": "base",
+  "version": "1.0.0",
+  "description": "Base shared utilities, types, and hooks following bulletproof-react patterns",
+  "compatibleWith": ["runtime-vite", "runtime-nextjs"],
+  "dependencies": {
+    "clsx": "^2.1.0"
+  },
+  "devDependencies": {},
+  "scripts": {},
+  "filePatterns": {
+    "include": ["**/*"],
+    "exclude": ["manifest.json"]
+  }
+}
+
