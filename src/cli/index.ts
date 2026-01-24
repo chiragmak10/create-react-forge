@@ -1,5 +1,7 @@
 import chalk from 'chalk';
+import { resolve } from 'path';
 import { ConfigBuilder } from '../config/builder.js';
+import { generateProject } from '../generator/index.js';
 import type { PromptAnswers } from './prompts.js';
 import { promptForProjectDetails } from './prompts.js';
 
@@ -9,9 +11,12 @@ import { promptForProjectDetails } from './prompts.js';
 export function promptAnswersToConfig(answers: PromptAnswers) {
   const builder = new ConfigBuilder();
 
+  // Resolve project path to absolute path
+  const projectPath = resolve(process.cwd(), answers.projectPath);
+
   builder
     .setName(answers.projectName)
-    .setPath(answers.projectPath)
+    .setPath(projectPath)
     .setRuntime(answers.runtime)
     .setLanguage(answers.language)
     .setStyling(answers.styling)
@@ -50,11 +55,32 @@ export function validateProjectName(name: string): { valid: boolean; error?: str
 }
 
 /**
+ * Display project summary
+ */
+function displayProjectSummary(config: ReturnType<typeof promptAnswersToConfig>) {
+  console.log(chalk.cyan('\n📋 Project Configuration:\n'));
+  console.log(chalk.gray('  Name:            ') + chalk.white(config.name));
+  console.log(chalk.gray('  Path:            ') + chalk.white(config.path));
+  console.log(chalk.gray('  Runtime:         ') + chalk.white(config.runtime));
+  console.log(chalk.gray('  Language:        ') + chalk.white(config.language));
+  console.log(chalk.gray('  Styling:         ') + chalk.white(config.styling.solution));
+  console.log(chalk.gray('  State:           ') + chalk.white(config.stateManagement || 'none'));
+  console.log(chalk.gray('  Data Fetching:   ') + chalk.white(config.dataFetching.enabled ? 'TanStack Query' : 'none'));
+  console.log(chalk.gray('  Testing:         ') + chalk.white(config.testing.enabled ? `${config.testing.unit?.runner}` : 'disabled'));
+  if (config.testing.enabled && config.testing.e2e?.enabled) {
+    console.log(chalk.gray('  E2E Testing:     ') + chalk.white(config.testing.e2e.runner));
+  }
+  console.log(chalk.gray('  Package Manager: ') + chalk.white(config.packageManager));
+  console.log(chalk.gray('  Git:             ') + chalk.white(config.git.init ? 'yes' : 'no'));
+  console.log();
+}
+
+/**
  * Main CLI entry point
  */
 export async function main(): Promise<void> {
   console.log(chalk.cyan.bold('\n  ⚛️  react-setup\n'));
-  console.log(chalk.gray('Production-ready React scaffolder with first-class testing\n'));
+  console.log(chalk.gray('  Production-ready React scaffolder with first-class testing\n'));
 
   try {
     // Get user input
@@ -66,22 +92,28 @@ export async function main(): Promise<void> {
     // Validate
     const validation = new ConfigBuilder(config).validate();
     if (!validation.success) {
-      console.error(chalk.red('❌ Configuration validation failed:'));
+      console.error(chalk.red('\n❌ Configuration validation failed:'));
       validation.errors?.forEach((error) => console.error(chalk.red(`  • ${error}`)));
       process.exit(1);
     }
 
-    console.log(chalk.green('\n✅ Configuration valid\n'));
-    console.log(chalk.cyan('Project summary:'));
-    console.log(chalk.gray(`  Name: ${config.name}`));
-    console.log(chalk.gray(`  Path: ${config.path}`));
-    console.log(chalk.gray(`  Runtime: ${config.runtime}`));
-    console.log(chalk.gray(`  Language: ${config.language}`));
-    console.log(chalk.gray(`  Styling: ${config.styling.solution}`));
-    console.log();
+    // Display summary
+    displayProjectSummary(config);
 
-    // TODO: Pass config to assembler and lifecycle
-    console.log(chalk.yellow('Note: Project generation not yet implemented\n'));
+    // Generate project
+    console.log(chalk.cyan('🚀 Creating project...\n'));
+    const result = await generateProject(config);
+
+    if (!result.success) {
+      console.error(chalk.red('\n❌ Project generation failed:'));
+      result.errors.forEach((error) => console.error(chalk.red(`  • ${error}`)));
+      process.exit(1);
+    }
+
+    if (result.warnings.length > 0) {
+      console.log(chalk.yellow('\n⚠️  Warnings:'));
+      result.warnings.forEach((warning) => console.log(chalk.yellow(`  • ${warning}`)));
+    }
   } catch (error) {
     if (error instanceof Error && error.message === 'User force closed the prompt') {
       console.log(chalk.yellow('\n✋ Setup cancelled\n'));
@@ -90,7 +122,3 @@ export async function main(): Promise<void> {
     throw error;
   }
 }
-
-
-
-
