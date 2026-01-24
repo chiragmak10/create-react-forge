@@ -18,7 +18,6 @@ export const STATE_DESCRIPTIONS: Record<string, string> = {
   none: 'No state management',
   redux: 'Redux Toolkit - Predictable state container',
   zustand: 'Zustand - Lightweight state management',
-  jotai: 'Jotai - Primitive and flexible state management',
 };
 
 export const TEST_RUNNER_DESCRIPTIONS: Record<string, string> = {

@@ -43,7 +43,7 @@ export function createCommand(): Command {
       ])
     )
     .addOption(
-      new Option('--state <state>', 'State management').choices(['none', 'redux', 'zustand', 'jotai'])
+      new Option('--state <state>', 'State management').choices(['none', 'redux', 'zustand'])
     )
     .addOption(
       new Option('--testing <testing>', 'Testing setup').choices(['full', 'unit-component', 'custom', 'none'])

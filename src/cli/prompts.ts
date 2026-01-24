@@ -18,7 +18,6 @@ export interface PromptAnswers {
   dataFetching: boolean;
   packageManager: 'npm' | 'yarn' | 'pnpm';
   git: boolean;
-  eslint: boolean;
   prettier: boolean;
 }
 
@@ -76,7 +75,6 @@ export async function promptForProjectDetails(
       { name: STATE_DESCRIPTIONS.none, value: 'none' },
       { name: STATE_DESCRIPTIONS.zustand, value: 'zustand' },
       { name: STATE_DESCRIPTIONS.redux, value: 'redux' },
-      { name: STATE_DESCRIPTIONS.jotai, value: 'jotai' },
     ],
   })) as string;
 
@@ -131,11 +129,6 @@ export async function promptForProjectDetails(
     default: true,
   });
 
-  const eslint = await confirm({
-    message: 'Add ESLint?',
-    default: true,
-  });
-
   const prettier = await confirm({
     message: 'Add Prettier?',
     default: true,
@@ -154,7 +147,6 @@ export async function promptForProjectDetails(
     dataFetching,
     packageManager,
     git,
-    eslint,
     prettier,
   };
 }
