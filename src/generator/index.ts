@@ -5,6 +5,7 @@ import chalk from 'chalk';
 import type { ProjectConfig } from '../config/schema.js';
 import { ProjectAssembler } from '../assembler/index.js';
 import { TemplateRegistry } from '../templates/registry.js';
+import { generateArchitectureDoc } from '../docs/architecture-generator.js';
 
 /**
  * Project generation result
@@ -71,6 +72,10 @@ export class ProjectGenerator {
       spinner.start('Assembling project files...');
       const mergedFiles = this.registry.getMergedFiles();
       this.assembler.addFiles(mergedFiles);
+
+      // Add Architecture Documentation
+      const archDoc = generateArchitectureDoc(this.config);
+      this.assembler.addFile('ARCHITECTURE.md', archDoc);
 
       // Step 4: Merge dependencies
       const { dependencies, devDependencies, scripts } = this.registry.getMergedDependencies();
