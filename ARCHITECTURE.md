@@ -147,10 +147,10 @@ interface TemplateManifest {
 1. **Base** — Core React files (App.tsx, index, main.tsx)
 2. **Runtime** — Vite or Next.js specific configs
 3. **Styling** — Tailwind/CSS/Styled Components setup
-4. **State** — Redux/Zustand/Jotai store setup
+4. **State** — Redux/Zustand store setup
 5. **Features** — TanStack Query, etc.
 6. **Testing** — Vitest/Jest + RTL + Playwright/Cypress
-7. **Tooling** — ESLint, Prettier configs
+7. **Tooling** — Prettier config
 
 ---
 
@@ -525,7 +525,6 @@ npm run test:coverage    # Coverage report
 - `none` — No setup (default)
 - `redux` — Redux Toolkit
 - `zustand` — Lightweight alternative
-- `jotai` — Primitive-based
 
 ### Testing
 

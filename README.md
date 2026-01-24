@@ -7,7 +7,7 @@ Production-ready React CLI scaffolder with first-class testing support, flexible
 - 🚀 **Vite & Next.js Support** — Choose your runtime
 - 🧪 **Testing as First-Class Citizen** — Vitest, Jest, React Testing Library, Playwright, Cypress
 - 🎨 **Flexible Styling** — Tailwind CSS, CSS Modules, or plain CSS
-- 📦 **State Management** — Zustand, Redux Toolkit, or Jotai
+- 📦 **State Management** — Zustand or Redux Toolkit
 - 🔄 **Data Fetching** — TanStack Query with DevTools
 - 📁 **Feature-Based Architecture** — Scalable project structure
 - ⚡ **Zero Config** — Smart defaults, minimal prompts
@@ -51,7 +51,7 @@ my-app/
 | **Runtime** | Vite, Next.js |
 | **Language** | TypeScript, JavaScript |
 | **Styling** | Tailwind, CSS Modules, CSS |
-| **State** | Zustand, Redux, Jotai, None |
+| **State** | Zustand, Redux, None |
 | **Data Fetching** | TanStack Query, None |
 | **Unit Testing** | Vitest, Jest |
 | **E2E Testing** | Playwright, Cypress, None |

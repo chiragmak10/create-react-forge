@@ -14,7 +14,7 @@ export type Language = z.infer<typeof LanguageSchema>;
 export const StylingSchema = z.enum(['css', 'tailwind', 'styled-components', 'css-modules']);
 export type Styling = z.infer<typeof StylingSchema>;
 
-export const StateManagementSchema = z.enum(['none', 'redux', 'zustand', 'jotai']);
+export const StateManagementSchema = z.enum(['none', 'redux', 'zustand']);
 export type StateManagement = z.infer<typeof StateManagementSchema>;
 
 export const PackageManagerSchema = z.enum(['npm', 'yarn', 'pnpm']);
@@ -50,7 +50,6 @@ export const DataFetchingConfigSchema = z.object({
 export type DataFetchingConfig = z.infer<typeof DataFetchingConfigSchema>;
 
 export const LintingConfigSchema = z.object({
-  eslint: z.boolean().default(true),
   prettier: z.boolean().default(true),
 });
 export type LintingConfig = z.infer<typeof LintingConfigSchema>;
@@ -118,7 +117,6 @@ export const DEFAULT_CONFIG: ProjectConfig = {
     },
   },
   linting: {
-    eslint: true,
     prettier: true,
   },
   packageManager: 'npm',

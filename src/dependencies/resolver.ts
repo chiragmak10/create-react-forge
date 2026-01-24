@@ -20,7 +20,6 @@ export const VERSION_REGISTRY: Record<string, string> = {
   '@reduxjs/toolkit': '^2.2.0',
   'react-redux': '^9.1.0',
   'zustand': '^4.5.0',
-  'jotai': '^2.6.0',
 
   // Data Fetching
   '@tanstack/react-query': '^5.60.0',
@@ -40,14 +39,6 @@ export const VERSION_REGISTRY: Record<string, string> = {
   // Testing - E2E
   'playwright': '^1.45.0',
   'cypress': '^13.13.0',
-
-  // Linting
-  'eslint': '^8.56.0',
-  '@typescript-eslint/eslint-plugin': '^6.17.0',
-  '@typescript-eslint/parser': '^6.17.0',
-  'eslint-config-prettier': '^9.1.0',
-  'eslint-plugin-react': '^7.33.0',
-  'eslint-plugin-react-hooks': '^4.6.0',
 
   // Formatting
   'prettier': '^3.1.1',

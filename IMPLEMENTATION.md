@@ -25,7 +25,7 @@
   - Runtime selection (Vite/Next.js)
   - Language choice (TypeScript/JavaScript)
   - Styling solutions (Tailwind, CSS, Styled Components, CSS Modules)
-  - State management (none, Redux, Zustand, Jotai)
+  - State management (none, Redux, Zustand)
   - Testing configuration (unit, component, E2E runners)
   - Data fetching setup (TanStack Query)
   - Package manager selection (npm, yarn, pnpm)
