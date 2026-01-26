@@ -1,0 +1,35 @@
+# Source files
+src/
+tests/
+
+# Development files
+.eslintrc.cjs
+.prettierrc
+vitest.config.ts
+tsconfig.json
+dev.sh
+
+# Documentation (keep README.md)
+AI-PROGRESS.md
+ARCHITECTURE.md
+CONTRIBUTING.md
+IMPLEMENTATION.md
+STATUS.md
+
+# CI/CD
+.github/
+
+# Dependencies
+node_modules/
+
+# Build artifacts (except dist)
+*.tsbuildinfo
+coverage/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
