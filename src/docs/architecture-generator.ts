@@ -7,7 +7,7 @@ export function generateArchitectureDoc(config: ProjectConfig): string {
 
 ## Overview
 
-This project was bootstrapped with \`react-setup\` using:
+This project was bootstrapped with \`create-react-forge\` using:
 
 - **Runtime**: ${runtime === 'vite' ? 'Vite (SPA)' : 'Next.js (App Router)'}
 - **Language**: ${language === 'typescript' ? 'TypeScript' : 'JavaScript'}

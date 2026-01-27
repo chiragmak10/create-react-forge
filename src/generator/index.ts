@@ -190,7 +190,7 @@ playwright-report/
           cwd: this.config.path,
           stdio: 'ignore',
         });
-        execSync('git commit -m "Initial commit from react-setup"', {
+        execSync('git commit -m "Initial commit from create-react-forge"', {
           cwd: this.config.path,
           stdio: 'ignore',
         });

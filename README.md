@@ -1,21 +1,17 @@
-# react-scaffold
+# create-react-forge
 
-Production-ready React CLI scaffolder with first-class testing support, flexible runtimes (Vite/Next.js), and a composable template system based on [bulletproof-react](https://github.com/alan2207/bulletproof-react) architecture.
+Production-ready React scaffolding CLI with first-class testing, flexible runtimes (Vite/Next.js), and a composable template system inspired by [bulletproof-react](https://github.com/alan2207/bulletproof-react).
 
-## Features
+## Requirements
 
-- 🚀 **Vite & Next.js Support** — Choose your runtime
-- 🧪 **Testing as First-Class Citizen** — Vitest, Jest, React Testing Library, Playwright, Cypress
-- 🎨 **Flexible Styling** — Tailwind CSS, CSS Modules, or plain CSS
-- 📦 **State Management** — Zustand or Redux Toolkit
-- 🔄 **Data Fetching** — TanStack Query with DevTools
-- 📁 **Feature-Based Architecture** — Scalable project structure
-- ⚡ **Zero Config** — Smart defaults, minimal prompts
+- Node.js **>= 18**
 
-## Quick Start
+## Quick start
+
+Create a new project (interactive):
 
 ```bash
-npx create-react-forge
+npx create-react-forge@latest
 ```
 
 Or install globally:
@@ -25,9 +21,38 @@ npm install -g create-react-forge
 create-react-forge
 ```
 
-## What You Get
+## What it does
 
-A production-ready React project with:
+When you run `create-react-forge`, it will:
+
+- Ask a few questions (runtime, language, styling, testing, etc.)
+- Generate a new project directory (the directory **must not already exist**)
+- Optionally initialize a git repo (depending on your answers)
+- Print the “next steps” commands
+
+Note: it **does not automatically install dependencies** — you’ll run your package manager install after generation.
+
+## Interactive prompts (current)
+
+The CLI is currently **prompt-driven**. You’ll choose:
+
+- **Project name** (lowercase letters/numbers/hyphens)
+- **Project directory**
+- **Runtime**: Vite or Next.js
+- **Language**: TypeScript or JavaScript
+- **Styling**: Tailwind, CSS, Styled Components, or CSS Modules
+- **State**: none, Zustand, or Redux Toolkit
+- **Testing**: full (unit+component+E2E), unit+component only, or none
+- **Unit runner**: Vitest or Jest (if testing enabled)
+- **E2E runner**: Playwright or Cypress (if full testing)
+- **Data fetching**: include TanStack Query
+- **Package manager**: npm / yarn / pnpm
+- **Git init**: yes/no
+- **Prettier**: yes/no
+
+## What you get
+
+A production-ready React project with a scalable, feature-based structure:
 
 ```
 my-app/
@@ -37,72 +62,74 @@ my-app/
 │   ├── features/         # Feature-based modules
 │   ├── hooks/            # Custom hooks
 │   ├── lib/              # Utilities, API client
-│   ├── stores/           # State management
-│   ├── testing/          # Test utilities, mocks
-│   └── types/            # TypeScript types
-├── tests/                # E2E tests
+│   ├── stores/           # State management (if selected)
+│   ├── testing/          # Test utilities, mocks (if selected)
+│   └── types/            # Shared types
+├── tests/                # E2E tests (if selected)
 └── [config files]
 ```
 
-## Configuration Options
+## Configuration options (summary)
 
-| Option | Choices |
-|--------|---------|
-| **Runtime** | Vite, Next.js |
-| **Language** | TypeScript, JavaScript |
-| **Styling** | Tailwind, CSS Modules, CSS |
-| **State** | Zustand, Redux, None |
-| **Data Fetching** | TanStack Query, None |
-| **Unit Testing** | Vitest, Jest |
-| **E2E Testing** | Playwright, Cypress, None |
-| **Package Manager** | npm, yarn, pnpm |
+| Category | Choices |
+|---|---|
+| **Runtime** | `vite`, `nextjs` |
+| **Language** | `typescript`, `javascript` |
+| **Styling** | `tailwind`, `css`, `styled-components`, `css-modules` |
+| **State** | `none`, `zustand`, `redux` |
+| **Testing** | `full`, `unit-component`, `none` |
+| **Unit runner** | `vitest`, `jest` |
+| **E2E runner** | `playwright`, `cypress` |
+| **Data fetching** | TanStack Query on/off |
+| **Package manager** | `npm`, `yarn`, `pnpm` |
+| **Formatting** | Prettier on/off |
+| **Git** | init on/off |
 
-## Architecture
-
-This project implements a modular, layered CLI architecture. Generated projects follow the [bulletproof-react](https://github.com/alan2207/bulletproof-react) patterns:
-
-- Feature-based folder structure
-- Co-located tests with features
-- Centralized API client
-- Type-safe throughout
-
-See [ARCHITECTURE.md](./ARCHITECTURE.md) for detailed design documentation.
-
-## Development
+## Next steps (after generation)
 
 ```bash
-# Install dependencies
+cd <your-project>
 npm install
-
-# Run CLI in dev mode
 npm run dev
-
-# Run tests
-npm run test
-npm run test:watch
-
-# Build for production
-npm run build
 ```
 
-## Contributing
+## Advanced: config schema & templates API
 
-We welcome contributions! Please see [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines.
+This package exposes a couple of **advanced** entrypoints intended for tooling:
 
-### Quick Contribution Steps
+### Config schema (Zod)
 
-1. Fork the repository
-2. Create a feature branch: `git checkout -b feature/amazing-feature`
-3. Make your changes
-4. Run tests: `npm run test`
-5. Submit a pull request
+```ts
+import { ProjectConfigSchema, DEFAULT_CONFIG } from 'create-react-forge/config';
 
-## Related Projects
+const parsed = ProjectConfigSchema.parse(DEFAULT_CONFIG);
+```
 
-- [bulletproof-react](https://github.com/alan2207/bulletproof-react) — Architecture reference
-- [Vite](https://vitejs.dev/) — Build tool
-- [Next.js](https://nextjs.org/) — React framework
-- [TanStack Query](https://tanstack.com/query) — Data fetching
+### Template registry
+
+```ts
+import { TemplateRegistry } from 'create-react-forge/templates';
+
+const registry = new TemplateRegistry();
+// registry.loadTemplatesForConfig(...) etc.
+```
+
+## Troubleshooting
+
+- **“Directory already exists”**: pick a new project directory (or delete the existing folder).
+- **Node version issues**: ensure `node -v` is **18+**.
+- **Install step**: dependencies are not installed automatically — run your package manager install in the generated folder.
+
+## Architecture & development
+
+See [ARCHITECTURE.md](./ARCHITECTURE.md) for internal design details.
+
+```bash
+npm install
+npm run dev
+npm run test
+npm run build
+```
 
 ## License
 
