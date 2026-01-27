@@ -8,7 +8,7 @@ export function Landing() {
           Welcome to Your App
         </h1>
         <p className="mt-6 text-lg leading-8 text-gray-600">
-          A production-ready React application scaffolded with react-setup.
+          A production-ready React application scaffolded with create-react-forge.
         </p>
         <div className="mt-10 flex items-center justify-center gap-x-6">
           <Link

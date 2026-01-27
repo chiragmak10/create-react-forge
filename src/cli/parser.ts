@@ -21,7 +21,7 @@ export function createCommand(): Command {
   const program = new Command();
 
   program
-    .name('react-setup')
+    .name('create-react-forge')
     .description('Production-ready React CLI scaffolder with first-class testing support')
     .version(getVersion());
 

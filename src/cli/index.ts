@@ -79,7 +79,7 @@ function displayProjectSummary(config: ReturnType<typeof promptAnswersToConfig>)
  * Main CLI entry point
  */
 export async function main(): Promise<void> {
-  console.log(chalk.cyan.bold('\n  ⚛️  react-setup\n'));
+  console.log(chalk.cyan.bold('\n  ⚛️  create-react-forge\n'));
   console.log(chalk.gray('  Production-ready React scaffolder with first-class testing\n'));
 
   try {
