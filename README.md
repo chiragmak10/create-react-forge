@@ -85,6 +85,9 @@ my-app/
 | **Formatting** | Prettier on/off |
 | **Git** | init on/off |
 
+## Screenshot
+<img width="709" height="1047" alt="image" src="https://github.com/user-attachments/assets/dc8956a9-473b-4001-8c2d-0b3b54f29583" />
+
 ## Next steps (after generation)
 
 ```bash
@@ -122,7 +125,7 @@ const registry = new TemplateRegistry();
 
 ## Architecture & development
 
-See [ARCHITECTURE.md](./ARCHITECTURE.md) for internal design details.
+See [ARCHITECTURE.md](https://github.com/chiragmak10/react-setup/blob/master/ARCHITECTURE.md) for internal design details.
 
 ```bash
 npm install
