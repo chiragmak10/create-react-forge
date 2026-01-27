@@ -1,4 +1,4 @@
-# react-setup
+# react-scaffold
 
 Production-ready React CLI scaffolder with first-class testing support, flexible runtimes (Vite/Next.js), and a composable template system based on [bulletproof-react](https://github.com/alan2207/bulletproof-react) architecture.
 
@@ -15,14 +15,14 @@ Production-ready React CLI scaffolder with first-class testing support, flexible
 ## Quick Start
 
 ```bash
-npx react-setup
+npx create-react-forge
 ```
 
 Or install globally:
 
 ```bash
-npm install -g react-setup
-react-setup
+npm install -g create-react-forge
+create-react-forge
 ```
 
 ## What You Get
