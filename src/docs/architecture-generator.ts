@@ -64,7 +64,7 @@ We use **${dataFetching.library}** for server state management.
 
 - **Queries**: Located in \`features/*/api/*.queries.ts\` or \`hooks/queries/*.ts\`
 - **Mutations**: Co-located with queries
-` : 'Standard \`fetch\` or \`axios\` is used for data fetching.'}
+` : 'Standard `fetch` or `axios` is used for data fetching.'}
 
 ## State Management
 

@@ -2,6 +2,50 @@ name: CI
 
 on:
   push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Build
+        run: npm run build
+
+      - name: Test (with coverage)
+        run: npm run test:coverage
+
+      - name: Coverage summary
+        if: always()
+        run: node -e "const fs=require('fs');const p='coverage/coverage-summary.json';if(!fs.existsSync(p)){console.log('No coverage summary found at',p);process.exit(0);}const s=JSON.parse(fs.readFileSync(p,'utf8')).total;const pct=(x)=>Number(x?.pct??0).toFixed(2)+'%';const lines=[`## Code coverage`,``,`| Metric | % | Covered / Total |`,`|---|---:|---:|`,`| Lines | ${pct(s.lines)} | ${s.lines.covered}/${s.lines.total} |`,`| Statements | ${pct(s.statements)} | ${s.statements.covered}/${s.statements.total} |`,`| Functions | ${pct(s.functions)} | ${s.functions.covered}/${s.functions.total} |`,`| Branches | ${pct(s.branches)} | ${s.branches.covered}/${s.branches.total} |`,``,``];fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY,lines.join('\\n'));"
+
+      - name: Upload coverage artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: coverage/
+name: CI
+
+on:
+  push:
     branches: [master]
   pull_request:
     branches: [master]

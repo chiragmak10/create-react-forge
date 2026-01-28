@@ -1,9 +1,9 @@
-import { describe, expect, it, afterEach } from 'vitest';
-import { existsSync, rmSync, readFileSync, readdirSync, statSync } from 'fs';
-import { join } from 'path';
+import { existsSync, readFileSync, rmSync } from 'fs';
 import { tmpdir } from 'os';
-import { ProjectGenerator } from '../../generator/index.js';
+import { join } from 'path';
+import { afterEach, describe, expect, it } from 'vitest';
 import { ProjectConfig } from '../../config/schema.js';
+import { ProjectGenerator } from '../../generator/index.js';
 
 /**
  * Scenario-based integration tests
@@ -28,26 +28,6 @@ function readGeneratedPackageJson(projectPath: string): Record<string, unknown> 
 
 function readFile(projectPath: string, relativePath: string): string {
   return readFileSync(join(projectPath, relativePath), 'utf-8');
-}
-
-function getAllFiles(dir: string, baseDir: string = dir): string[] {
-  const files: string[] = [];
-  
-  if (!existsSync(dir)) return files;
-  
-  const entries = readdirSync(dir);
-  for (const entry of entries) {
-    const fullPath = join(dir, entry);
-    const relativePath = fullPath.replace(baseDir + '/', '');
-    
-    if (statSync(fullPath).isDirectory()) {
-      files.push(...getAllFiles(fullPath, baseDir));
-    } else {
-      files.push(relativePath);
-    }
-  }
-  
-  return files;
 }
 
 function createConfig(name: string, overrides: Partial<ProjectConfig>): ProjectConfig {
