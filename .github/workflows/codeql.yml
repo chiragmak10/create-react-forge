@@ -5,10 +5,7 @@ on:
     branches: [master]
   pull_request:
     branches: [master]
-  schedule:
-    # Run every Monday at 6:00 AM UTC
-    - cron: '0 6 * * 1'
-
+ 
 permissions:
   actions: read
   contents: read
