@@ -116,6 +116,7 @@ export class ProjectGenerator {
 
       // Step 7: Install dependencies if user confirms
       // (We'll skip automatic installation for now and let user do it)
+      /* eslint-disable no-console */
       console.log();
       console.log(chalk.green('✓ Project created successfully!'));
       console.log();
@@ -124,6 +125,7 @@ export class ProjectGenerator {
       console.log(chalk.gray(`  ${this.getInstallCommand()}`));
       console.log(chalk.gray(`  ${this.getDevCommand()}`));
       console.log();
+      /* eslint-enable no-console */
 
       result.success = result.errors.length === 0;
       return result;

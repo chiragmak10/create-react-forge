@@ -18,7 +18,7 @@ export class PluginManager {
         try {
           // Type assertion needed because TypeScript doesn't correlate the hookName with the specific hook signature
           // efficiently in this generic context without more complex types
-          await (hook as Function)(context);
+          await (hook as (ctx: PluginContext) => void | Promise<void>)(context);
         } catch (error) {
           console.warn(`Plugin ${plugin.name} failed at hook ${hookName}:`, error);
         }
@@ -36,7 +36,7 @@ export class PluginManager {
             currentConfig = result;
           }
         } catch (error) {
-           console.warn(`Plugin ${plugin.name} failed at hook beforeCreate:`, error);
+          console.warn(`Plugin ${plugin.name} failed at hook beforeCreate:`, error);
         }
       }
     }
