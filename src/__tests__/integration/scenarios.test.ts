@@ -1,5 +1,5 @@
 import { describe, expect, it, afterEach } from 'vitest';
-import { existsSync, rmSync, readFileSync, readdirSync, statSync } from 'fs';
+import { existsSync, rmSync, readFileSync } from 'fs';
 import { join } from 'path';
 import { tmpdir } from 'os';
 import { ProjectGenerator } from '../../generator/index.js';
