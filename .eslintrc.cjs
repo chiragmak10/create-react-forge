@@ -12,5 +12,6 @@ module.exports = {
     rules: {
         '@typescript-eslint/no-explicit-any': 'warn',
         'no-console': ['warn', { allow: ['warn', 'error'] }],
+        'no-useless-escape': 'off',
     },
 };

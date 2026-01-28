@@ -62,15 +62,15 @@ npm run test
 ${dataFetching.enabled ? `
 We use **${dataFetching.library}** for server state management.
 
-- **Queries**: Located in `features/*/api/*.queries.ts` or `hooks/queries/*.ts`
+- **Queries**: Located in \`features/*/api/*.queries.ts\` or \`hooks/queries/*.ts\`
 - **Mutations**: Co-located with queries
-` : 'Standard `fetch` or `axios` is used for data fetching.'}
+` : 'Standard \`fetch\` or \`axios\` is used for data fetching.'}
 
 ## State Management
 
 ${stateManagement !== 'none' ? `
 We use **${stateManagement}** for global client state.
-` : 'Local state (`useState`) is preferred. Global state is managed via Context API if needed.'}
+` : 'Local state (\`useState\`) is preferred. Global state is managed via Context API if needed.'}
 `;
 }
 
