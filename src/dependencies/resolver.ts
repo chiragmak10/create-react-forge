@@ -14,6 +14,7 @@ export const VERSION_REGISTRY: Record<string, string> = {
 
   // Styling
   'tailwindcss': '^4.0.0',
+  '@tailwindcss/postcss': '^4.0.0',
   'postcss': '^8.4.49',
   'autoprefixer': '^10.4.20',
   'styled-components': '^6.1.14',
