@@ -51,7 +51,7 @@
     "LICENSE"
   ],
   "engines": {
-    "node": ">=18.0.0"
+    "node": ">=20.9.0"
   },
   "dependencies": {
     "@inquirer/prompts": "^8.2.0",
