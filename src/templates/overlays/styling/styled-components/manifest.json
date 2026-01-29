@@ -1,0 +1,19 @@
+{
+  "name": "styling-styled-components",
+  "version": "1.0.0",
+  "description": "Styled Components CSS-in-JS styling solution",
+  "compatibleWith": ["runtime-vite", "runtime-nextjs"],
+  "dependencies": {
+    "styled-components": "^6.1.14"
+  },
+  "devDependencies": {
+    "@types/styled-components": "^5.1.34",
+    "babel-plugin-styled-components": "^2.1.4"
+  },
+  "scripts": {},
+  "filePatterns": {
+    "include": ["**/*"],
+    "exclude": ["manifest.json"]
+  }
+}
+

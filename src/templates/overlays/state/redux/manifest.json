@@ -4,8 +4,8 @@
   "description": "Redux Toolkit state management with typed hooks",
   "compatibleWith": ["runtime-vite", "runtime-nextjs"],
   "dependencies": {
-    "@reduxjs/toolkit": "^2.2.0",
-    "react-redux": "^9.1.0"
+    "@reduxjs/toolkit": "^2.5.0",
+    "react-redux": "^9.2.0"
   },
   "devDependencies": {},
   "scripts": {},

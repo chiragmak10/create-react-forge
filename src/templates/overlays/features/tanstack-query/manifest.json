@@ -4,8 +4,8 @@
   "description": "TanStack Query (React Query) data fetching setup",
   "compatibleWith": ["runtime-vite", "runtime-nextjs"],
   "dependencies": {
-    "@tanstack/react-query": "^5.60.0",
-    "@tanstack/react-query-devtools": "^5.60.0"
+    "@tanstack/react-query": "^5.62.10",
+    "@tanstack/react-query-devtools": "^5.62.10"
   },
   "devDependencies": {},
   "scripts": {},

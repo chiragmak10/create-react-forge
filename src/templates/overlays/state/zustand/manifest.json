@@ -4,7 +4,7 @@
   "description": "Zustand state management following bulletproof-react patterns",
   "compatibleWith": ["runtime-vite", "runtime-nextjs"],
   "dependencies": {
-    "zustand": "^4.5.0"
+    "zustand": "^5.0.3"
   },
   "devDependencies": {},
   "scripts": {},

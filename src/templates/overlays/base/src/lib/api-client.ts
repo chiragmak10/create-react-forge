@@ -15,7 +15,21 @@ export type ApiResponse<T> = {
   status: number;
 };
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+// Get API URL from environment - works for both Vite and Next.js
+const getApiUrl = (): string => {
+  // Check for Vite environment variable (import.meta.env)
+  if (typeof import.meta !== 'undefined' && (import.meta as any).env) {
+    return (import.meta as any).env.VITE_API_URL || 'http://localhost:3001';
+  }
+  // Check for Next.js environment variable (process.env)
+  if (typeof process !== 'undefined' && process.env) {
+    return process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+  }
+  // Fallback
+  return 'http://localhost:3001';
+};
+
+const API_URL = getApiUrl();
 
 /**
  * Build URL with query parameters

@@ -32,10 +32,10 @@ ${stateManagement !== 'none' ? '├── stores/              # State managemen
 ## Naming Conventions
 
 ### Files
-- **Components**: PascalCase (e.g., \`UserProfile.tsx\`)
-- **Hooks**: camelCase with \`use\` prefix (e.g., \`useAuth.ts\`)
-- **Utilities**: camelCase (e.g., \`formatDate.ts\`)
-- **Constants**: SCREAMING_SNAKE_CASE (e.g., \`constants.ts\`)
+- **Components**: PascalCase (e.g., UserProfile.tsx)
+- **Hooks**: camelCase with "use" prefix (e.g., useAuth.ts)
+- **Utilities**: camelCase (e.g., formatDate.ts)
+- **Constants**: SCREAMING_SNAKE_CASE (e.g., constants.ts)
 
 ### Code
 - **Components**: PascalCase
