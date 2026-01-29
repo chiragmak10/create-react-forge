@@ -11,6 +11,7 @@ module.exports = {
         'plugin:@typescript-eslint/recommended',
     ],
     rules: {
+        '@typescript-eslint/explicit-function-return-type': 'warn',
         '@typescript-eslint/no-explicit-any': 'warn',
         'no-console': ['warn', { allow: ['warn', 'error'] }],
         '@typescript-eslint/ban-types': 'error',
