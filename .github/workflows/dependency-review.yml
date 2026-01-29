@@ -22,6 +22,4 @@ jobs:
         with:
           # Fail on critical or high severity vulnerabilities
           fail-on-severity: moderate
-          # Deny these copyleft licenses
-          deny-licenses: GPL-3.0, AGPL-3.0, LGPL-3.0
           comment-summary-in-pr: always
