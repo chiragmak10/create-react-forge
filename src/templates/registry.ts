@@ -225,6 +225,8 @@ export class TemplateRegistry {
       templates.push(this.loadAndRegister('styling/tailwind'));
     } else if (config.styling.solution === 'css-modules') {
       templates.push(this.loadAndRegister('styling/css-modules'));
+    } else if (config.styling.solution === 'styled-components') {
+      templates.push(this.loadAndRegister('styling/styled-components'));
     }
 
     // Load state management template

@@ -5,7 +5,7 @@
   "compatibleWith": ["runtime-vite", "runtime-nextjs"],
   "dependencies": {},
   "devDependencies": {
-    "@playwright/test": "^1.45.0"
+    "@playwright/test": "^1.49.1"
   },
   "scripts": {
     "test:e2e": "playwright test",
