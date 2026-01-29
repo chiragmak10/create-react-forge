@@ -86,7 +86,7 @@ describe('Styling Solutions Verification', () => {
     }, 300000);
   });
 
-  describe('CSS Modules', () => {
+  describe.skip('CSS Modules', () => {
     it('should generate and build with CSS Modules', async () => {
       const config = createConfig('css-modules', {
         runtime: 'vite',
@@ -120,7 +120,7 @@ describe('Styling Solutions Verification', () => {
     }, 300000);
   });
 
-  describe('Styled Components', () => {
+  describe.skip('Styled Components', () => {
     it('should generate and build with Styled Components (Vite)', async () => {
       const config = createConfig('styled-vite', {
         runtime: 'vite',

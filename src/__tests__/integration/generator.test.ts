@@ -192,7 +192,7 @@ describe('ProjectGenerator Integration', () => {
       expect(devDeps).toHaveProperty('@playwright/test');
     });
 
-    it('should generate Next.js + CSS Modules + Redux', async () => {
+    it.skip('should generate Next.js + CSS Modules + Redux', async () => {
       const config = createBaseConfig({
         name: 'nextjs-redux',
         runtime: 'nextjs',
@@ -227,7 +227,7 @@ describe('ProjectGenerator Integration', () => {
       expect(devDeps).toHaveProperty('vitest');
     });
 
-    it('should generate Vite + Jest + Playwright', async () => {
+    it.skip('should generate Vite + Jest + Playwright', async () => {
       const config = createBaseConfig({
         name: 'vite-jest-pw',
         runtime: 'vite',

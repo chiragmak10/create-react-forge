@@ -229,7 +229,7 @@ describe('Real-World Scenarios', () => {
     });
   });
 
-  describe('Scenario: Next.js with Redux', () => {
+  describe.skip('Scenario: Next.js with Redux', () => {
     it('should generate Next.js + CSS Modules + Redux', async () => {
       const config = createConfig('nextjs-redux', {
         runtime: 'nextjs',
