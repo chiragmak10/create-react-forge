@@ -1,8 +1,8 @@
-# React-Setup Architecture
+# create-react-forge Architecture
 
 ## Overview
 
-React-Setup is a modular, layered CLI tool for scaffolding production-ready React applications. The architecture prioritizes separation of concerns, testability, and extensibility.
+create-react-forge is a modular, layered CLI tool for scaffolding production-ready React applications. The architecture prioritizes separation of concerns, testability, and extensibility through a composable template system.
 
 ## Layer Architecture
 
@@ -24,18 +24,32 @@ React-Setup is a modular, layered CLI tool for scaffolding production-ready Reac
 │  Location: src/config/                                 │
 └──────────────────────┬──────────────────────────────────┘
                        │
-      ┌────────────────┼────────────────┐
-      │                │                │
-   ┌──▼──┐        ┌────▼─────┐    ┌────▼──────┐
-   │Templ.│        │Assembler │    │Dependency │
-   │Layer │        │Layer     │    │Layer      │
-   └──────┘        └──────────┘    └───────────┘
-      │                │                │
-   ┌──▼──────────────────────────────────▼──┐
-   │         Testing Layer                   │
-   │  (script generation, config templating) │
-   │  Location: src/testing/                 │
-   └────────────────────────────────────────┘
+┌──────────────────────▼──────────────────────────────────┐
+│                 Generator Layer                         │
+│  (orchestrates full project generation flow)           │
+│  Location: src/generator/                              │
+└──────────────────────┬──────────────────────────────────┘
+                       │
+      ┌────────────────┼────────────────┬────────────────┐
+      │                │                │                │
+   ┌──▼──┐        ┌────▼─────┐    ┌────▼──────┐   ┌─────▼─────┐
+   │Templ.│        │Assembler │    │Dependency │   │  Plugins  │
+   │Layer │        │Layer     │    │Layer      │   │  Layer    │
+   └──┬───┘        └────┬─────┘    └─────┬─────┘   └─────┬─────┘
+      │                 │                │               │
+      └─────────────────┼────────────────┴───────────────┘
+                        │
+   ┌────────────────────▼────────────────────────────────┐
+   │              Lifecycle Layer                        │
+   │  (dependency installation, post-generation tasks)  │
+   │  Location: src/lifecycle/                          │
+   └─────────────────────────────────────────────────────┘
+                        │
+   ┌────────────────────▼────────────────────────────────┐
+   │                 Docs Layer                          │
+   │  (auto-generates ARCHITECTURE.md for projects)     │
+   │  Location: src/docs/                               │
+   └─────────────────────────────────────────────────────┘
 ```
 
 ## Module Breakdown
@@ -55,13 +69,14 @@ React-Setup is a modular, layered CLI tool for scaffolding production-ready Reac
   - Validation logic (e.g., project name format)
   - Returns structured PromptAnswers
 - **index.ts** — Main CLI orchestration
-  - Converts user input to ProjectConfig
-  - Validates configuration
+  - Converts user input to ProjectConfig via ConfigBuilder
+  - Validates configuration with Zod
   - Displays summary
+  - Invokes ProjectGenerator
   - Error handling and user feedback
 
-**Input**: User selections (interactive or CLI flags)
-**Output**: ProjectConfig object ready for assembly
+**Input**: User selections (interactive prompts)
+**Output**: ProjectConfig object ready for generation
 
 ---
 
@@ -73,9 +88,9 @@ React-Setup is a modular, layered CLI tool for scaffolding production-ready Reac
 
 - **schema.ts** — Zod type definitions
   - ProjectConfig interface with all options
-  - Individual schemas for each config aspect
+  - Individual schemas for each config aspect (Runtime, Language, Styling, etc.)
   - DEFAULT_CONFIG preset
-  - Type exports for TS support
+  - Type exports for TypeScript support
 - **builder.ts** — ConfigBuilder class (fluent API)
   - Fluent chainable methods for setting config
   - Validation with Zod
@@ -95,17 +110,50 @@ interface ProjectConfig {
   path: string;
   runtime: 'vite' | 'nextjs';
   language: 'javascript' | 'typescript';
-  styling: { solution: string };
-  stateManagement: string;
+  styling: { solution: 'css' | 'tailwind' | 'styled-components' | 'css-modules' };
+  stateManagement: 'none' | 'redux' | 'zustand';
   testing: TestingConfig;
   dataFetching: DataFetchingConfig;
-  // ... more fields
+  linting: LintingConfig;
+  packageManager: 'npm' | 'yarn' | 'pnpm';
+  git: GitConfig;
+  plugins: PluginConfig[];
 }
 ```
 
 ---
 
-### 3. Template Layer (`src/templates/`)
+### 3. Generator Layer (`src/generator/`)
+
+**Responsibility**: Orchestrate the entire project generation flow.
+
+#### Files:
+
+- **index.ts** — ProjectGenerator class
+  - Validates directory doesn't exist
+  - Loads templates via TemplateRegistry
+  - Merges files from all applicable templates
+  - Generates ARCHITECTURE.md documentation
+  - Writes files via ProjectAssembler
+  - Initializes git repository (optional)
+  - Returns GenerationResult with success/errors/warnings
+
+**Generation Flow**:
+
+```
+1. Check if directory exists → fail if yes
+2. Load templates based on config
+3. Merge all template files
+4. Generate ARCHITECTURE.md for the project
+5. Merge dependencies and scripts
+6. Write files to disk
+7. Initialize git (optional)
+8. Display next steps
+```
+
+---
+
+### 4. Template Layer (`src/templates/`)
 
 **Responsibility**: Manage template overlays and file composition strategy.
 
@@ -116,11 +164,36 @@ interface ProjectConfig {
   - Manifest loading and parsing
   - Dependency aggregation from multiple templates
   - Script merging across templates
-  - Template filtering by category
+  - Binary file handling (images, fonts)
+  - `loadTemplatesForConfig()` selects applicable templates
 - **utils.ts** — Template utility functions
   - Path resolution for runtime-specific templates
   - Styling/state/testing template lookup
-  - Determine applicable templates based on config
+
+**Template Structure**:
+
+```
+src/templates/overlays/
+├── base/                    # Core React files (components, hooks, lib, types)
+├── runtime/
+│   ├── vite/               # Vite-specific config and entry point
+│   └── nextjs/             # Next.js App Router structure
+├── styling/
+│   ├── tailwind/           # Tailwind CSS v4 setup
+│   ├── css-modules/        # CSS Modules configuration
+│   └── styled-components/  # styled-components setup
+├── state/
+│   ├── redux/              # Redux Toolkit store structure
+│   └── zustand/            # Zustand store setup
+├── features/
+│   └── tanstack-query/     # TanStack Query + hooks pattern
+├── testing/
+│   ├── vitest/             # Vitest + Testing Library setup
+│   ├── jest/               # Jest + Testing Library setup
+│   └── playwright/         # Playwright E2E config
+└── tooling/
+    └── storybook/          # Storybook setup (future)
+```
 
 **Key Data Structure**:
 
@@ -129,12 +202,13 @@ interface TemplateOverlay {
   name: string;
   path: string;
   manifest: TemplateManifest;
-  files?: Record<string, string>;
+  files: Map<string, string>;
 }
 
 interface TemplateManifest {
   name: string;
   version: string;
+  description?: string;
   dependencies?: Record<string, string>;
   devDependencies?: Record<string, string>;
   scripts?: Record<string, string>;
@@ -144,13 +218,193 @@ interface TemplateManifest {
 
 **Template Layers** (composable, order matters):
 
-1. **Base** — Core React files (App.tsx, index, main.tsx)
+1. **Base** — Core React files (components, hooks, lib, types)
 2. **Runtime** — Vite or Next.js specific configs
 3. **Styling** — Tailwind/CSS/Styled Components setup
 4. **State** — Redux/Zustand store setup
 5. **Features** — TanStack Query, etc.
-6. **Testing** — Vitest/Jest + RTL + Playwright/Cypress
-7. **Tooling** — Prettier config
+6. **Testing** — Vitest/Jest + RTL + Playwright
+
+---
+
+### 5. Assembly Layer (`src/assembler/`)
+
+**Responsibility**: Merge configurations and write files to disk.
+
+#### Files:
+
+- **index.ts** — ProjectAssembler class
+  - File registration system with template variable substitution
+  - Package.json construction and dependency management
+  - Directory creation
+  - Binary file copying
+  - Atomic file system operations
+- **merger.ts** — ConfigMerger class
+  - Deep merge objects with Deepmerge
+  - Smart package.json merging:
+    - Scripts concatenation
+    - Dependencies deduplication
+    - Arrays flattened with dedup
+  - Strategy-based merging for different config types
+
+**Template Variables**:
+
+```typescript
+{{PROJECT_NAME}}         → config.name
+{{PROJECT_DESCRIPTION}}  → 'A production-ready React application'
+{{AUTHOR}}               → ''
+{{LICENSE}}              → 'MIT'
+```
+
+---
+
+### 6. Dependency Layer (`src/dependencies/`)
+
+**Responsibility**: Resolve, deduplicate, and version-pin dependencies.
+
+#### Files:
+
+- **resolver.ts** — DependencyResolver class
+  - VERSION_REGISTRY with 30+ pinned versions
+  - Aggregates dependencies from multiple sources
+  - Detects version conflicts
+  - Applies version pinning strategy
+  - Separates dev vs. production dependencies
+
+**Version Registry** (current):
+
+```typescript
+{
+  // Runtime
+  'vite': '^6.0.7',
+  '@vitejs/plugin-react': '^4.3.4',
+  'next': '^16.1.6',
+  'react': '^19.0.0',
+  'react-dom': '^19.0.0',
+
+  // Language
+  'typescript': '^5.7.2',
+
+  // Styling
+  'tailwindcss': '^4.0.0',
+  '@tailwindcss/postcss': '^4.0.0',
+  'styled-components': '^6.1.14',
+
+  // State
+  '@reduxjs/toolkit': '^2.5.0',
+  'react-redux': '^9.2.0',
+  'zustand': '^5.0.3',
+
+  // Data Fetching
+  '@tanstack/react-query': '^5.62.10',
+  '@tanstack/react-query-devtools': '^5.62.10',
+
+  // Testing
+  'vitest': '^2.1.8',
+  '@vitest/ui': '^2.1.8',
+  '@testing-library/react': '^16.1.0',
+  '@playwright/test': '^1.49.1',
+
+  // Routing
+  'react-router-dom': '^7.1.1',
+  'react-error-boundary': '^4.1.2',
+}
+```
+
+**Conflict Handling**:
+
+- Detects when different versions requested
+- Reports conflicts but still resolves (later version wins)
+- Prevents duplicate versions in final output
+
+---
+
+### 7. Plugin Layer (`src/plugins/`)
+
+**Responsibility**: Extensibility through lifecycle hooks.
+
+#### Files:
+
+- **types.ts** — Plugin interface definitions
+- **loader.ts** — PluginLoader class for dynamic imports
+- **manager.ts** — PluginManager class for hook execution
+- **index.ts** — Public exports
+
+**Plugin Interface**:
+
+```typescript
+interface ReactSetupPlugin {
+  name: string;
+  version: string;
+  hooks?: {
+    beforeCreate?: (config: ProjectConfig) => Promise<ProjectConfig | void>;
+    afterTemplateApply?: (context: PluginContext) => Promise<void>;
+    beforeInstall?: (context: PluginContext) => Promise<void>;
+    afterInstall?: (context: PluginContext) => Promise<void>;
+  };
+}
+
+interface PluginContext {
+  config: ProjectConfig;
+  assembler?: ProjectAssembler;
+}
+```
+
+---
+
+### 8. Lifecycle Layer (`src/lifecycle/`)
+
+**Responsibility**: Handle post-generation tasks.
+
+#### Files:
+
+- **installer.ts** — Dependency installation with execa
+  - Supports npm, yarn, pnpm
+  - Progress spinner with ora
+- **index.ts** — Public exports
+
+---
+
+### 9. Docs Layer (`src/docs/`)
+
+**Responsibility**: Generate documentation for created projects.
+
+#### Files:
+
+- **architecture-generator.ts** — Generates ARCHITECTURE.md
+  - Creates project-specific documentation
+  - Documents selected configuration
+  - Includes directory structure
+  - Naming conventions
+  - Testing strategy
+- **index.ts** — Public exports
+
+---
+
+### 10. Testing Layer (`src/testing/`)
+
+**Responsibility**: Configure testing setup and generate test scripts.
+
+#### Files:
+
+- **configurer.ts** — TestingConfigurer class
+  - Selects appropriate test runners based on runtime
+  - Generates npm scripts for testing
+  - Creates test configuration files
+  - Supports multiple runners: Vitest, Jest, Playwright, Cypress
+
+**Generated Scripts**:
+
+```json
+{
+  "test": "vitest run",
+  "test:watch": "vitest",
+  "test:ui": "vitest --ui",
+  "test:coverage": "vitest run --coverage",
+  "test:e2e": "playwright test",
+  "test:e2e:ui": "playwright test --ui"
+}
+```
 
 ---
 
@@ -177,28 +431,28 @@ my-app/
 │   │
 │   ├── components/             # Shared UI components
 │   │   ├── ui/                 # Base UI primitives (Button, Input, etc.)
-│   │   ├── layouts/            # Layout components (MainLayout, AuthLayout)
 │   │   └── errors/             # Error boundaries and fallbacks
 │   │
 │   ├── features/               # Feature-based modules
-│   │   ├── auth/               # Authentication feature
-│   │   │   ├── api/            # API calls for auth
-│   │   │   ├── components/     # Auth-specific components
-│   │   │   ├── hooks/          # Auth hooks (useUser, useLogin)
-│   │   │   ├── stores/         # Auth state (if using Zustand/Redux)
-│   │   │   └── types/          # Auth TypeScript types
+│   │   ├── users/              # Example feature
+│   │   │   └── api/            # API calls for feature
 │   │   └── [feature]/          # Other features follow same pattern
 │   │
 │   ├── hooks/                  # Shared custom hooks
-│   │   └── use-disclosure.ts
+│   │   ├── use-disclosure.ts
+│   │   └── use-local-storage.ts
 │   │
 │   ├── lib/                    # Utilities and configurations
-│   │   ├── api-client.ts       # Axios/fetch wrapper
-│   │   ├── auth.ts             # Auth utilities
-│   │   └── utils.ts            # General utilities
+│   │   ├── api-client.ts       # Fetch/axios wrapper
+│   │   ├── utils.ts            # General utilities
+│   │   └── react-query.ts      # Query client (if enabled)
 │   │
 │   ├── stores/                 # Global state (if applicable)
+│   │   ├── auth.ts
 │   │   └── notifications.ts
+│   │
+│   ├── styles/                 # Global styles
+│   │   └── globals.css
 │   │
 │   ├── testing/                # Test utilities and mocks
 │   │   ├── mocks/              # MSW handlers, test data
@@ -212,23 +466,10 @@ my-app/
 │   └── e2e/
 │
 ├── public/                     # Static assets
+├── ARCHITECTURE.md             # Auto-generated project docs
 ├── index.html                  # (Vite) or app/ (Next.js)
 └── [config files]              # vite.config.ts, tsconfig.json, etc.
 ```
-
-### Template Overlay Mapping
-
-Each template overlay generates files following the bulletproof-react patterns:
-
-| Overlay | Bulletproof Reference | Generated Files |
-|---------|----------------------|-----------------|
-| `runtime/vite` | `apps/react-vite/` | vite.config.ts, index.html, main.tsx |
-| `runtime/nextjs` | `apps/nextjs-app/` | next.config.js, app/ structure |
-| `styling/tailwind` | Tailwind setup | tailwind.config.js, globals.css |
-| `state/zustand` | `stores/` pattern | Store templates with TypeScript |
-| `state/redux` | Redux Toolkit pattern | Slice-based store structure |
-| `testing/vitest` | `testing/` directory | setup.ts, test-utils.tsx, mocks/ |
-| `features/tanstack-query` | `lib/react-query.ts` | Query client, hooks pattern |
 
 ### Key Patterns Adopted
 
@@ -259,143 +500,40 @@ Each template overlay generates files following the bulletproof-react patterns:
 
 ---
 
-### 4. Assembly Layer (`src/assembler/`)
-
-**Responsibility**: Merge configurations and write files to disk.
-
-#### Files:
-
-- **index.ts** — ProjectAssembler class
-  - File registration system
-  - Batches files for writing
-  - Directory creation
-  - Atomic file system operations
-- **merger.ts** — ConfigMerger class
-  - Deep merge objects with Deepmerge
-  - Smart package.json merging:
-    - Scripts concatenation
-    - Dependencies deduplication
-    - Arrays flattened with dedup
-  - Strategy-based merging for different config types
-
-**Merge Logic**:
-
-```typescript
-ConfigMerger.mergePackageJson(
-  { scripts: { start: 'vite' }, dependencies: { react: '^18' } },
-  { scripts: { dev: 'vite', dev: 'vite --host' }, dependencies: { react-dom: '^18' } }
-)
-// Result: { scripts: { start, dev }, dependencies: { react, react-dom } }
-```
-
----
-
-### 5. Dependency Layer (`src/dependencies/`)
-
-**Responsibility**: Resolve, deduplicate, and version-pin dependencies.
-
-#### Files:
-
-- **resolver.ts** — DependencyResolver class
-  - VERSION_REGISTRY with 30+ pinned versions
-  - Aggregates dependencies from multiple sources
-  - Detects version conflicts
-  - Applies version pinning strategy
-  - Separates dev vs. production dependencies
-
-**Version Registry** (sample):
-
-```typescript
-{
-  'vite': '^5.4.0',
-  '@vitejs/plugin-react': '^4.2.0',
-  'react': '^18.2.0',
-  'vitest': '^2.0.0',
-  '@tanstack/react-query': '^5.60.0',
-  // ... 25+ more packages
-}
-```
-
-**Conflict Handling**:
-
-- Detects when different versions requested
-- Reports conflicts but still resolves (later version wins)
-- Prevents duplicate versions in final output
-
----
-
-### 6. Testing Layer (`src/testing/`)
-
-**Responsibility**: Configure testing setup and generate test scripts.
-
-#### Files:
-
-- **configurer.ts** — TestingConfigurer class
-  - Selects appropriate test runners based on runtime
-  - Generates npm scripts for testing
-  - Creates test configuration files
-  - Supports multiple runners: Vitest, Jest, Playwright, Cypress
-
-**Test Runner Selection Logic**:
-
-```
-Vite → Vitest (native integration, fast HMR)
-Next.js → Vitest (default) or Jest (if specified)
-
-E2E:
-→ Playwright (default, cross-browser)
-→ Cypress (alternative, dev-friendly)
-```
-
-**Generated Scripts**:
-
-```json
-{
-  "test": "vitest run",
-  "test:watch": "vitest",
-  "test:ui": "vitest --ui",
-  "test:coverage": "vitest run --coverage",
-  "test:e2e": "playwright test",
-  "test:e2e:ui": "playwright test --ui"
-}
-```
-
----
-
 ## Data Flow
 
 ### Project Generation Flow
 
 ```
-User Input (CLI/Flags)
+User Input (Interactive Prompts)
     ↓
-Parse Arguments → Validate Names
+Parse & Validate Project Name
     ↓
-Interactive Prompts
+Collect All Configuration Options
     ↓
-Collect Answers
-    ↓
-Convert to ProjectConfig
+Convert to ProjectConfig (ConfigBuilder)
     ↓
 Validate with Zod
     ↓
-Load Template Overlays
+Display Configuration Summary
     ↓
-Aggregate Dependencies
+Create ProjectGenerator
     ↓
-Resolve Version Conflicts
+Load Template Overlays (TemplateRegistry)
     ↓
-Generate Test Scripts
+Merge All Template Files
     ↓
-Merge Package.json
+Generate ARCHITECTURE.md
     ↓
-Create Assembler with Files
+Aggregate Dependencies (from manifests)
     ↓
-Write to Disk
+Create ProjectAssembler with Files
+    ↓
+Write to Disk (atomic operations)
     ↓
 Initialize Git (optional)
     ↓
-Install Dependencies
+Display Next Steps
     ↓
 Success!
 ```
@@ -405,37 +543,41 @@ Success!
 ## Module Dependencies
 
 ```
-index.ts
+src/index.ts
   └─ cli/index.ts
       ├─ cli/parser.ts (Commander)
       ├─ cli/prompts.ts (@inquirer/prompts)
-      ├─ cli/validators.ts
       ├─ config/builder.ts
       │   └─ config/schema.ts (Zod)
-      │       └─ config/defaults.ts
-      └─ (future: assembler/index.ts)
+      └─ generator/index.ts
+          ├─ templates/registry.ts
+          ├─ assembler/index.ts
+          ├─ docs/architecture-generator.ts
+          └─ (plugins/manager.ts)
 
 config/builder.ts
   └─ config/schema.ts
       └─ config/defaults.ts
 
 templates/registry.ts
-  └─ (templates/index.ts on-demand loading)
-
-templates/utils.ts
-  └─ config/schema.ts
+  └─ (loads overlays from filesystem)
 
 assembler/index.ts
   └─ config/schema.ts
 
 assembler/merger.ts
-  ├─ deepmerge (3rd party)
-  └─ (package.json files)
+  └─ deepmerge (3rd party)
 
 dependencies/resolver.ts
-  └─ (VERSION_REGISTRY as constant)
+  └─ VERSION_REGISTRY (constant)
 
-testing/configurer.ts
+plugins/manager.ts
+  └─ plugins/types.ts
+
+lifecycle/installer.ts
+  └─ execa, ora
+
+docs/architecture-generator.ts
   └─ config/schema.ts
 ```
 
@@ -450,6 +592,7 @@ const config = new ConfigBuilder()
   .setName('my-app')
   .setRuntime('vite')
   .setLanguage('typescript')
+  .setStyling('tailwind')
   .build();
 ```
 
@@ -469,9 +612,9 @@ TemplateRegistry and VERSION_REGISTRY provide centralized lookup and management.
 
 ConfigMerger uses different strategies for different config types (arrays, objects, primitives).
 
-### 6. Dependency Injection (Implicit)
+### 6. Hook-Based Plugins
 
-Layers accept configured objects rather than creating dependencies.
+Plugins can intercept generation at defined lifecycle points.
 
 ---
 
@@ -479,16 +622,26 @@ Layers accept configured objects rather than creating dependencies.
 
 ### Test Organization
 
-- Unit tests co-located with source in `src/__tests__/`
+- Unit tests in `src/__tests__/`
+- Integration tests in `src/__tests__/integration/`
 - Each module has corresponding test file
-- 23 tests covering core functionality
 
-### Test Coverage
+### Test Files
 
-- **Config Layer**: ConfigBuilder, merging, validation
-- **Dependency Layer**: Resolution, conflict detection, pinning
-- **Assembly Layer**: Config merging strategies
-- **Testing Layer**: Runner selection, script generation
+```
+src/__tests__/
+├── config-builder.test.ts
+├── config-merger.test.ts
+├── dependency-resolver.test.ts
+├── testing-configurer.test.ts
+└── integration/
+    ├── build-verification.test.ts
+    ├── generator.test.ts
+    ├── package-json.test.ts
+    ├── scenarios.test.ts
+    ├── styling-verification.test.ts
+    └── template-loading.test.ts
+```
 
 ### Running Tests
 
@@ -505,8 +658,8 @@ npm run test:coverage    # Coverage report
 
 ### Runtime
 
-- `vite` — Vite SPA (default for speed)
-- `nextjs` — Next.js SSR/Full-stack
+- `vite` — Vite SPA with React Router (default)
+- `nextjs` — Next.js App Router
 
 ### Language
 
@@ -515,8 +668,8 @@ npm run test:coverage    # Coverage report
 
 ### Styling
 
-- `tailwind` — Utility-first (recommended)
-- `css` — Plain CSS with CSS Modules
+- `tailwind` — Tailwind CSS v4 (recommended)
+- `css` — Plain CSS
 - `styled-components` — CSS-in-JS
 - `css-modules` — Scoped CSS
 
@@ -528,13 +681,13 @@ npm run test:coverage    # Coverage report
 
 ### Testing
 
-- **Unit**: Vitest (Vite) or Jest (Next.js)
+- **Unit**: Vitest (default) or Jest
 - **Component**: React Testing Library
-- **E2E**: Playwright or Cypress
+- **E2E**: Playwright (default) or Cypress
 
 ### Data Fetching
 
-- `tanstack-query` — TanStack Query with Devtools
+- `tanstack-query` — TanStack Query v5 with Devtools
 - `none` — Skip setup
 
 ### Package Manager
@@ -550,60 +703,68 @@ npm run test:coverage    # Coverage report
 
 ---
 
-## Extension Points (Future)
+## Extension Points
 
 ### Plugin System
 
-Planned hooks for extensibility:
+Register plugins to hook into generation lifecycle:
 
 ```typescript
-interface ReactSetupPlugin {
-  beforeCreate?: (config) => void;
-  afterTemplateApply?: (context) => void;
-  beforeInstall?: (context) => void;
-  afterInstall?: (context) => void;
-}
+const myPlugin: ReactSetupPlugin = {
+  name: 'my-plugin',
+  version: '1.0.0',
+  hooks: {
+    beforeCreate: async (config) => {
+      // Modify config before generation
+      return config;
+    },
+    afterTemplateApply: async (context) => {
+      // Add custom files or modify assembler
+    },
+    beforeInstall: async (context) => {
+      // Pre-installation tasks
+    },
+    afterInstall: async (context) => {
+      // Post-installation tasks
+    },
+  },
+};
 ```
 
 ### Custom Templates
 
-Load templates from:
+Load templates from the overlays directory. Each template requires:
 
-- Local filesystem
-- npm packages (`react-setup-template-*`)
-- Git repositories
-
-### Custom Test Runners
-
-Add new test runners through plugin system.
+- `manifest.json` with name, version, dependencies, scripts
+- Source files organized by destination path
 
 ---
 
 ## Performance Considerations
 
-1. **Lazy Template Loading** — Templates loaded on-demand, not all upfront
-2. **Parallel Dependency Resolution** — Multiple sources aggregated concurrently
-3. **Streaming File Writes** — Files written in batches, not one-by-one
+1. **Lazy Template Loading** — Templates loaded on-demand based on config
+2. **Map-Based File Aggregation** — Efficient file merging with Map structures
+3. **Binary File Markers** — Binary files marked for copy, not loaded into memory
 4. **Version Registry Lookup** — O(1) version lookups via object keys
+5. **Atomic File Writes** — Directory creation with recursive option
 
 ---
 
 ## Error Handling Strategy
 
-1. **Validation Errors** — Caught at config layer with Zod
-2. **File System Errors** — Caught at assembler layer
-3. **Dependency Conflicts** — Reported but don't block generation
-4. **User Cancellation** — Graceful exit handling
+1. **Validation Errors** — Caught at config layer with Zod, clear error messages
+2. **File System Errors** — Caught at assembler layer, reported in result
+3. **Dependency Conflicts** — Reported as warnings, don't block generation
+4. **User Cancellation** — Graceful exit handling (Ctrl+C)
+5. **Plugin Failures** — Logged as warnings, don't block generation
 
 ---
 
 ## Future Enhancements
 
-- [ ] Plugin system implementation
-- [ ] Custom template support
+- [ ] Custom template support from npm/git
 - [ ] Monorepo scaffolding
 - [ ] Component generation commands
 - [ ] Project upgrade utilities
-- [ ] Integration tests with real file output
-- [ ] Performance profiling
+- [ ] Storybook template
 - [ ] Telemetry/analytics (opt-in)
