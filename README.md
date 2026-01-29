@@ -4,7 +4,7 @@ Production-ready React scaffolding CLI with first-class testing, flexible runtim
 
 ## Requirements
 
-- Node.js **>= 18**
+- Node.js **>= 20.9.0**
 
 ## Quick start
 
@@ -27,14 +27,14 @@ When you run `create-react-forge`, it will:
 
 - Ask a few questions (runtime, language, styling, testing, etc.)
 - Generate a new project directory (the directory **must not already exist**)
-- Optionally initialize a git repo (depending on your answers)
-- Print the “next steps” commands
+- Optionally initialize a git repository
+- Print the "next steps" commands
 
-Note: it **does not automatically install dependencies** — you’ll run your package manager install after generation.
+Note: it **does not automatically install dependencies** — you'll run your package manager install after generation.
 
-## Interactive prompts (current)
+## Interactive prompts
 
-The CLI is currently **prompt-driven**. You’ll choose:
+The CLI is **prompt-driven**. You'll choose:
 
 - **Project name** (lowercase letters/numbers/hyphens)
 - **Project directory**
@@ -48,7 +48,6 @@ The CLI is currently **prompt-driven**. You’ll choose:
 - **Data fetching**: include TanStack Query
 - **Package manager**: npm / yarn / pnpm
 - **Git init**: yes/no
-- **Prettier**: yes/no
 
 ## What you get
 
@@ -59,17 +58,21 @@ my-app/
 ├── src/
 │   ├── app/              # App setup (providers, router)
 │   ├── components/       # Shared UI components
+│   │   ├── ui/           # Base UI primitives
+│   │   └── errors/       # Error boundaries & fallbacks
 │   ├── features/         # Feature-based modules
 │   ├── hooks/            # Custom hooks
 │   ├── lib/              # Utilities, API client
 │   ├── stores/           # State management (if selected)
+│   ├── styles/           # Global styles
 │   ├── testing/          # Test utilities, mocks (if selected)
 │   └── types/            # Shared types
 ├── tests/                # E2E tests (if selected)
+├── ARCHITECTURE.md       # Auto-generated architecture docs
 └── [config files]
 ```
 
-## Configuration options (summary)
+## Configuration options
 
 | Category | Choices |
 |---|---|
@@ -82,10 +85,25 @@ my-app/
 | **E2E runner** | `playwright`, `cypress` |
 | **Data fetching** | TanStack Query on/off |
 | **Package manager** | `npm`, `yarn`, `pnpm` |
-| **Formatting** | Prettier on/off |
 | **Git** | init on/off |
 
+## Dependency versions
+
+The CLI uses pinned, tested versions for all dependencies:
+
+| Package | Version |
+|---|---|
+| React | ^19.0.0 |
+| Vite | ^6.0.7 |
+| Next.js | ^16.1.6 |
+| Tailwind CSS | ^4.0.0 |
+| TanStack Query | ^5.62.10 |
+| Vitest | ^2.1.8 |
+| Playwright | ^1.49.1 |
+| TypeScript | ^5.7.2 |
+
 ## Screenshot
+
 <img width="709" height="1047" alt="image" src="https://github.com/user-attachments/assets/dc8956a9-473b-4001-8c2d-0b3b54f29583" />
 
 ## Next steps (after generation)
@@ -96,9 +114,9 @@ npm install
 npm run dev
 ```
 
-## Advanced: config schema & templates API
+## Advanced: API exports
 
-This package exposes a couple of **advanced** entrypoints intended for tooling:
+This package exposes advanced entrypoints for tooling integration:
 
 ### Config schema (Zod)
 
@@ -114,24 +132,30 @@ const parsed = ProjectConfigSchema.parse(DEFAULT_CONFIG);
 import { TemplateRegistry } from 'create-react-forge/templates';
 
 const registry = new TemplateRegistry();
-// registry.loadTemplatesForConfig(...) etc.
+const templates = registry.loadTemplatesForConfig({
+  runtime: 'vite',
+  styling: { solution: 'tailwind' },
+  stateManagement: 'zustand',
+  testing: { enabled: true, unit: { runner: 'vitest' }, e2e: { enabled: true, runner: 'playwright' } },
+  dataFetching: { enabled: true },
+});
 ```
 
 ## Troubleshooting
 
-- **“Directory already exists”**: pick a new project directory (or delete the existing folder).
-- **Node version issues**: ensure `node -v` is **18+**.
+- **"Directory already exists"**: pick a new project directory (or delete the existing folder).
+- **Node version issues**: ensure `node -v` is **20.9.0+**.
 - **Install step**: dependencies are not installed automatically — run your package manager install in the generated folder.
 
 ## Architecture & development
 
-See [ARCHITECTURE.md](https://github.com/chiragmak10/react-setup/blob/master/ARCHITECTURE.md) for internal design details.
+See [ARCHITECTURE.md](./ARCHITECTURE.md) for internal design details.
 
 ```bash
 npm install
-npm run dev
-npm run test
-npm run build
+npm run dev       # Run CLI in development
+npm run test      # Run tests
+npm run build     # Build to dist/
 ```
 
 ## License
