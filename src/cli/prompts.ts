@@ -1,7 +1,7 @@
 import {
-    confirm,
-    input,
-    select
+  confirm,
+  input,
+  select
 } from '@inquirer/prompts';
 import { E2E_RUNNER_DESCRIPTIONS, RUNTIME_DESCRIPTIONS, STATE_DESCRIPTIONS, STYLING_DESCRIPTIONS, TEST_RUNNER_DESCRIPTIONS } from '../config/defaults.js';
 
@@ -63,9 +63,7 @@ export async function promptForProjectDetails(
     message: 'Styling solution:',
     choices: [
       { name: STYLING_DESCRIPTIONS.tailwind, value: 'tailwind' },
-      { name: STYLING_DESCRIPTIONS.css, value: 'css' },
-      { name: STYLING_DESCRIPTIONS['styled-components'], value: 'styled-components' },
-      { name: STYLING_DESCRIPTIONS['css-modules'], value: 'css-modules' },
+      { name: 'None - Plain CSS', value: 'css' },
     ],
   })) as string;
 
