@@ -1,3 +1,7 @@
+[![CodeQL Security Analysis](https://github.com/chiragmak10/create-react-forge/actions/workflows/codeql.yml/badge.svg)](https://github.com/chiragmak10/create-react-forge/actions/workflows/codeql.yml) 
+[![Release](https://github.com/chiragmak10/create-react-forge/actions/workflows/release.yml/badge.svg)](https://github.com/chiragmak10/create-react-forge/actions/workflows/release.yml)
+[![Dependency Review](https://github.com/chiragmak10/create-react-forge/actions/workflows/dependency-review.yml/badge.svg)](https://github.com/chiragmak10/create-react-forge/actions/workflows/dependency-review.yml)
+[![CI](https://github.com/chiragmak10/create-react-forge/actions/workflows/ci.yml/badge.svg)](https://github.com/chiragmak10/create-react-forge/actions/workflows/ci.yml)
 # create-react-forge
 
 Production-ready React scaffolding CLI with first-class testing, flexible runtimes (Vite/Next.js), and a composable template system inspired by [bulletproof-react](https://github.com/alan2207/bulletproof-react).
