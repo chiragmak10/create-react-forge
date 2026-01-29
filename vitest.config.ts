@@ -12,7 +12,8 @@ export default defineConfig({
     ],
     coverage: {
       provider: 'v8',
-      reporter: ['text', 'json', 'html'],
+      // `json-summary` is used by CI to generate a readable coverage table in the job summary.
+      reporter: ['text', 'text-summary', 'json-summary', 'html', 'lcov'],
       exclude: ['node_modules/', 'dist/', 'src/templates/overlays/'],
     },
   },

@@ -1,5 +1,5 @@
 import type { ProjectConfig } from '../config/schema.js';
-import type { ReactSetupPlugin, PluginContext } from './types.js';
+import type { PluginContext, ReactSetupPlugin } from './types.js';
 
 export class PluginManager {
   private plugins: ReactSetupPlugin[] = [];
@@ -9,16 +9,14 @@ export class PluginManager {
   }
 
   async runHook(
-    hookName: keyof NonNullable<ReactSetupPlugin['hooks']>,
+    hookName: Exclude<keyof NonNullable<ReactSetupPlugin['hooks']>, 'beforeCreate'>,
     context: PluginContext
   ): Promise<void> {
     for (const plugin of this.plugins) {
       const hook = plugin.hooks?.[hookName];
       if (hook) {
         try {
-          // Type assertion needed because TypeScript doesn't correlate the hookName with the specific hook signature
-          // efficiently in this generic context without more complex types
-          await (hook as Function)(context);
+          await hook(context);
         } catch (error) {
           console.warn(`Plugin ${plugin.name} failed at hook ${hookName}:`, error);
         }
