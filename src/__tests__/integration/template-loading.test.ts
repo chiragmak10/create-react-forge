@@ -47,7 +47,7 @@ describe('TemplateRegistry', () => {
       expect(template.manifest.devDependencies).toHaveProperty('tailwindcss');
     });
 
-    it.skip('should load css-modules styling template', () => {
+    it('should load css-modules styling template', () => {
       const template = registry.loadAndRegister('styling/css-modules');
       
       expect(template).toBeDefined();
@@ -68,6 +68,22 @@ describe('TemplateRegistry', () => {
       expect(template).toBeDefined();
       expect(template.manifest).toBeDefined();
       expect(template.manifest.dependencies).toHaveProperty('@reduxjs/toolkit');
+    });
+
+    it('should load jotai state template', () => {
+      const template = registry.loadAndRegister('state/jotai');
+      
+      expect(template).toBeDefined();
+      expect(template.manifest).toBeDefined();
+      expect(template.manifest.dependencies).toHaveProperty('jotai');
+    });
+
+    it('should load styled-components styling template', () => {
+      const template = registry.loadAndRegister('styling/styled-components');
+      
+      expect(template).toBeDefined();
+      expect(template.manifest).toBeDefined();
+      expect(template.manifest.dependencies).toHaveProperty('styled-components');
     });
 
     it('should load vitest testing template', () => {
@@ -149,6 +165,32 @@ describe('TemplateRegistry', () => {
 
       expect(templates.some(t => t.path === 'runtime/nextjs')).toBe(true);
       expect(templates.some(t => t.path === 'state/redux')).toBe(true);
+    });
+
+    it('should load templates for Vite + Jotai config', () => {
+      const templates = registry.loadTemplatesForConfig({
+        runtime: 'vite',
+        styling: { solution: 'styled-components' },
+        stateManagement: 'jotai',
+        testing: { enabled: false, e2e: { enabled: false, runner: 'none' } },
+        dataFetching: { enabled: false },
+      });
+
+      expect(templates.some(t => t.path === 'runtime/vite')).toBe(true);
+      expect(templates.some(t => t.path === 'state/jotai')).toBe(true);
+      expect(templates.some(t => t.path === 'styling/styled-components')).toBe(true);
+    });
+
+    it('should load templates for Vite + CSS Modules config', () => {
+      const templates = registry.loadTemplatesForConfig({
+        runtime: 'vite',
+        styling: { solution: 'css-modules' },
+        stateManagement: 'none',
+        testing: { enabled: false, e2e: { enabled: false, runner: 'none' } },
+        dataFetching: { enabled: false },
+      });
+
+      expect(templates.some(t => t.path === 'styling/css-modules')).toBe(true);
     });
 
     it('should load testing templates when testing is enabled', () => {
@@ -279,9 +321,11 @@ describe('TemplateRegistry', () => {
         'runtime/vite',
         'runtime/nextjs',
         'styling/tailwind',
-        // 'styling/css-modules', // Skipped - not available in CLI
+        'styling/css-modules',
+        'styling/styled-components',
         'state/zustand',
         'state/redux',
+        'state/jotai',
         'testing/vitest',
         'testing/jest',
         'testing/playwright',
@@ -301,6 +345,8 @@ describe('TemplateRegistry', () => {
       const templatePaths = [
         'state/zustand',
         'state/redux',
+        'state/jotai',
+        'styling/styled-components',
         'testing/vitest',
         'testing/playwright',
         'features/tanstack-query',

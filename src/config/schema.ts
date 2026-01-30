@@ -14,7 +14,7 @@ export type Language = z.infer<typeof LanguageSchema>;
 export const StylingSchema = z.enum(['css', 'tailwind', 'styled-components', 'css-modules']);
 export type Styling = z.infer<typeof StylingSchema>;
 
-export const StateManagementSchema = z.enum(['none', 'redux', 'zustand']);
+export const StateManagementSchema = z.enum(['none', 'redux', 'zustand', 'jotai']);
 export type StateManagement = z.infer<typeof StateManagementSchema>;
 
 export const PackageManagerSchema = z.enum(['npm', 'yarn', 'pnpm']);
