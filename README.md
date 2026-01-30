@@ -44,7 +44,7 @@ The CLI is **prompt-driven**. You'll choose:
 - **Project directory**
 - **Runtime**: Vite or Next.js
 - **Language**: TypeScript or JavaScript
-- **Styling**: Tailwind, Styled Components, CSS Modules, or Plain CSS (Vite offers all 4; Next.js auto-selects Tailwind)
+- **Styling**: Vite uses Styled Components (auto-selected); Next.js offers Tailwind CSS or None (plain CSS)
 - **State**: none, Zustand, Jotai, or Redux Toolkit
 - **Testing**: full (unit+component+E2E), unit+component only, or none
 - **Unit runner**: Vitest or Jest (if testing enabled)
@@ -83,7 +83,7 @@ my-app/
 |---|---|
 | **Runtime** | `vite`, `nextjs` |
 | **Language** | `typescript`, `javascript` |
-| **Styling** | `tailwind`, `styled-components`, `css-modules`, `css` (Vite: all 4, Next.js: tailwind only) |
+| **Styling** | Vite: `styled-components` (auto), Next.js: `tailwind` or `none` |
 | **State** | `none`, `zustand`, `jotai`, `redux` |
 | **Testing** | `full`, `unit-component`, `none` |
 | **Unit runner** | `vitest`, `jest` |
@@ -139,7 +139,7 @@ import { TemplateRegistry } from 'create-react-forge/templates';
 const registry = new TemplateRegistry();
 const templates = registry.loadTemplatesForConfig({
   runtime: 'vite',
-  styling: { solution: 'tailwind' },
+  styling: { solution: 'styled-components' },
   stateManagement: 'zustand',
   testing: { enabled: true, unit: { runner: 'vitest' }, e2e: { enabled: true, runner: 'playwright' } },
   dataFetching: { enabled: true },

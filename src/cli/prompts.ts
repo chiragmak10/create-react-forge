@@ -60,23 +60,22 @@ export async function promptForProjectDetails(
   })) as 'javascript' | 'typescript';
 
   // Styling options are conditional based on runtime
-  // Vite: 4 options (tailwind, styled-components, css-modules, css)
-  // Next.js: auto-select tailwind (best practice for App Router)
+  // Vite: auto-select styled-components
+  // Next.js: prompt between tailwind and none
   let styling: string;
   if (runtime === 'vite') {
+    // Auto-select styled-components for Vite
+    styling = 'styled-components';
+    console.log('  ✓ Styling: Styled Components (default for Vite)');
+  } else {
+    // Next.js - prompt between Tailwind and None
     styling = (await select({
       message: 'Styling solution:',
       choices: [
         { name: STYLING_DESCRIPTIONS.tailwind, value: 'tailwind' },
-        { name: STYLING_DESCRIPTIONS['styled-components'], value: 'styled-components' },
-        { name: STYLING_DESCRIPTIONS['css-modules'], value: 'css-modules' },
-        { name: STYLING_DESCRIPTIONS.css, value: 'css' },
+        { name: STYLING_DESCRIPTIONS.none, value: 'none' },
       ],
     })) as string;
-  } else {
-    // Next.js - auto-select tailwind
-    styling = 'tailwind';
-    console.log('  ✓ Styling: Tailwind CSS (recommended for Next.js)');
   }
 
   const stateManagement = (await select({

@@ -1,51 +1,77 @@
 import { forwardRef } from 'react';
-import { cn } from '@/lib/utils';
+import styled from 'styled-components';
 
 export type InputProps = React.InputHTMLAttributes<HTMLInputElement> & {
   label?: string;
   error?: string;
 };
 
+const InputWrapper = styled.div`
+  width: 100%;
+`;
+
+const Label = styled.label`
+  display: block;
+  margin-bottom: 0.25rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+`;
+
+const StyledInput = styled.input<{ $hasError?: boolean }>`
+  display: block;
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  font-size: 1rem;
+  color: #111827;
+  background-color: white;
+  border: 1px solid ${(props) => (props.$hasError ? '#fca5a5' : '#d1d5db')};
+  border-radius: 0.375rem;
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  transition: border-color 0.2s, box-shadow 0.2s;
+
+  &::placeholder {
+    color: #9ca3af;
+  }
+
+  &:focus {
+    outline: none;
+    border-color: ${(props) => (props.$hasError ? '#ef4444' : '#4f46e5')};
+    box-shadow: 0 0 0 2px ${(props) => (props.$hasError ? '#fecaca' : '#c7d2fe')};
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    background-color: #f9fafb;
+    color: #6b7280;
+  }
+`;
+
+const ErrorMessage = styled.p`
+  margin-top: 0.25rem;
+  font-size: 0.875rem;
+  color: #dc2626;
+`;
+
 export const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ className, label, error, id, ...props }, ref) => {
+  ({ label, error, id, ...props }, ref) => {
     const inputId = id || props.name;
 
     return (
-      <div className="w-full">
-        {label && (
-          <label
-            htmlFor={inputId}
-            className="mb-1 block text-sm font-medium text-gray-700"
-          >
-            {label}
-          </label>
-        )}
-        <input
+      <InputWrapper>
+        {label && <Label htmlFor={inputId}>{label}</Label>}
+        <StyledInput
           ref={ref}
           id={inputId}
-          className={cn(
-            'block w-full rounded-md border-0 px-3 py-2 text-gray-900 shadow-sm ring-1 ring-inset',
-            'placeholder:text-gray-400',
-            'focus:ring-2 focus:ring-inset focus:ring-indigo-600',
-            'disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500',
-            error
-              ? 'ring-red-300 focus:ring-red-500'
-              : 'ring-gray-300',
-            className
-          )}
+          $hasError={!!error}
           aria-invalid={error ? 'true' : 'false'}
           aria-describedby={error ? `${inputId}-error` : undefined}
           {...props}
         />
-        {error && (
-          <p id={`${inputId}-error`} className="mt-1 text-sm text-red-600">
-            {error}
-          </p>
-        )}
-      </div>
+        {error && <ErrorMessage id={`${inputId}-error`}>{error}</ErrorMessage>}
+      </InputWrapper>
     );
   }
 );
 
 Input.displayName = 'Input';
-

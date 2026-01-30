@@ -239,13 +239,14 @@ export class TemplateRegistry {
     templates.push(this.loadAndRegister(`runtime/${config.runtime}`));
 
     // Load styling template (pass runtime for runtime-specific overlays)
+    // Vite: always styled-components
+    // Next.js: tailwind or none (none = no styling overlay, use runtime defaults)
     if (config.styling.solution === 'tailwind') {
       templates.push(this.loadAndRegister('styling/tailwind', config.runtime));
-    } else if (config.styling.solution === 'css-modules') {
-      templates.push(this.loadAndRegister('styling/css-modules', config.runtime));
     } else if (config.styling.solution === 'styled-components') {
       templates.push(this.loadAndRegister('styling/styled-components', config.runtime));
     }
+    // 'none' - don't load any styling overlay, use runtime defaults
 
     // Load state management template
     if (config.stateManagement && config.stateManagement !== 'none') {

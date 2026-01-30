@@ -15,9 +15,9 @@ export function getTemplatePathForRuntime(runtime: 'vite' | 'nextjs'): string {
  * Get template path for styling solution
  */
 export function getTemplatePathForStyling(styling: string): string {
-  if (styling === 'css') return '';
+  if (styling === 'none') return '';
   if (styling === 'tailwind') return 'styling/tailwind';
-  if (styling === 'css-modules') return 'styling/css-modules';
+  if (styling === 'styled-components') return 'styling/styled-components';
   return `styling/${styling}`;
 }
 
@@ -102,7 +102,7 @@ export function getApplicableTemplates(config: {
 }): string[] {
   const templates = ['base', getTemplatePathForRuntime(config.runtime as 'vite' | 'nextjs')];
 
-  if (config.styling && config.styling !== 'css') {
+  if (config.styling && config.styling !== 'none') {
     const stylingPath = getTemplatePathForStyling(config.styling);
     if (stylingPath) templates.push(stylingPath);
   }

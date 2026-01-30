@@ -1,5 +1,5 @@
 import { forwardRef } from 'react';
-import { cn } from '@/lib/utils';
+import styled, { css } from 'styled-components';
 
 export type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger';
@@ -7,29 +7,110 @@ export type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   isLoading?: boolean;
 };
 
-const variants = {
-  primary:
-    'bg-indigo-600 text-white hover:bg-indigo-500 focus-visible:outline-indigo-600',
-  secondary:
-    'bg-gray-100 text-gray-900 hover:bg-gray-200 focus-visible:outline-gray-600',
-  outline:
-    'border border-gray-300 bg-transparent text-gray-700 hover:bg-gray-50 focus-visible:outline-gray-600',
-  ghost:
-    'bg-transparent text-gray-700 hover:bg-gray-100 focus-visible:outline-gray-600',
-  danger:
-    'bg-red-600 text-white hover:bg-red-500 focus-visible:outline-red-600',
+const variantStyles = {
+  primary: css`
+    background-color: #4f46e5;
+    color: white;
+    &:hover:not(:disabled) {
+      background-color: #6366f1;
+    }
+  `,
+  secondary: css`
+    background-color: #f3f4f6;
+    color: #111827;
+    &:hover:not(:disabled) {
+      background-color: #e5e7eb;
+    }
+  `,
+  outline: css`
+    background-color: transparent;
+    color: #374151;
+    border: 1px solid #d1d5db;
+    &:hover:not(:disabled) {
+      background-color: #f9fafb;
+    }
+  `,
+  ghost: css`
+    background-color: transparent;
+    color: #374151;
+    &:hover:not(:disabled) {
+      background-color: #f3f4f6;
+    }
+  `,
+  danger: css`
+    background-color: #dc2626;
+    color: white;
+    &:hover:not(:disabled) {
+      background-color: #ef4444;
+    }
+  `,
 };
 
-const sizes = {
-  sm: 'px-2.5 py-1.5 text-xs',
-  md: 'px-3.5 py-2.5 text-sm',
-  lg: 'px-4 py-3 text-base',
+const sizeStyles = {
+  sm: css`
+    padding: 0.375rem 0.625rem;
+    font-size: 0.75rem;
+  `,
+  md: css`
+    padding: 0.625rem 0.875rem;
+    font-size: 0.875rem;
+  `,
+  lg: css`
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+  `,
 };
+
+const StyledButton = styled.button<{
+  $variant: ButtonProps['variant'];
+  $size: ButtonProps['size'];
+}>`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.375rem;
+  font-weight: 600;
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  transition: background-color 0.2s, color 0.2s;
+  border: none;
+  cursor: pointer;
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+
+  &:focus-visible {
+    outline: 2px solid #4f46e5;
+    outline-offset: 2px;
+  }
+
+  ${(props) => variantStyles[props.$variant || 'primary']}
+  ${(props) => sizeStyles[props.$size || 'md']}
+`;
+
+const LoadingSpinner = styled.span`
+  margin-right: 0.5rem;
+  width: 1rem;
+  height: 1rem;
+  border: 2px solid currentColor;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+
+  @keyframes spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+`;
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   (
     {
-      className,
       variant = 'primary',
       size = 'md',
       isLoading = false,
@@ -40,27 +121,18 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     ref
   ) => {
     return (
-      <button
+      <StyledButton
         ref={ref}
-        className={cn(
-          'inline-flex items-center justify-center rounded-md font-semibold shadow-sm transition-colors',
-          'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2',
-          'disabled:cursor-not-allowed disabled:opacity-50',
-          variants[variant],
-          sizes[size],
-          className
-        )}
+        $variant={variant}
+        $size={size}
         disabled={disabled || isLoading}
         {...props}
       >
-        {isLoading && (
-          <span className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
-        )}
+        {isLoading && <LoadingSpinner />}
         {children}
-      </button>
+      </StyledButton>
     );
   }
 );
 
 Button.displayName = 'Button';
-

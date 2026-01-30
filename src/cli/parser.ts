@@ -36,10 +36,9 @@ export function createCommand(): Command {
     )
     .addOption(
       new Option('--styling <styling>', 'Styling solution').choices([
-        'css',
+        'none',
         'tailwind',
         'styled-components',
-        'css-modules',
       ])
     )
     .addOption(

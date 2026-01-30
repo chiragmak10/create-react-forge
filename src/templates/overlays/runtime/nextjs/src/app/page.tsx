@@ -1,25 +1,68 @@
 import Link from 'next/link';
 
+const styles = {
+  container: {
+    display: 'flex',
+    minHeight: '100vh',
+    flexDirection: 'column' as const,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  content: {
+    textAlign: 'center' as const,
+  },
+  title: {
+    fontSize: '2.25rem',
+    fontWeight: 700,
+    letterSpacing: '-0.025em',
+  },
+  description: {
+    marginTop: '1.5rem',
+    fontSize: '1.125rem',
+    lineHeight: '2rem',
+    color: '#4b5563',
+  },
+  actions: {
+    marginTop: '2.5rem',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: '1.5rem',
+  },
+  primaryLink: {
+    padding: '0.625rem 0.875rem',
+    fontSize: '0.875rem',
+    fontWeight: 600,
+    color: 'white',
+    backgroundColor: '#4f46e5',
+    borderRadius: '0.375rem',
+    textDecoration: 'none',
+    boxShadow: '0 1px 2px 0 rgb(0 0 0 / 0.05)',
+  },
+  secondaryLink: {
+    fontSize: '0.875rem',
+    fontWeight: 600,
+    lineHeight: '1.5rem',
+    color: 'inherit',
+    textDecoration: 'none',
+  },
+};
+
 export default function HomePage() {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold tracking-tight sm:text-6xl">
-          Welcome to Your App
-        </h1>
-        <p className="mt-6 text-lg leading-8 text-gray-600">
+    <div style={styles.container}>
+      <div style={styles.content}>
+        <h1 style={styles.title}>Welcome to Your App</h1>
+        <p style={styles.description}>
           A production-ready Next.js application scaffolded with create-react-forge.
         </p>
-        <div className="mt-10 flex items-center justify-center gap-x-6">
-          <Link
-            href="/dashboard"
-            className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-          >
+        <div style={styles.actions}>
+          <Link href="/dashboard" style={styles.primaryLink}>
             Get started
           </Link>
           <a
             href="https://github.com/alan2207/bulletproof-react"
-            className="text-sm font-semibold leading-6"
+            style={styles.secondaryLink}
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -30,4 +73,3 @@ export default function HomePage() {
     </div>
   );
 }
-

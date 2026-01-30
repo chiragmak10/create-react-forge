@@ -1,4 +1,4 @@
-import { describe, expect, it, beforeEach } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { TemplateRegistry } from '../templates/registry.js';
 
 /**
@@ -12,108 +12,6 @@ describe('Styling Alignment', () => {
 
   beforeEach(() => {
     registry = new TemplateRegistry();
-  });
-
-  describe('CSS Modules Overlay', () => {
-    it('should have Button.tsx that imports Button.module.css', () => {
-      const template = registry.loadAndRegister('styling/css-modules');
-      const buttonTsx = template.files.get('src/components/ui/Button.tsx');
-
-      expect(buttonTsx).toBeDefined();
-      expect(buttonTsx).toContain("import styles from './Button.module.css'");
-      expect(buttonTsx).toContain('styles.button');
-    });
-
-    it('should have Input.tsx that imports Input.module.css', () => {
-      const template = registry.loadAndRegister('styling/css-modules');
-      const inputTsx = template.files.get('src/components/ui/Input.tsx');
-
-      expect(inputTsx).toBeDefined();
-      expect(inputTsx).toContain("import styles from './Input.module.css'");
-      expect(inputTsx).toContain('styles.input');
-    });
-
-    it('should have index.ts that exports both Button and Input', () => {
-      const template = registry.loadAndRegister('styling/css-modules');
-      const indexTs = template.files.get('src/components/ui/index.ts');
-
-      expect(indexTs).toBeDefined();
-      expect(indexTs).toContain("export { Button");
-      expect(indexTs).toContain("export { Input");
-    });
-
-    it('should have Button.module.css with required classes', () => {
-      const template = registry.loadAndRegister('styling/css-modules');
-      const buttonCss = template.files.get('src/components/ui/Button.module.css');
-
-      expect(buttonCss).toBeDefined();
-      expect(buttonCss).toContain('.button');
-      expect(buttonCss).toContain('.primary');
-      expect(buttonCss).toContain('.secondary');
-      expect(buttonCss).toContain('.sm');
-      expect(buttonCss).toContain('.md');
-      expect(buttonCss).toContain('.lg');
-    });
-
-    it('should have Input.module.css with required classes', () => {
-      const template = registry.loadAndRegister('styling/css-modules');
-      const inputCss = template.files.get('src/components/ui/Input.module.css');
-
-      expect(inputCss).toBeDefined();
-      expect(inputCss).toContain('.input');
-      expect(inputCss).toContain('.label');
-      expect(inputCss).toContain('.error');
-    });
-
-    it('should have globals.css with CSS custom properties', () => {
-      const template = registry.loadAndRegister('styling/css-modules');
-      const globalsCss = template.files.get('src/styles/globals.css');
-
-      expect(globalsCss).toBeDefined();
-      expect(globalsCss).toContain(':root');
-      expect(globalsCss).toContain('--color-primary');
-      expect(globalsCss).toContain('--spacing-');
-      expect(globalsCss).toContain('--radius-');
-    });
-
-    it('should properly merge with Vite runtime', () => {
-      registry.loadTemplatesForConfig({
-        runtime: 'vite',
-        styling: { solution: 'css-modules' },
-        stateManagement: 'none',
-        testing: { enabled: false, e2e: { enabled: false, runner: 'none' } },
-        dataFetching: { enabled: false },
-      });
-
-      const files = registry.getMergedFiles();
-
-      // CSS Modules Button should override base Button
-      const buttonTsx = files.get('src/components/ui/Button.tsx');
-      expect(buttonTsx).toContain("import styles from './Button.module.css'");
-
-      // Should have CSS module files
-      expect(files.has('src/components/ui/Button.module.css')).toBe(true);
-      expect(files.has('src/components/ui/Input.module.css')).toBe(true);
-    });
-
-    it('should properly merge with Next.js runtime', () => {
-      registry.loadTemplatesForConfig({
-        runtime: 'nextjs',
-        styling: { solution: 'css-modules' },
-        stateManagement: 'none',
-        testing: { enabled: false, e2e: { enabled: false, runner: 'none' } },
-        dataFetching: { enabled: false },
-      });
-
-      const files = registry.getMergedFiles();
-
-      // CSS Modules Button should override base Button
-      const buttonTsx = files.get('src/components/ui/Button.tsx');
-      expect(buttonTsx).toContain("import styles from './Button.module.css'");
-
-      // Should have CSS module files
-      expect(files.has('src/components/ui/Button.module.css')).toBe(true);
-    });
   });
 
   describe('Styled Components Overlay', () => {
@@ -257,9 +155,9 @@ describe('Styling Alignment', () => {
       expect(postcssConfig).toBeDefined();
     });
 
-    it('should properly merge with Vite runtime', () => {
+    it('should properly merge with Next.js runtime', () => {
       registry.loadTemplatesForConfig({
-        runtime: 'vite',
+        runtime: 'nextjs',
         styling: { solution: 'tailwind' },
         stateManagement: 'none',
         testing: { enabled: false, e2e: { enabled: false, runner: 'none' } },
@@ -272,25 +170,41 @@ describe('Styling Alignment', () => {
       expect(files.has('tailwind.config.js')).toBe(true);
       expect(files.has('postcss.config.js')).toBe(true);
 
-      // Base Button should still use cn/clsx utility (Tailwind compatible)
-      const buttonTsx = files.get('src/components/ui/Button.tsx');
-      expect(buttonTsx).toContain('cn(');
+      // Should have Tailwind-specific Next.js pages
+      const pageTsx = files.get('src/app/page.tsx');
+      expect(pageTsx).toContain('className=');
+    });
+  });
+
+  describe('None Styling Option (Next.js)', () => {
+    it('should work without any styling overlay', () => {
+      registry.loadTemplatesForConfig({
+        runtime: 'nextjs',
+        styling: { solution: 'none' },
+        stateManagement: 'none',
+        testing: { enabled: false, e2e: { enabled: false, runner: 'none' } },
+        dataFetching: { enabled: false },
+      });
+
+      const files = registry.getMergedFiles();
+
+      // Should have base runtime files
+      expect(files.has('src/app/page.tsx')).toBe(true);
+      expect(files.has('src/app/layout.tsx')).toBe(true);
+      expect(files.has('src/styles/globals.css')).toBe(true);
+
+      // Should NOT have Tailwind config files
+      expect(files.has('tailwind.config.js')).toBe(false);
+      expect(files.has('postcss.config.js')).toBe(false);
+
+      // Page should use inline styles (not Tailwind classes)
+      const pageTsx = files.get('src/app/page.tsx');
+      expect(pageTsx).toContain('style=');
     });
   });
 
   describe('Cross-Styling Compatibility', () => {
-    it('CSS Modules should not have Tailwind-specific utilities', () => {
-      const template = registry.loadAndRegister('styling/css-modules');
-      const buttonTsx = template.files.get('src/components/ui/Button.tsx');
-
-      expect(buttonTsx).toBeDefined();
-      expect(buttonTsx).not.toContain('cn(');
-      expect(buttonTsx).not.toContain('clsx');
-      expect(buttonTsx).toContain('styles.');
-    });
-
-    it('Styled Components should not have CSS file imports', () => {
-      // Test Vite files
+    it('Styled Components should not have CSS file imports in Vite files', () => {
       const viteTemplate = registry.loadAndRegister('styling/styled-components', 'vite');
       const providerTsx = viteTemplate.files.get('src/app/provider.tsx');
       const mainTsx = viteTemplate.files.get('src/main.tsx');
@@ -302,4 +216,3 @@ describe('Styling Alignment', () => {
     });
   });
 });
-

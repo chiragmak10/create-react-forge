@@ -1,23 +1,43 @@
+import styled, { keyframes } from 'styled-components';
+
 type LoadingSpinnerProps = {
   size?: 'sm' | 'md' | 'lg';
-  className?: string;
 };
+
+const spin = keyframes`
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+`;
 
 const sizes = {
-  sm: 'h-4 w-4',
-  md: 'h-8 w-8',
-  lg: 'h-16 w-16',
+  sm: '1rem',
+  md: '2rem',
+  lg: '4rem',
 };
 
-export function LoadingSpinner({ size = 'md', className = '' }: LoadingSpinnerProps) {
+const SpinnerContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const Spinner = styled.div<{ $size: 'sm' | 'md' | 'lg' }>`
+  width: ${(props) => sizes[props.$size]};
+  height: ${(props) => sizes[props.$size]};
+  border: 2px solid #d1d5db;
+  border-top-color: #4f46e5;
+  border-radius: 50%;
+  animation: ${spin} 1s linear infinite;
+`;
+
+export function LoadingSpinner({ size = 'md' }: LoadingSpinnerProps) {
   return (
-    <div className="flex items-center justify-center">
-      <div
-        className={`animate-spin rounded-full border-2 border-gray-300 border-t-indigo-600 ${sizes[size]} ${className}`}
-        role="status"
-        aria-label="Loading"
-      />
-    </div>
+    <SpinnerContainer>
+      <Spinner $size={size} role="status" aria-label="Loading" />
+    </SpinnerContainer>
   );
 }
-

@@ -1,12 +1,3 @@
-import { clsx, type ClassValue } from 'clsx';
-
-/**
- * Utility function for constructing className strings conditionally
- */
-export function cn(...inputs: ClassValue[]) {
-  return clsx(inputs);
-}
-
 /**
  * Format a date to a human-readable string
  */
@@ -31,4 +22,3 @@ export function sleep(ms: number): Promise<void> {
 export function generateId(): string {
   return Math.random().toString(36).substring(2, 9);
 }
-

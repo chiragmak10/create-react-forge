@@ -1,4 +1,4 @@
-import { describe, expect, it, beforeEach } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { TemplateRegistry } from '../../templates/registry.js';
 
 /**
@@ -45,13 +45,6 @@ describe('TemplateRegistry', () => {
       expect(template).toBeDefined();
       expect(template.manifest).toBeDefined();
       expect(template.manifest.devDependencies).toHaveProperty('tailwindcss');
-    });
-
-    it('should load css-modules styling template', () => {
-      const template = registry.loadAndRegister('styling/css-modules');
-      
-      expect(template).toBeDefined();
-      expect(template.manifest).toBeDefined();
     });
 
     it('should load zustand state template', () => {
@@ -124,10 +117,10 @@ describe('TemplateRegistry', () => {
   });
 
   describe('loadTemplatesForConfig', () => {
-    it('should load templates for minimal Vite config', () => {
+    it('should load templates for minimal Vite config with styled-components', () => {
       const templates = registry.loadTemplatesForConfig({
         runtime: 'vite',
-        styling: { solution: 'css' },
+        styling: { solution: 'styled-components' },
         stateManagement: 'none',
         testing: {
           enabled: false,
@@ -137,14 +130,15 @@ describe('TemplateRegistry', () => {
         dataFetching: { enabled: false },
       });
 
-      // Should have base and runtime
-      expect(templates.length).toBeGreaterThanOrEqual(2);
+      // Should have base, runtime, and styled-components
+      expect(templates.length).toBeGreaterThanOrEqual(3);
       expect(templates.some(t => t.name === 'base')).toBe(true);
+      expect(templates.some(t => t.path === 'styling/styled-components')).toBe(true);
     });
 
-    it('should load templates for Vite + Tailwind config', () => {
+    it('should load templates for Next.js + Tailwind config', () => {
       const templates = registry.loadTemplatesForConfig({
-        runtime: 'vite',
+        runtime: 'nextjs',
         styling: { solution: 'tailwind' },
         stateManagement: 'none',
         testing: { enabled: false, e2e: { enabled: false, runner: 'none' } },
@@ -154,10 +148,24 @@ describe('TemplateRegistry', () => {
       expect(templates.some(t => t.path === 'styling/tailwind')).toBe(true);
     });
 
+    it('should load templates for Next.js + None styling config', () => {
+      const templates = registry.loadTemplatesForConfig({
+        runtime: 'nextjs',
+        styling: { solution: 'none' },
+        stateManagement: 'none',
+        testing: { enabled: false, e2e: { enabled: false, runner: 'none' } },
+        dataFetching: { enabled: false },
+      });
+
+      // Should NOT load any styling template for 'none'
+      expect(templates.some(t => t.path === 'styling/tailwind')).toBe(false);
+      expect(templates.some(t => t.path === 'styling/styled-components')).toBe(false);
+    });
+
     it('should load templates for Next.js + Redux config', () => {
       const templates = registry.loadTemplatesForConfig({
         runtime: 'nextjs',
-        styling: { solution: 'css' },
+        styling: { solution: 'none' },
         stateManagement: 'redux',
         testing: { enabled: false, e2e: { enabled: false, runner: 'none' } },
         dataFetching: { enabled: false },
@@ -181,22 +189,10 @@ describe('TemplateRegistry', () => {
       expect(templates.some(t => t.path === 'styling/styled-components')).toBe(true);
     });
 
-    it('should load templates for Vite + CSS Modules config', () => {
-      const templates = registry.loadTemplatesForConfig({
-        runtime: 'vite',
-        styling: { solution: 'css-modules' },
-        stateManagement: 'none',
-        testing: { enabled: false, e2e: { enabled: false, runner: 'none' } },
-        dataFetching: { enabled: false },
-      });
-
-      expect(templates.some(t => t.path === 'styling/css-modules')).toBe(true);
-    });
-
     it('should load testing templates when testing is enabled', () => {
       const templates = registry.loadTemplatesForConfig({
         runtime: 'vite',
-        styling: { solution: 'css' },
+        styling: { solution: 'styled-components' },
         stateManagement: 'none',
         testing: {
           enabled: true,
@@ -213,7 +209,7 @@ describe('TemplateRegistry', () => {
     it('should load tanstack-query template when dataFetching enabled', () => {
       const templates = registry.loadTemplatesForConfig({
         runtime: 'vite',
-        styling: { solution: 'css' },
+        styling: { solution: 'styled-components' },
         stateManagement: 'none',
         testing: { enabled: false, e2e: { enabled: false, runner: 'none' } },
         dataFetching: { enabled: true },
@@ -226,7 +222,7 @@ describe('TemplateRegistry', () => {
   describe('Merged Dependencies', () => {
     it('should merge dependencies from multiple templates', () => {
       registry.loadTemplatesForConfig({
-        runtime: 'vite',
+        runtime: 'nextjs',
         styling: { solution: 'tailwind' },
         stateManagement: 'zustand',
         testing: {
@@ -250,7 +246,7 @@ describe('TemplateRegistry', () => {
     it('should include scripts from templates', () => {
       registry.loadTemplatesForConfig({
         runtime: 'vite',
-        styling: { solution: 'css' },
+        styling: { solution: 'styled-components' },
         stateManagement: 'none',
         testing: {
           enabled: true,
@@ -269,7 +265,7 @@ describe('TemplateRegistry', () => {
   describe('Merged Files', () => {
     it('should merge files from multiple templates', () => {
       registry.loadTemplatesForConfig({
-        runtime: 'vite',
+        runtime: 'nextjs',
         styling: { solution: 'tailwind' },
         stateManagement: 'zustand',
         testing: { enabled: false, e2e: { enabled: false, runner: 'none' } },
@@ -279,13 +275,6 @@ describe('TemplateRegistry', () => {
       const files = registry.getMergedFiles();
 
       expect(files.size).toBeGreaterThan(0);
-      
-      // Should have files from different templates merged
-      // Check for vite config file
-      const hasViteConfig = Array.from(files.keys()).some(
-        path => path.includes('vite.config')
-      );
-      expect(hasViteConfig).toBe(true);
       
       // Check for store files from zustand
       const hasStoreFiles = Array.from(files.keys()).some(
@@ -298,7 +287,7 @@ describe('TemplateRegistry', () => {
       // Load base first, then runtime
       registry.loadTemplatesForConfig({
         runtime: 'vite',
-        styling: { solution: 'css' },
+        styling: { solution: 'styled-components' },
         stateManagement: 'none',
         testing: { enabled: false, e2e: { enabled: false, runner: 'none' } },
         dataFetching: { enabled: false },
@@ -321,7 +310,6 @@ describe('TemplateRegistry', () => {
         'runtime/vite',
         'runtime/nextjs',
         'styling/tailwind',
-        'styling/css-modules',
         'styling/styled-components',
         'state/zustand',
         'state/redux',
@@ -371,4 +359,3 @@ describe('TemplateRegistry', () => {
     });
   });
 });
-

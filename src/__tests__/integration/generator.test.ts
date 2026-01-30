@@ -192,11 +192,11 @@ describe('ProjectGenerator Integration', () => {
       expect(devDeps).toHaveProperty('@playwright/test');
     });
 
-    it.skip('should generate Next.js + CSS Modules + Redux', async () => {
+    it.skip('should generate Next.js + None styling + Redux', async () => {
       const config = createBaseConfig({
         name: 'nextjs-redux',
         runtime: 'nextjs',
-        styling: { solution: 'css-modules' },
+        styling: { solution: 'none' },
         stateManagement: 'redux',
         testing: {
           enabled: true,
@@ -231,7 +231,7 @@ describe('ProjectGenerator Integration', () => {
       const config = createBaseConfig({
         name: 'vite-jest-pw',
         runtime: 'vite',
-        styling: { solution: 'css-modules' },
+        styling: { solution: 'styled-components' },
         testing: {
           enabled: true,
           unit: { enabled: true, runner: 'jest' },

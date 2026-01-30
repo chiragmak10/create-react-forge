@@ -1,33 +1,90 @@
 import { Link } from 'react-router-dom';
+import styled from 'styled-components';
+
+const Container = styled.div`
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+`;
+
+const Content = styled.div`
+  text-align: center;
+`;
+
+const Title = styled.h1`
+  font-size: 2.25rem;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+
+  @media (min-width: 640px) {
+    font-size: 3.75rem;
+  }
+`;
+
+const Description = styled.p`
+  margin-top: 1.5rem;
+  font-size: 1.125rem;
+  line-height: 2rem;
+  color: #4b5563;
+`;
+
+const Actions = styled.div`
+  margin-top: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+`;
+
+const PrimaryLink = styled(Link)`
+  padding: 0.625rem 0.875rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: white;
+  background-color: #4f46e5;
+  border-radius: 0.375rem;
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  text-decoration: none;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: #6366f1;
+  }
+`;
+
+const SecondaryLink = styled.a`
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.5rem;
+  color: inherit;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+`;
 
 export function Landing() {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold tracking-tight sm:text-6xl">
-          Welcome to Your App
-        </h1>
-        <p className="mt-6 text-lg leading-8 text-gray-600">
+    <Container>
+      <Content>
+        <Title>Welcome to Your App</Title>
+        <Description>
           A production-ready React application scaffolded with create-react-forge.
-        </p>
-        <div className="mt-10 flex items-center justify-center gap-x-6">
-          <Link
-            to="/dashboard"
-            className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-          >
-            Get started
-          </Link>
-          <a
+        </Description>
+        <Actions>
+          <PrimaryLink to="/dashboard">Get started</PrimaryLink>
+          <SecondaryLink
             href="https://github.com/alan2207/bulletproof-react"
-            className="text-sm font-semibold leading-6"
             target="_blank"
             rel="noopener noreferrer"
           >
             Learn more <span aria-hidden="true">→</span>
-          </a>
-        </div>
-      </div>
-    </div>
+          </SecondaryLink>
+        </Actions>
+      </Content>
+    </Container>
   );
 }
-
