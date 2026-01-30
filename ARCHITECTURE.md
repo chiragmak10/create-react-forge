@@ -47,7 +47,7 @@ create-react-forge is a modular, layered CLI tool for scaffolding production-rea
                         │
    ┌────────────────────▼────────────────────────────────┐
    │                 Docs Layer                          │
-   │  (auto-generates ARCHITECTURE.md for projects)     │
+   │  (auto-generates README.md & ARCHITECTURE.md)      │
    │  Location: src/docs/                               │
    └─────────────────────────────────────────────────────┘
 ```
@@ -111,7 +111,7 @@ interface ProjectConfig {
   runtime: 'vite' | 'nextjs';
   language: 'javascript' | 'typescript';
   styling: { solution: 'css' | 'tailwind' | 'styled-components' | 'css-modules' };
-  stateManagement: 'none' | 'redux' | 'zustand';
+  stateManagement: 'none' | 'redux' | 'zustand' | 'jotai';
   testing: TestingConfig;
   dataFetching: DataFetchingConfig;
   linting: LintingConfig;
@@ -144,7 +144,7 @@ interface ProjectConfig {
 1. Check if directory exists → fail if yes
 2. Load templates based on config
 3. Merge all template files
-4. Generate ARCHITECTURE.md for the project
+4. Generate README.md and ARCHITECTURE.md for the project
 5. Merge dependencies and scripts
 6. Write files to disk
 7. Initialize git (optional)
@@ -184,7 +184,8 @@ src/templates/overlays/
 │   └── styled-components/  # styled-components setup
 ├── state/
 │   ├── redux/              # Redux Toolkit store structure
-│   └── zustand/            # Zustand store setup
+│   ├── zustand/            # Zustand store setup
+│   └── jotai/              # Jotai atomic state management
 ├── features/
 │   └── tanstack-query/     # TanStack Query + hooks pattern
 ├── testing/
@@ -221,7 +222,7 @@ interface TemplateManifest {
 1. **Base** — Core React files (components, hooks, lib, types)
 2. **Runtime** — Vite or Next.js specific configs
 3. **Styling** — Tailwind/CSS/Styled Components setup
-4. **State** — Redux/Zustand store setup
+4. **State** — Redux/Zustand/Jotai store setup
 5. **Features** — TanStack Query, etc.
 6. **Testing** — Vitest/Jest + RTL + Playwright
 
@@ -294,6 +295,7 @@ interface TemplateManifest {
   '@reduxjs/toolkit': '^2.5.0',
   'react-redux': '^9.2.0',
   'zustand': '^5.0.3',
+  'jotai': '^2.10.0',
 
   // Data Fetching
   '@tanstack/react-query': '^5.62.10',
@@ -371,6 +373,12 @@ interface PluginContext {
 
 #### Files:
 
+- **readme-generator.ts** — Generates README.md
+  - Dynamic project-specific README with tech stack badges
+  - Package manager-specific commands
+  - Available scripts table
+  - Project structure overview
+  - Documentation links based on config
 - **architecture-generator.ts** — Generates ARCHITECTURE.md
   - Creates project-specific documentation
   - Documents selected configuration
@@ -523,7 +531,7 @@ Load Template Overlays (TemplateRegistry)
     ↓
 Merge All Template Files
     ↓
-Generate ARCHITECTURE.md
+Generate README.md & ARCHITECTURE.md
     ↓
 Aggregate Dependencies (from manifests)
     ↓
@@ -668,16 +676,23 @@ npm run test:coverage    # Coverage report
 
 ### Styling
 
+Options are conditional based on runtime:
+
+**Vite (4 options)**:
 - `tailwind` — Tailwind CSS v4 (recommended)
-- `css` — Plain CSS
 - `styled-components` — CSS-in-JS
 - `css-modules` — Scoped CSS
+- `css` — Plain CSS
+
+**Next.js**:
+- `tailwind` — Auto-selected (recommended for App Router)
 
 ### State Management
 
 - `none` — No setup (default)
 - `redux` — Redux Toolkit
 - `zustand` — Lightweight alternative
+- `jotai` — Primitive and flexible atomic state
 
 ### Testing
 
