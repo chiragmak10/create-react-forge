@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
 import { useServerInsertedHTML } from 'next/navigation';
+import React, { useState } from 'react';
 import { ServerStyleSheet, StyleSheetManager } from 'styled-components';
 
 export default function StyledComponentsRegistry({
@@ -10,6 +10,7 @@ export default function StyledComponentsRegistry({
   children: React.ReactNode;
 }) {
   // Only create stylesheet once with lazy initial state
+  // useState with initializer ensures this only runs once
   const [styledComponentsStyleSheet] = useState(() => new ServerStyleSheet());
 
   useServerInsertedHTML(() => {
@@ -18,7 +19,11 @@ export default function StyledComponentsRegistry({
     return <>{styles}</>;
   });
 
-  if (typeof window !== 'undefined') return <>{children}</>;
+  // On the client side, styled-components automatically injects styles
+  // We only need StyleSheetManager on the server for SSR collection
+  if (typeof window !== 'undefined') {
+    return <>{children}</>;
+  }
 
   return (
     <StyleSheetManager sheet={styledComponentsStyleSheet.instance}>

@@ -17,6 +17,10 @@ export interface TemplateManifest {
     include?: string[];
     exclude?: string[];
   };
+  runtimeOverrides?: {
+    vite?: string;
+    nextjs?: string;
+  };
 }
 
 /**
@@ -141,7 +145,7 @@ export class TemplateRegistry {
   /**
    * Load a template overlay from a directory
    */
-  loadTemplate(templatePath: string): TemplateOverlay {
+  loadTemplate(templatePath: string, runtime?: 'vite' | 'nextjs'): TemplateOverlay {
     const fullPath = join(this.templatesDir, templatePath);
     const manifestPath = join(fullPath, 'manifest.json');
 
@@ -152,6 +156,20 @@ export class TemplateRegistry {
     const manifest = this.loadManifest(manifestPath);
     const exclude = ['manifest.json', ...(manifest.filePatterns?.exclude || [])];
     const files = readDirectoryRecursively(fullPath, fullPath, exclude);
+
+    // Load runtime-specific files if runtime overrides exist
+    if (runtime && manifest.runtimeOverrides) {
+      const runtimeDir = manifest.runtimeOverrides[runtime];
+      if (runtimeDir) {
+        const runtimePath = join(fullPath, runtimeDir);
+        if (existsSync(runtimePath)) {
+          const runtimeFiles = readDirectoryRecursively(runtimePath, runtimePath, []);
+          runtimeFiles.forEach((content, path) => {
+            files.set(path, content);
+          });
+        }
+      }
+    }
 
     const overlay: TemplateOverlay = {
       name: manifest.name,
@@ -166,8 +184,8 @@ export class TemplateRegistry {
   /**
    * Load and register a template
    */
-  loadAndRegister(templatePath: string): TemplateOverlay {
-    const overlay = this.loadTemplate(templatePath);
+  loadAndRegister(templatePath: string, runtime?: 'vite' | 'nextjs'): TemplateOverlay {
+    const overlay = this.loadTemplate(templatePath, runtime);
     this.loadedTemplates.set(templatePath, overlay);
     return overlay;
   }
@@ -220,33 +238,33 @@ export class TemplateRegistry {
     // Load runtime template
     templates.push(this.loadAndRegister(`runtime/${config.runtime}`));
 
-    // Load styling template
+    // Load styling template (pass runtime for runtime-specific overlays)
     if (config.styling.solution === 'tailwind') {
-      templates.push(this.loadAndRegister('styling/tailwind'));
+      templates.push(this.loadAndRegister('styling/tailwind', config.runtime));
     } else if (config.styling.solution === 'css-modules') {
-      templates.push(this.loadAndRegister('styling/css-modules'));
+      templates.push(this.loadAndRegister('styling/css-modules', config.runtime));
     } else if (config.styling.solution === 'styled-components') {
-      templates.push(this.loadAndRegister('styling/styled-components'));
+      templates.push(this.loadAndRegister('styling/styled-components', config.runtime));
     }
 
     // Load state management template
     if (config.stateManagement && config.stateManagement !== 'none') {
-      templates.push(this.loadAndRegister(`state/${config.stateManagement}`));
+      templates.push(this.loadAndRegister(`state/${config.stateManagement}`, config.runtime));
     }
 
     // Load testing templates
     if (config.testing.enabled) {
       if (config.testing.unit?.runner) {
-        templates.push(this.loadAndRegister(`testing/${config.testing.unit.runner}`));
+        templates.push(this.loadAndRegister(`testing/${config.testing.unit.runner}`, config.runtime));
       }
       if (config.testing.e2e?.enabled && config.testing.e2e.runner && config.testing.e2e.runner !== 'none') {
-        templates.push(this.loadAndRegister(`testing/${config.testing.e2e.runner}`));
+        templates.push(this.loadAndRegister(`testing/${config.testing.e2e.runner}`, config.runtime));
       }
     }
 
     // Load data fetching template
     if (config.dataFetching.enabled) {
-      templates.push(this.loadAndRegister('features/tanstack-query'));
+      templates.push(this.loadAndRegister('features/tanstack-query', config.runtime));
     }
 
     return templates;

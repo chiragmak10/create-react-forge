@@ -86,9 +86,29 @@ describe('Styling Solutions Verification', () => {
     }, 300000);
   });
 
-  describe.skip('CSS Modules', () => {
-    it('should generate and build with CSS Modules', async () => {
-      const config = createConfig('css-modules', {
+  describe('CSS Modules', () => {
+    it('should generate project with CSS Modules file structure', async () => {
+      const config = createConfig('css-modules-structure', {
+        runtime: 'vite',
+        styling: { solution: 'css-modules' },
+      });
+      projectPaths.push(config.path);
+
+      const generator = new ProjectGenerator(config);
+      const result = await generator.generate();
+
+      expect(result.success).toBe(true);
+
+      // Verify CSS Module files exist
+      expect(existsSync(join(config.path, 'src/components/ui/Button.module.css'))).toBe(true);
+      expect(existsSync(join(config.path, 'src/components/ui/Input.module.css'))).toBe(true);
+      expect(existsSync(join(config.path, 'src/components/ui/Button.tsx'))).toBe(true);
+      expect(existsSync(join(config.path, 'src/components/ui/Input.tsx'))).toBe(true);
+      expect(existsSync(join(config.path, 'src/styles/globals.css'))).toBe(true);
+    }, 60000);
+
+    it('should generate and build with CSS Modules (Vite)', async () => {
+      const config = createConfig('css-modules-vite', {
         runtime: 'vite',
         styling: { solution: 'css-modules' },
       });
@@ -118,9 +138,79 @@ describe('Styling Solutions Verification', () => {
 
       expect(existsSync(join(config.path, 'dist'))).toBe(true);
     }, 300000);
+
+    it('should generate and build with CSS Modules (Next.js)', async () => {
+      const config = createConfig('css-modules-nextjs', {
+        runtime: 'nextjs',
+        styling: { solution: 'css-modules' },
+      });
+      projectPaths.push(config.path);
+
+      const generator = new ProjectGenerator(config);
+      const result = await generator.generate();
+
+      expect(result.success).toBe(true);
+      expect(existsSync(join(config.path, 'src/components/ui/Button.module.css'))).toBe(true);
+
+      // Install dependencies
+      console.log('Installing dependencies for Next.js + CSS Modules...');
+      const installResult = await execa('npm', ['install'], {
+        cwd: config.path,
+        timeout: 120000,
+      });
+      expect(installResult.exitCode).toBe(0);
+
+      // Build the project
+      console.log('Building Next.js + CSS Modules...');
+      const buildResult = await execa('npm', ['run', 'build'], {
+        cwd: config.path,
+        timeout: 180000,
+      });
+      expect(buildResult.exitCode).toBe(0);
+
+      expect(existsSync(join(config.path, '.next'))).toBe(true);
+    }, 360000);
   });
 
-  describe.skip('Styled Components', () => {
+  describe('Styled Components', () => {
+    it('should generate project with Styled Components file structure (Vite)', async () => {
+      const config = createConfig('styled-vite-structure', {
+        runtime: 'vite',
+        styling: { solution: 'styled-components' },
+      });
+      projectPaths.push(config.path);
+
+      const generator = new ProjectGenerator(config);
+      const result = await generator.generate();
+
+      expect(result.success).toBe(true);
+
+      // Verify Styled Components files exist
+      expect(existsSync(join(config.path, 'src/styles/globals.ts'))).toBe(true);
+      expect(existsSync(join(config.path, 'src/components/ui/Button.styled.ts'))).toBe(true);
+      expect(existsSync(join(config.path, 'src/app/provider.tsx'))).toBe(true);
+      expect(existsSync(join(config.path, 'src/main.tsx'))).toBe(true);
+    }, 60000);
+
+    it('should generate project with Styled Components file structure (Next.js)', async () => {
+      const config = createConfig('styled-nextjs-structure', {
+        runtime: 'nextjs',
+        styling: { solution: 'styled-components' },
+      });
+      projectPaths.push(config.path);
+
+      const generator = new ProjectGenerator(config);
+      const result = await generator.generate();
+
+      expect(result.success).toBe(true);
+
+      // Verify Styled Components files exist for Next.js
+      expect(existsSync(join(config.path, 'src/styles/globals.ts'))).toBe(true);
+      expect(existsSync(join(config.path, 'src/lib/StyledComponentsRegistry.tsx'))).toBe(true);
+      expect(existsSync(join(config.path, 'src/app/providers.tsx'))).toBe(true);
+      expect(existsSync(join(config.path, 'src/app/layout.tsx'))).toBe(true);
+    }, 60000);
+
     it('should generate and build with Styled Components (Vite)', async () => {
       const config = createConfig('styled-vite', {
         runtime: 'vite',
