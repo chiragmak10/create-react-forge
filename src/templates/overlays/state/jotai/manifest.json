@@ -1,0 +1,16 @@
+{
+  "name": "state-jotai",
+  "version": "1.0.0",
+  "description": "Jotai state management with primitive and flexible atoms",
+  "compatibleWith": ["runtime-vite", "runtime-nextjs"],
+  "dependencies": {
+    "jotai": "^2.10.0"
+  },
+  "devDependencies": {},
+  "scripts": {},
+  "filePatterns": {
+    "include": ["**/*"],
+    "exclude": ["manifest.json"]
+  }
+}
+

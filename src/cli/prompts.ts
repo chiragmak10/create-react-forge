@@ -59,19 +59,32 @@ export async function promptForProjectDetails(
     ],
   })) as 'javascript' | 'typescript';
 
-  const styling = (await select({
-    message: 'Styling solution:',
-    choices: [
-      { name: STYLING_DESCRIPTIONS.tailwind, value: 'tailwind' },
-      { name: 'None - Plain CSS', value: 'css' },
-    ],
-  })) as string;
+  // Styling options are conditional based on runtime
+  // Vite: 4 options (tailwind, styled-components, css-modules, css)
+  // Next.js: auto-select tailwind (best practice for App Router)
+  let styling: string;
+  if (runtime === 'vite') {
+    styling = (await select({
+      message: 'Styling solution:',
+      choices: [
+        { name: STYLING_DESCRIPTIONS.tailwind, value: 'tailwind' },
+        { name: STYLING_DESCRIPTIONS['styled-components'], value: 'styled-components' },
+        { name: STYLING_DESCRIPTIONS['css-modules'], value: 'css-modules' },
+        { name: STYLING_DESCRIPTIONS.css, value: 'css' },
+      ],
+    })) as string;
+  } else {
+    // Next.js - auto-select tailwind
+    styling = 'tailwind';
+    console.log('  ✓ Styling: Tailwind CSS (recommended for Next.js)');
+  }
 
   const stateManagement = (await select({
     message: 'State management:',
     choices: [
       { name: STATE_DESCRIPTIONS.none, value: 'none' },
       { name: STATE_DESCRIPTIONS.zustand, value: 'zustand' },
+      { name: STATE_DESCRIPTIONS.jotai, value: 'jotai' },
       { name: STATE_DESCRIPTIONS.redux, value: 'redux' },
     ],
   })) as string;
