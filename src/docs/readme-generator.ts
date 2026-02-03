@@ -24,7 +24,8 @@ function generateBadges(config: ProjectConfig): string {
   const stylingBadges: Record<string, string> = {
     tailwind: '![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-06B6D4?style=flat&logo=tailwindcss&logoColor=white)',
     'styled-components': '![styled-components](https://img.shields.io/badge/styled--components-DB7093?style=flat&logo=styled-components&logoColor=white)',
-    none: '![CSS](https://img.shields.io/badge/CSS-1572B6?style=flat&logo=css3&logoColor=white)',
+    'css-modules': '![CSS Modules](https://img.shields.io/badge/CSS_Modules-1572B6?style=flat&logo=css3&logoColor=white)',
+    css: '![CSS](https://img.shields.io/badge/CSS-1572B6?style=flat&logo=css3&logoColor=white)',
   };
   if (stylingBadges[config.styling.solution]) {
     badges.push(stylingBadges[config.styling.solution]);
@@ -202,6 +203,7 @@ function generateDocLinks(config: ProjectConfig): string {
   const stylingDocs: Record<string, string> = {
     tailwind: '- [Tailwind CSS Documentation](https://tailwindcss.com/docs)',
     'styled-components': '- [styled-components Documentation](https://styled-components.com/docs)',
+    'css-modules': '- [CSS Modules](https://github.com/css-modules/css-modules)',
   };
   if (stylingDocs[config.styling.solution]) {
     links.push(stylingDocs[config.styling.solution]);

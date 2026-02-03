@@ -47,6 +47,13 @@ describe('TemplateRegistry', () => {
       expect(template.manifest.devDependencies).toHaveProperty('tailwindcss');
     });
 
+    it('should load css-modules styling template', () => {
+      const template = registry.loadAndRegister('styling/css-modules');
+      
+      expect(template).toBeDefined();
+      expect(template.manifest).toBeDefined();
+    });
+
     it('should load zustand state template', () => {
       const template = registry.loadAndRegister('state/zustand');
       
@@ -189,6 +196,18 @@ describe('TemplateRegistry', () => {
       expect(templates.some(t => t.path === 'styling/styled-components')).toBe(true);
     });
 
+    it('should load templates for Vite + CSS Modules config', () => {
+      const templates = registry.loadTemplatesForConfig({
+        runtime: 'vite',
+        styling: { solution: 'css-modules' },
+        stateManagement: 'none',
+        testing: { enabled: false, e2e: { enabled: false, runner: 'none' } },
+        dataFetching: { enabled: false },
+      });
+
+      expect(templates.some(t => t.path === 'styling/css-modules')).toBe(true);
+    });
+
     it('should load testing templates when testing is enabled', () => {
       const templates = registry.loadTemplatesForConfig({
         runtime: 'vite',
@@ -310,6 +329,7 @@ describe('TemplateRegistry', () => {
         'runtime/vite',
         'runtime/nextjs',
         'styling/tailwind',
+        'styling/css-modules',
         'styling/styled-components',
         'state/zustand',
         'state/redux',

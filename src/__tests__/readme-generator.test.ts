@@ -196,11 +196,11 @@ describe('generateReadme', () => {
       expect(readme).toContain('styled-components.com');
     });
 
-    it('should handle none styling option', () => {
-      const config = createConfig({ styling: { solution: 'none' } });
+    it('should include CSS Modules documentation link', () => {
+      const config = createConfig({ styling: { solution: 'css-modules' } });
       const readme = generateReadme(config);
 
-      expect(readme).toContain('none');
+      expect(readme).toContain('css-modules');
     });
 
     it('should include Tailwind documentation link', () => {

@@ -8,37 +8,39 @@ import { StateManagementSchema, StylingSchema } from '../config/schema';
  */
 describe('Conditional Prompts Configuration', () => {
   describe('Styling options', () => {
-    it('should have all 3 styling options defined', () => {
+    it('should have all 4 styling options defined', () => {
       const stylingValues = StylingSchema.options;
 
-      expect(stylingValues).toContain('none');
+      expect(stylingValues).toContain('css');
       expect(stylingValues).toContain('tailwind');
       expect(stylingValues).toContain('styled-components');
-      expect(stylingValues).toHaveLength(3);
+      expect(stylingValues).toContain('css-modules');
+      expect(stylingValues).toHaveLength(4);
     });
 
     it('should have descriptions for all styling options', () => {
-      expect(STYLING_DESCRIPTIONS.none).toBeDefined();
+      expect(STYLING_DESCRIPTIONS.css).toBeDefined();
       expect(STYLING_DESCRIPTIONS.tailwind).toBeDefined();
       expect(STYLING_DESCRIPTIONS['styled-components']).toBeDefined();
+      expect(STYLING_DESCRIPTIONS['css-modules']).toBeDefined();
     });
 
-    it('Vite should use styled-components (auto-selected)', () => {
-      // For Vite, styled-components is auto-selected
-      const viteDefault = 'styled-components';
-      const result = StylingSchema.safeParse(viteDefault);
+    it('Vite should support all 4 styling options', () => {
+      // For Vite, all 4 options should be valid
+      const viteOptions = ['tailwind', 'styled-components', 'css-modules', 'css'];
 
-      expect(result.success).toBe(true);
-    });
-
-    it('Next.js should support tailwind and none options', () => {
-      // For Next.js, user can choose tailwind or none
-      const nextjsOptions = ['tailwind', 'none'];
-
-      nextjsOptions.forEach((option) => {
+      viteOptions.forEach((option) => {
         const result = StylingSchema.safeParse(option);
         expect(result.success).toBe(true);
       });
+    });
+
+    it('Next.js should use tailwind (auto-selected)', () => {
+      // For Next.js, tailwind is auto-selected
+      const nextjsDefault = 'tailwind';
+      const result = StylingSchema.safeParse(nextjsDefault);
+
+      expect(result.success).toBe(true);
     });
   });
 
@@ -72,26 +74,28 @@ describe('Conditional Prompts Configuration', () => {
      */
     function getStylingChoicesForRuntime(runtime: 'vite' | 'nextjs'): string[] {
       if (runtime === 'vite') {
-        // Vite auto-selects styled-components
-        return ['styled-components'];
+        return ['tailwind', 'styled-components', 'css-modules', 'css'];
       }
-      // Next.js offers tailwind or none
-      return ['tailwind', 'none'];
+      // Next.js auto-selects tailwind
+      return ['tailwind'];
     }
 
-    it('should return styled-components for Vite (auto-selected)', () => {
+    it('should return 4 styling options for Vite', () => {
       const choices = getStylingChoicesForRuntime('vite');
 
-      expect(choices).toHaveLength(1);
+      expect(choices).toHaveLength(4);
+      expect(choices).toContain('tailwind');
       expect(choices).toContain('styled-components');
+      expect(choices).toContain('css-modules');
+      expect(choices).toContain('css');
     });
 
-    it('should return tailwind and none for Next.js', () => {
+    it('should return only tailwind for Next.js', () => {
       const choices = getStylingChoicesForRuntime('nextjs');
 
-      expect(choices).toHaveLength(2);
+      expect(choices).toHaveLength(1);
       expect(choices).toContain('tailwind');
-      expect(choices).toContain('none');
     });
   });
 });
+
