@@ -1,0 +1,33 @@
+name: PR Title Check
+
+on:
+  pull_request_target:
+    types: [opened, edited, reopened, synchronize]
+    branches: [master]
+
+permissions:
+  pull-requests: read
+
+jobs:
+  semantic-pr-title:
+    name: Validate PR Title
+    if: github.event.pull_request.user.login != 'renovate[bot]' && github.event.pull_request.user.login != 'dependabot[bot]'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check PR title follows Conventional Commits
+        uses: amannn/action-semantic-pull-request@v5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          types: |
+            feat
+            fix
+            chore
+            docs
+            refactor
+            test
+            build
+            ci
+            perf
+            revert
