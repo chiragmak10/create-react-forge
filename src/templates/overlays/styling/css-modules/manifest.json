@@ -1,0 +1,17 @@
+{
+  "name": "styling-css-modules",
+  "version": "1.0.0",
+  "description": "CSS Modules styling solution",
+  "compatibleWith": ["runtime-vite", "runtime-nextjs"],
+  "dependencies": {},
+  "devDependencies": {},
+  "scripts": {},
+  "filePatterns": {
+    "include": ["**/*"],
+    "exclude": ["manifest.json", "_vite", "_nextjs"]
+  },
+  "runtimeOverrides": {
+    "vite": "_vite",
+    "nextjs": "_nextjs"
+  }
+}

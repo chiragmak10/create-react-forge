@@ -107,6 +107,23 @@ The CLI uses pinned, tested versions for all dependencies:
 | Playwright | ^1.49.1 |
 | TypeScript | ^5.7.2 |
 
+## Automated dependency updates
+
+This repo now uses Renovate to auto-update dependencies (including template manifests under `src/templates/overlays/**/manifest.json`) on a weekly schedule.
+
+### One-time setup
+
+1. Create a fine-grained GitHub PAT with repository `contents`, `pull requests`, and `issues` write access.
+2. Add it as repository secret: `RENOVATE_TOKEN`.
+3. Enable repository auto-merge in GitHub settings.
+4. Protect `master` and require CI checks before merge.
+
+Workflow file: `.github/workflows/renovate.yml`  
+Config file: `renovate.json`
+
+Behavior:
+- All dependency updates (major, minor, patch) auto-merge after checks pass.
+
 ## Screenshot
 
 <img width="709" height="1047" alt="image" src="https://github.com/user-attachments/assets/dc8956a9-473b-4001-8c2d-0b3b54f29583" />

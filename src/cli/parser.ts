@@ -39,10 +39,12 @@ export function createCommand(): Command {
         'none',
         'tailwind',
         'styled-components',
+        'css-modules',
+        'css',
       ])
     )
     .addOption(
-      new Option('--state <state>', 'State management').choices(['none', 'redux', 'zustand'])
+      new Option('--state <state>', 'State management').choices(['none', 'redux', 'zustand', 'jotai'])
     )
     .addOption(
       new Option('--testing <testing>', 'Testing setup').choices(['full', 'unit-component', 'custom', 'none'])
