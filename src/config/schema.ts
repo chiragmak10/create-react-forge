@@ -11,8 +11,10 @@ export type Runtime = z.infer<typeof RuntimeSchema>;
 export const LanguageSchema = z.enum(['javascript', 'typescript']);
 export type Language = z.infer<typeof LanguageSchema>;
 
-export const StylingSchema = z.enum(['none', 'tailwind', 'styled-components']);
+export const StylingSchema = z.enum(['tailwind', 'styled-components', 'css-modules', 'css']);
 export type Styling = z.infer<typeof StylingSchema>;
+export const StylingSolutionSchema = z.union([StylingSchema, z.literal('none')]);
+export type StylingSolution = z.infer<typeof StylingSolutionSchema>;
 
 export const StateManagementSchema = z.enum(['none', 'redux', 'zustand', 'jotai']);
 export type StateManagement = z.infer<typeof StateManagementSchema>;
@@ -61,7 +63,7 @@ export const GitConfigSchema = z.object({
 export type GitConfig = z.infer<typeof GitConfigSchema>;
 
 export const StylingConfigSchema = z.object({
-  solution: StylingSchema.default('styled-components'),
+  solution: StylingSolutionSchema.default('styled-components'),
 });
 export type StylingConfigType = z.infer<typeof StylingConfigSchema>;
 
@@ -126,7 +128,6 @@ export const DEFAULT_CONFIG: ProjectConfig = {
   },
   plugins: [],
 };
-
 
 
 
