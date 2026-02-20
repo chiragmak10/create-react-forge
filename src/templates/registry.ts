@@ -1,4 +1,4 @@
-import { existsSync, readdirSync, readFileSync, statSync } from 'fs';
+import { closeSync, existsSync, fstatSync, openSync, readdirSync, readFileSync } from 'fs';
 import { dirname, join, relative } from 'path';
 import { fileURLToPath } from 'url';
 
@@ -83,35 +83,47 @@ function readDirectoryRecursively(
     return files;
   }
 
-  const entries = readdirSync(dirPath);
+  const entries = readdirSync(dirPath, { withFileTypes: true });
 
   for (const entry of entries) {
-    const fullPath = join(dirPath, entry);
+    const entryName = entry.name;
+    const fullPath = join(dirPath, entryName);
     const relativePath = relative(basePath, fullPath);
 
     // Skip excluded files
-    if (exclude.includes(entry) || exclude.includes(relativePath)) {
+    if (exclude.includes(entryName) || exclude.includes(relativePath)) {
       continue;
     }
 
-    const stat = statSync(fullPath);
-
-    if (stat.isDirectory()) {
+    if (entry.isDirectory()) {
       // Recursively read subdirectory
       const subFiles = readDirectoryRecursively(fullPath, basePath, exclude);
       subFiles.forEach((content, path) => files.set(path, content));
-    } else if (stat.isFile()) {
-      // Read file content (skip binary files)
-      if (!isBinaryFile(fullPath)) {
-        try {
-          const content = readFileSync(fullPath, 'utf-8');
-          files.set(relativePath, content);
-        } catch {
-          // Skip files that can't be read as text
+    } else if (entry.isFile()) {
+      let fd: number | null = null;
+
+      try {
+        fd = openSync(fullPath, 'r');
+        const stat = fstatSync(fd);
+
+        if (!stat.isFile()) {
+          continue;
         }
-      } else {
-        // For binary files, store a marker to copy them
-        files.set(relativePath, `__BINARY__:${fullPath}`);
+
+        // Read file content (skip binary files)
+        if (!isBinaryFile(fullPath)) {
+          const content = readFileSync(fd, 'utf-8');
+          files.set(relativePath, content);
+        } else {
+          // For binary files, store a marker to copy them
+          files.set(relativePath, `__BINARY__:${fullPath}`);
+        }
+      } catch {
+        // Skip files that can't be opened/read
+      } finally {
+        if (fd !== null) {
+          closeSync(fd);
+        }
       }
     }
   }
