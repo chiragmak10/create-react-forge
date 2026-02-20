@@ -239,14 +239,17 @@ export class TemplateRegistry {
     templates.push(this.loadAndRegister(`runtime/${config.runtime}`));
 
     // Load styling template (pass runtime for runtime-specific overlays)
-    // Vite: always styled-components
-    // Next.js: tailwind or none (none = no styling overlay, use runtime defaults)
-    if (config.styling.solution === 'tailwind') {
-      templates.push(this.loadAndRegister('styling/tailwind', config.runtime));
-    } else if (config.styling.solution === 'styled-components') {
-      templates.push(this.loadAndRegister('styling/styled-components', config.runtime));
+    // 'none' intentionally skips adding a styling overlay.
+    const stylingTemplateMap: Record<string, string> = {
+      tailwind: 'styling/tailwind',
+      'styled-components': 'styling/styled-components',
+      'css-modules': 'styling/css-modules',
+      css: 'styling/css',
+    };
+    const stylingTemplate = stylingTemplateMap[config.styling.solution];
+    if (stylingTemplate) {
+      templates.push(this.loadAndRegister(stylingTemplate, config.runtime));
     }
-    // 'none' - don't load any styling overlay, use runtime defaults
 
     // Load state management template
     if (config.stateManagement && config.stateManagement !== 'none') {

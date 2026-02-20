@@ -8,9 +8,10 @@ export const RUNTIME_DESCRIPTIONS: Record<string, string> = {
 };
 
 export const STYLING_DESCRIPTIONS: Record<string, string> = {
-  none: 'None - Plain CSS classes',
   tailwind: 'Tailwind CSS - Utility-first framework',
   'styled-components': 'Styled Components - CSS-in-JS',
+  'css-modules': 'CSS Modules - Scoped component styles',
+  css: 'Plain CSS - Traditional stylesheet approach',
 };
 
 export const STATE_DESCRIPTIONS: Record<string, string> = {
@@ -45,7 +46,6 @@ export const PACKAGE_MANAGER_COMMANDS: Record<string, { install: string; exec: s
     exec: 'pnpm exec',
   },
 };
-
 
 
 
