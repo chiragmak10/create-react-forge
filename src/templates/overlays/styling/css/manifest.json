@@ -1,0 +1,17 @@
+{
+  "name": "styling-css",
+  "version": "1.0.0",
+  "description": "Plain CSS styling solution",
+  "compatibleWith": ["runtime-vite"],
+  "dependencies": {},
+  "devDependencies": {},
+  "scripts": {},
+  "filePatterns": {
+    "include": ["**/*"],
+    "exclude": ["manifest.json", "_vite"]
+  },
+  "runtimeOverrides": {
+    "vite": "_vite"
+  }
+}
+

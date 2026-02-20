@@ -165,9 +165,10 @@ describe('Package.json Generation', () => {
       expect(devDeps).toHaveProperty('autoprefixer');
     });
 
-    it.skip('should not include tailwind when css-modules selected', async () => {
-      const config = createConfig('css-modules-deps', {
-        styling: { solution: 'css-modules' },
+    it.skip('should not include tailwind when none styling selected', async () => {
+      const config = createConfig('none-styling-deps', {
+        runtime: 'nextjs',
+        styling: { solution: 'none' },
       });
       projectPaths.push(config.path);
 

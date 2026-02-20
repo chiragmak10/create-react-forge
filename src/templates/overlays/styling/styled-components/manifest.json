@@ -13,7 +13,11 @@
   "scripts": {},
   "filePatterns": {
     "include": ["**/*"],
-    "exclude": ["manifest.json"]
+    "exclude": ["manifest.json", "_vite", "_nextjs"]
+  },
+  "runtimeOverrides": {
+    "vite": "_vite",
+    "nextjs": "_nextjs"
   }
 }
 

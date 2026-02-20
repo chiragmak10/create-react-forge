@@ -139,7 +139,7 @@ import { TemplateRegistry } from 'create-react-forge/templates';
 const registry = new TemplateRegistry();
 const templates = registry.loadTemplatesForConfig({
   runtime: 'vite',
-  styling: { solution: 'tailwind' },
+  styling: { solution: 'styled-components' },
   stateManagement: 'zustand',
   testing: { enabled: true, unit: { runner: 'vitest' }, e2e: { enabled: true, runner: 'playwright' } },
   dataFetching: { enabled: true },

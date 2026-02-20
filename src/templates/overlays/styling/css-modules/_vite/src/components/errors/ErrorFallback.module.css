@@ -1,0 +1,45 @@
+.container {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.content {
+  text-align: center;
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-danger);
+}
+
+.message {
+  margin-top: 1rem;
+  color: var(--color-text-muted);
+}
+
+.button {
+  margin-top: 1.5rem;
+  display: inline-block;
+  border-radius: var(--radius-md);
+  background-color: var(--color-primary);
+  padding: 0.625rem 0.875rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: white;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  transition: background-color 0.2s;
+}
+
+.button:hover {
+  background-color: var(--color-primary-hover);
+}
+
+
+
+

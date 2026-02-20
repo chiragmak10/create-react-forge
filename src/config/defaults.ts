@@ -8,10 +8,9 @@ export const RUNTIME_DESCRIPTIONS: Record<string, string> = {
 };
 
 export const STYLING_DESCRIPTIONS: Record<string, string> = {
-  css: 'Plain CSS with CSS modules',
+  none: 'None - Plain CSS classes',
   tailwind: 'Tailwind CSS - Utility-first framework',
   'styled-components': 'Styled Components - CSS-in-JS',
-  'css-modules': 'CSS Modules - Scoped styling',
 };
 
 export const STATE_DESCRIPTIONS: Record<string, string> = {

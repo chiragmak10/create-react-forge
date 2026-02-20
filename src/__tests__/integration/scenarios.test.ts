@@ -63,10 +63,10 @@ describe('Real-World Scenarios', () => {
   });
 
   describe('Scenario: Minimal SPA (Learning/Prototyping)', () => {
-    it('should generate minimal Vite + CSS project', async () => {
+    it('should generate minimal Vite + styled-components project', async () => {
       const config = createConfig('minimal-spa', {
         runtime: 'vite',
-        styling: { solution: 'css' },
+        styling: { solution: 'styled-components' },
         stateManagement: 'none',
         dataFetching: { enabled: false, library: 'tanstack-query' },
         testing: {
@@ -230,10 +230,10 @@ describe('Real-World Scenarios', () => {
   });
 
   describe.skip('Scenario: Next.js with Redux', () => {
-    it('should generate Next.js + CSS Modules + Redux', async () => {
+    it('should generate Next.js + None styling + Redux', async () => {
       const config = createConfig('nextjs-redux', {
         runtime: 'nextjs',
-        styling: { solution: 'css-modules' },
+        styling: { solution: 'none' },
         stateManagement: 'redux',
         dataFetching: { enabled: false, library: 'tanstack-query' },
         testing: {

@@ -1,0 +1,32 @@
+import { Link } from 'react-router-dom';
+import './Landing.css';
+
+export function Landing() {
+  return (
+    <div className="landing-container">
+      <div className="landing-content">
+        <h1 className="landing-title">Welcome to Your App</h1>
+        <p className="landing-description">
+          A production-ready React application scaffolded with create-react-forge.
+        </p>
+        <div className="landing-buttons">
+          <Link to="/dashboard" className="btn btn-primary">
+            Get started
+          </Link>
+          <a
+            href="https://github.com/alan2207/bulletproof-react"
+            className="btn btn-link"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Learn more <span aria-hidden="true">→</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+
+
+

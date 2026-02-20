@@ -58,7 +58,7 @@ describe('Build Verification Tests', () => {
     it('should generate and build a minimal Next.js project', async () => {
       const config = createConfig('nextjs-build-minimal', {
         runtime: 'nextjs',
-        styling: { solution: 'css' },
+        styling: { solution: 'none' },
       });
       projectPaths.push(config.path);
 
@@ -122,7 +122,7 @@ describe('Build Verification Tests', () => {
     it('should generate and build Next.js with state management', async () => {
       const config = createConfig('nextjs-build-zustand', {
         runtime: 'nextjs',
-        styling: { solution: 'css' },
+        styling: { solution: 'none' },
         stateManagement: 'zustand',
       });
       projectPaths.push(config.path);
@@ -156,7 +156,7 @@ describe('Build Verification Tests', () => {
     it('should generate and build a minimal Vite project', async () => {
       const config = createConfig('vite-build-minimal', {
         runtime: 'vite',
-        styling: { solution: 'css' },
+        styling: { solution: 'styled-components' },
       });
       projectPaths.push(config.path);
 

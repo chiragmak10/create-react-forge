@@ -1,21 +1,55 @@
 import { FallbackProps } from 'react-error-boundary';
+import styled from 'styled-components';
+
+const Container = styled.div`
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+`;
+
+const Content = styled.div`
+  text-align: center;
+`;
+
+const Title = styled.h1`
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #dc2626;
+`;
+
+const Message = styled.p`
+  margin-top: 1rem;
+  color: #4b5563;
+`;
+
+const RetryButton = styled.button`
+  margin-top: 1.5rem;
+  padding: 0.625rem 0.875rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: white;
+  background-color: #4f46e5;
+  border: none;
+  border-radius: 0.375rem;
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  cursor: pointer;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: #6366f1;
+  }
+`;
 
 export function ErrorFallback({ error, resetErrorBoundary }: FallbackProps) {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center" role="alert">
-      <div className="text-center">
-        <h1 className="text-2xl font-bold text-red-600">Something went wrong</h1>
-        <p className="mt-4 text-gray-600">
-          {error.message || 'An unexpected error occurred'}
-        </p>
-        <button
-          onClick={resetErrorBoundary}
-          className="mt-6 rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500"
-        >
-          Try again
-        </button>
-      </div>
-    </div>
+    <Container role="alert">
+      <Content>
+        <Title>Something went wrong</Title>
+        <Message>{error.message || 'An unexpected error occurred'}</Message>
+        <RetryButton onClick={resetErrorBoundary}>Try again</RetryButton>
+      </Content>
+    </Container>
   );
 }
-
