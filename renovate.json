@@ -14,7 +14,7 @@
     "enabled": true,
     "automerge": true,
     "automergeType": "pr",
-    "platformAutomerge": true
+    "platformAutomerge": false
   },
   "customManagers": [
     {
@@ -132,7 +132,7 @@
       "matchUpdateTypes": ["major", "minor", "patch", "pin", "digest"],
       "automerge": true,
       "automergeType": "pr",
-      "platformAutomerge": true
+      "platformAutomerge": false
     }
   ]
 }

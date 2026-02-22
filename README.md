@@ -7,7 +7,6 @@
 [![Dependency Review](https://github.com/chiragmak10/create-react-forge/actions/workflows/dependency-review.yml/badge.svg)](https://github.com/chiragmak10/create-react-forge/actions/workflows/dependency-review.yml)
 [![CI](https://github.com/chiragmak10/create-react-forge/actions/workflows/ci.yml/badge.svg)](https://github.com/chiragmak10/create-react-forge/actions/workflows/ci.yml)
 
-  
 # create-react-forge
 
 Production-ready React scaffolding CLI with first-class testing, flexible runtimes (Vite/Next.js), and a composable template system inspired by [bulletproof-react](https://github.com/alan2207/bulletproof-react).
@@ -121,7 +120,7 @@ This repo now uses Renovate to auto-update dependencies (including template mani
 
 ### One-time setup
 
-1. No additional token is required. Renovate uses the default `secrets.GITHUB_TOKEN`.
+1. Add a repository secret named `RENOVATE_TOKEN` (fine-grained PAT with `Contents: Read and write` and `Pull requests: Read and write`) so Renovate PRs can trigger CI workflows.
 2. Enable repository auto-merge in GitHub settings.
 3. Protect `master` and require CI checks before merge.
 
