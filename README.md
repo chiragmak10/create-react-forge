@@ -120,10 +120,9 @@ This repo now uses Renovate to auto-update dependencies (including template mani
 
 ### One-time setup
 
-1. Create a fine-grained GitHub PAT with repository `contents`, `pull requests`, and `issues` write access.
-2. Add it as repository secret: `RENOVATE_TOKEN`.
-3. Enable repository auto-merge in GitHub settings.
-4. Protect `master` and require CI checks before merge.
+1. No additional token is required. Renovate uses the default `secrets.GITHUB_TOKEN`.
+2. Enable repository auto-merge in GitHub settings.
+3. Protect `master` and require CI checks before merge.
 
 Workflow file: `.github/workflows/renovate.yml`  
 Config file: `renovate.json`
