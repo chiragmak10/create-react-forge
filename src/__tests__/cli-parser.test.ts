@@ -20,6 +20,7 @@ describe('CLI parser', () => {
     const stylingOption = createCmd?.options.find((o) => o.long === '--styling');
     const stateOption = createCmd?.options.find((o) => o.long === '--state');
     const runtimeOption = createCmd?.options.find((o) => o.long === '--runtime');
+    const languageOption = createCmd?.options.find((o) => o.long === '--language');
     const unitRunnerOption = createCmd?.options.find((o) => o.long === '--unit-runner');
 
     expect(runtimeOption?.argChoices).toEqual(['vite', 'nextjs']);
@@ -31,6 +32,7 @@ describe('CLI parser', () => {
       'css',
     ]);
     expect(stateOption?.argChoices).toEqual(['none', 'redux', 'zustand', 'jotai']);
+    expect(languageOption?.argChoices).toEqual(['javascript', 'typescript']);
     expect(unitRunnerOption?.argChoices).toEqual(['vitest', 'jest']);
   });
 

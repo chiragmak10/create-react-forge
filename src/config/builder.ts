@@ -8,7 +8,28 @@ export class ConfigBuilder {
   private config: Partial<ProjectConfig> = {};
 
   constructor(initialConfig?: Partial<ProjectConfig>) {
-    this.config = initialConfig ? { ...initialConfig } : {};
+    this.config = initialConfig ? structuredClone(initialConfig) : {};
+  }
+
+  private ensureTestingConfig(): ProjectConfig['testing'] {
+    if (!this.config.testing) {
+      this.config.testing = structuredClone(DEFAULT_CONFIG.testing);
+    }
+    return this.config.testing;
+  }
+
+  private ensureDataFetchingConfig(): ProjectConfig['dataFetching'] {
+    if (!this.config.dataFetching) {
+      this.config.dataFetching = structuredClone(DEFAULT_CONFIG.dataFetching);
+    }
+    return this.config.dataFetching;
+  }
+
+  private ensureGitConfig(): ProjectConfig['git'] {
+    if (!this.config.git) {
+      this.config.git = structuredClone(DEFAULT_CONFIG.git);
+    }
+    return this.config.git;
   }
 
   setName(name: string): this {
@@ -42,34 +63,32 @@ export class ConfigBuilder {
   }
 
   setTestingEnabled(enabled: boolean): this {
-    if (!this.config.testing) {
-      this.config.testing = DEFAULT_CONFIG.testing;
-    }
-    this.config.testing.enabled = enabled;
+    this.ensureTestingConfig().enabled = enabled;
+    return this;
+  }
+
+  setUnitTestingEnabled(enabled: boolean): this {
+    this.ensureTestingConfig().unit.enabled = enabled;
+    return this;
+  }
+
+  setE2ETestingEnabled(enabled: boolean): this {
+    this.ensureTestingConfig().e2e.enabled = enabled;
     return this;
   }
 
   setUnitTestRunner(runner: 'vitest' | 'jest'): this {
-    if (!this.config.testing) {
-      this.config.testing = DEFAULT_CONFIG.testing;
-    }
-    this.config.testing.unit.runner = runner;
+    this.ensureTestingConfig().unit.runner = runner;
     return this;
   }
 
   setE2ETestRunner(runner: 'playwright' | 'cypress' | 'none'): this {
-    if (!this.config.testing) {
-      this.config.testing = DEFAULT_CONFIG.testing;
-    }
-    this.config.testing.e2e.runner = runner;
+    this.ensureTestingConfig().e2e.runner = runner;
     return this;
   }
 
   setDataFetchingEnabled(enabled: boolean): this {
-    if (!this.config.dataFetching) {
-      this.config.dataFetching = DEFAULT_CONFIG.dataFetching;
-    }
-    this.config.dataFetching.enabled = enabled;
+    this.ensureDataFetchingConfig().enabled = enabled;
     return this;
   }
 
@@ -79,10 +98,7 @@ export class ConfigBuilder {
   }
 
   setGitInit(init: boolean): this {
-    if (!this.config.git) {
-      this.config.git = DEFAULT_CONFIG.git;
-    }
-    this.config.git.init = init;
+    this.ensureGitConfig().init = init;
     return this;
   }
 
@@ -128,7 +144,6 @@ export function mergeConfigs(...configs: Partial<ProjectConfig>[]): ProjectConfi
   } as ProjectConfig);
   return ProjectConfigSchema.parse(merged);
 }
-
 
 
 

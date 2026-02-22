@@ -47,7 +47,7 @@ export function createCommand(): Command {
       new Option('--state <state>', 'State management').choices(['none', 'redux', 'zustand', 'jotai'])
     )
     .addOption(
-      new Option('--testing <testing>', 'Testing setup').choices(['full', 'unit-component', 'custom', 'none'])
+      new Option('--testing <testing>', 'Testing setup').choices(['full', 'unit-component', 'none'])
     )
     .addOption(
       new Option('--unit-runner <runner>', 'Unit test runner').choices(['vitest', 'jest'])

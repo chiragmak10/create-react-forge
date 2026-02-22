@@ -85,7 +85,7 @@ describe('CLI Prompts', () => {
       stateManagement: 'none',
       testing: 'none',
       unitRunner: 'vitest',
-      e2eRunner: 'playwright',
+      e2eRunner: 'none',
       dataFetching: false,
       packageManager: 'npm',
       git: true,

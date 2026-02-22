@@ -25,13 +25,26 @@ export function promptAnswersToConfig(answers: PromptAnswers) {
     .setGitInit(answers.git)
     .setDataFetchingEnabled(answers.dataFetching);
 
-  if (answers.testing !== 'none') {
+  if (answers.testing === 'none') {
+    builder
+      .setTestingEnabled(false)
+      .setUnitTestingEnabled(false)
+      .setE2ETestingEnabled(false)
+      .setE2ETestRunner('none');
+  } else if (answers.testing === 'unit-component') {
     builder
       .setTestingEnabled(true)
+      .setUnitTestingEnabled(true)
       .setUnitTestRunner(answers.unitRunner)
-      .setE2ETestRunner(answers.e2eRunner);
+      .setE2ETestingEnabled(false)
+      .setE2ETestRunner('none');
   } else {
-    builder.setTestingEnabled(false);
+    builder
+      .setTestingEnabled(true)
+      .setUnitTestingEnabled(true)
+      .setUnitTestRunner(answers.unitRunner)
+      .setE2ETestingEnabled(true)
+      .setE2ETestRunner(answers.e2eRunner);
   }
 
   if (!answers.git) {

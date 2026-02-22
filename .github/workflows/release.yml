@@ -3,8 +3,8 @@ name: Release
 on:
   push:
     tags:
-      - 'v*.*.*'           # Matches v1.0.0, v1.2.3, etc.
-      - 'v*.*.*-beta.*'    # Matches v1.0.0-beta.1, etc.
+      - 'v*.*.*' # Matches v1.0.0, v1.2.3, etc.
+      - 'v*.*.*-beta.*' # Matches v1.0.0-beta.1, etc.
 
 permissions:
   contents: write
@@ -47,12 +47,29 @@ jobs:
       - name: Update package.json version
         run: npm version ${{ steps.get_version.outputs.VERSION }} --no-git-tag-version --allow-same-version
 
-      - name: Publish to NPM
+      - name: Pack release artifact
+        id: pack
+        run: |
+          ASSET="$(npm pack --silent | tail -n1)"
+          echo "asset=${ASSET}" >> "$GITHUB_OUTPUT"
+
+      - name: Install Cosign
+        uses: sigstore/cosign-installer@v3
+
+      - name: Sign release artifact
+        run: |
+          cosign sign-blob --yes \
+            --output-signature "${{ steps.pack.outputs.asset }}.sig" \
+            --output-certificate "${{ steps.pack.outputs.asset }}.pem" \
+            --bundle "${{ steps.pack.outputs.asset }}.sigstore.json" \
+            "${{ steps.pack.outputs.asset }}"
+
+      - name: Publish to NPM (with provenance)
         run: |
           if [[ "${{ steps.get_version.outputs.VERSION }}" == *"beta"* ]]; then
-            npm publish --tag beta
+            npm publish "${{ steps.pack.outputs.asset }}" --provenance --tag beta
           else
-            npm publish --tag latest
+            npm publish "${{ steps.pack.outputs.asset }}" --provenance --tag latest
           fi
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
@@ -62,5 +79,10 @@ jobs:
         with:
           generate_release_notes: true
           prerelease: ${{ contains(steps.get_version.outputs.VERSION, 'beta') }}
+          files: |
+            ${{ steps.pack.outputs.asset }}
+            ${{ steps.pack.outputs.asset }}.sig
+            ${{ steps.pack.outputs.asset }}.pem
+            ${{ steps.pack.outputs.asset }}.sigstore.json
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

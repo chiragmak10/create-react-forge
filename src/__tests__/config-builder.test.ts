@@ -54,4 +54,20 @@ describe('ConfigBuilder', () => {
 
     expect(validation.success).toBe(true);
   });
+
+  it('should not mutate DEFAULT_CONFIG when toggling testing', () => {
+    const defaultTesting = structuredClone(DEFAULT_CONFIG.testing);
+
+    new ConfigBuilder().setTestingEnabled(false).build();
+
+    expect(DEFAULT_CONFIG.testing).toEqual(defaultTesting);
+  });
+
+  it('should not leak state across builder instances', () => {
+    const disabled = new ConfigBuilder().setTestingEnabled(false).build();
+    const fresh = new ConfigBuilder().build();
+
+    expect(disabled.testing.enabled).toBe(false);
+    expect(fresh.testing.enabled).toBe(true);
+  });
 });

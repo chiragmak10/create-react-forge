@@ -160,8 +160,12 @@ ${config.name}/
   }
 
   structure += `
-│   ├── styles/              # Global styles
+│   ├── styles/              # Global styles`;
+
+  if (config.language === 'typescript') {
+    structure += `
 │   └── types/               # TypeScript type definitions`;
+  }
 
   if (isNextjs) {
     structure += `
@@ -312,4 +316,3 @@ ${docLinks}
 MIT
 `;
 }
-

@@ -34,6 +34,12 @@ describe('generateReadme', () => {
       expect(readme).toContain('components/');
     });
 
+    it('should omit TypeScript-only structure details for JavaScript projects', () => {
+      const readme = generateReadme(createConfig({ language: 'javascript' }));
+
+      expect(readme).not.toContain('TypeScript type definitions');
+    });
+
     it('should include tech stack section', () => {
       const readme = generateReadme(createConfig());
 
@@ -68,6 +74,13 @@ describe('generateReadme', () => {
       const readme = generateReadme(config);
 
       expect(readme).toContain('TypeScript');
+    });
+
+    it('should include JavaScript badge when using JavaScript', () => {
+      const config = createConfig({ language: 'javascript' });
+      const readme = generateReadme(config);
+
+      expect(readme).toContain('JavaScript');
     });
 
     it('should include styling badge', () => {
@@ -234,4 +247,3 @@ describe('generateReadme', () => {
     });
   });
 });
-

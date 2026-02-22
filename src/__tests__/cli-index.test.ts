@@ -68,6 +68,19 @@ describe('CLI Index', () => {
     expect(config.testing.e2e.runner).toBe('cypress');
   });
 
+  it('should disable E2E when unit-component testing is selected', () => {
+    const config = promptAnswersToConfig(
+      createAnswers({
+        testing: 'unit-component',
+        e2eRunner: 'playwright',
+      })
+    );
+
+    expect(config.testing.enabled).toBe(true);
+    expect(config.testing.e2e.enabled).toBe(false);
+    expect(config.testing.e2e.runner).toBe('none');
+  });
+
   it('should validate project name', () => {
     expect(validateProjectName('')).toEqual({
       valid: false,
