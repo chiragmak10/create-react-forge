@@ -9,7 +9,8 @@
   "prHourlyLimit": 0,
   "prConcurrentLimit": 0,
   "branchConcurrentLimit": 0,
-  "recreateWhen": "always",
+  "recreateWhen": "auto",
+  "rebaseWhen": "conflicted",
   "lockFileMaintenance": {
     "enabled": true,
     "automerge": true,
@@ -33,6 +34,16 @@
       "managerFilePatterns": ["/^src\\/dependencies\\/resolver\\.ts$/"],
       "matchStrings": [
         "['\"](?<depName>[^'\"\\s]+)['\"]\\s*:\\s*['\"](?<currentValue>[~^]?\\d+\\.\\d+\\.\\d+(?:[-+][0-9A-Za-z.-]+)?)['\"]"
+      ],
+      "datasourceTemplate": "npm",
+      "versioningTemplate": "npm"
+    },
+    {
+      "customType": "regex",
+      "description": "Keep test fixture dependency versions in sync",
+      "managerFilePatterns": ["/^src\\/__tests__\\/assembler\\.test\\.ts$/"],
+      "matchStrings": [
+        "const\\s+[A-Z0-9_]+_VERSION\\s*=\\s*'(?<currentValue>[~^]?\\d+\\.\\d+\\.\\d+(?:[-+][0-9A-Za-z.-]+)?)';\\s*\\/\\/\\s*renovate:\\s*depName=(?<depName>[^\\s]+)"
       ],
       "datasourceTemplate": "npm",
       "versioningTemplate": "npm"

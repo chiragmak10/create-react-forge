@@ -116,7 +116,7 @@ The CLI uses pinned, tested versions for all dependencies:
 
 ## Automated dependency updates
 
-This repo now uses Renovate to auto-update dependencies (including template manifests under `src/templates/overlays/**/manifest.json`, `src/dependencies/resolver.ts`, and the dependency versions table in this README). The workflow runs weekly and can also be run manually.
+This repo now uses Renovate to auto-update dependencies (including template manifests under `src/templates/overlays/**/manifest.json`, `src/dependencies/resolver.ts`, annotated test fixture constants, and the dependency versions table in this README). The workflow runs weekly and can also be run manually.
 
 ### One-time setup
 

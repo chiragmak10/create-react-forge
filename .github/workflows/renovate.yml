@@ -21,8 +21,13 @@ jobs:
 
       - name: Validate Renovate token
         run: |
-          if [ -z "${{ secrets.RENOVATE_TOKEN }}" ]; then
+          TOKEN="${{ secrets.RENOVATE_TOKEN }}"
+          if [ -z "${TOKEN}" ]; then
             echo "RENOVATE_TOKEN secret is required to let Renovate-created PRs trigger CI workflows."
+            exit 1
+          fi
+          if [[ "${TOKEN}" == ghs_* ]]; then
+            echo "RENOVATE_TOKEN must be a PAT (ghp_* or github_pat_*), not GITHUB_TOKEN."
             exit 1
           fi
 
@@ -34,3 +39,4 @@ jobs:
         env:
           LOG_LEVEL: debug
           RENOVATE_REPOSITORIES: ${{ github.repository }}
+          RENOVATE_PLATFORM_AUTOMERGE: 'false'
