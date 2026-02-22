@@ -1,11 +1,12 @@
 <img width="1536" height="1024" alt="create-react-forge-image" src="https://github.com/user-attachments/assets/28bb7771-facd-4bee-84b1-e8de2892acbf" />
 
-----
+---
 
-[![CodeQL Security Analysis](https://github.com/chiragmak10/create-react-forge/actions/workflows/codeql.yml/badge.svg)](https://github.com/chiragmak10/create-react-forge/actions/workflows/codeql.yml) 
+[![CodeQL Security Analysis](https://github.com/chiragmak10/create-react-forge/actions/workflows/codeql.yml/badge.svg)](https://github.com/chiragmak10/create-react-forge/actions/workflows/codeql.yml)
 [![Release](https://github.com/chiragmak10/create-react-forge/actions/workflows/release.yml/badge.svg)](https://github.com/chiragmak10/create-react-forge/actions/workflows/release.yml)
 [![Dependency Review](https://github.com/chiragmak10/create-react-forge/actions/workflows/dependency-review.yml/badge.svg)](https://github.com/chiragmak10/create-react-forge/actions/workflows/dependency-review.yml)
 [![CI](https://github.com/chiragmak10/create-react-forge/actions/workflows/ci.yml/badge.svg)](https://github.com/chiragmak10/create-react-forge/actions/workflows/ci.yml)
+
 # create-react-forge
 
 Production-ready React scaffolding CLI with first-class testing, flexible runtimes (Vite/Next.js), and a composable template system inspired by [bulletproof-react](https://github.com/alan2207/bulletproof-react).
@@ -74,46 +75,48 @@ my-app/
 │   ├── stores/           # State management (if selected)
 │   ├── styles/           # Global styles
 │   ├── testing/          # Test utilities, mocks (if selected)
-│   └── types/            # Shared types
+│   └── types/            # Shared types (TypeScript projects)
 ├── tests/                # E2E tests (if selected)
 ├── README.md             # Auto-generated project README
 ├── ARCHITECTURE.md       # Auto-generated architecture docs
 └── [config files]
 ```
 
+For JavaScript projects, TypeScript-only files are omitted automatically.
+
 ## Configuration options
 
-| Category | Choices |
-|---|---|
-| **Runtime** | `vite`, `nextjs` |
-| **Language** | `typescript`, `javascript` |
-| **Styling** | `tailwind`, `styled-components`, `css-modules`, `css` (Vite: all 4, Next.js: tailwind only) |
-| **State** | `none`, `zustand`, `jotai`, `redux` |
-| **Testing** | `full`, `unit-component`, `none` |
-| **Unit runner** | `vitest`, `jest` |
-| **E2E runner** | `playwright`, `cypress` |
-| **Data fetching** | TanStack Query on/off |
-| **Package manager** | `npm`, `yarn`, `pnpm` |
-| **Git** | init on/off |
+| Category            | Choices                                                                                     |
+| ------------------- | ------------------------------------------------------------------------------------------- |
+| **Runtime**         | `vite`, `nextjs`                                                                            |
+| **Language**        | `typescript`, `javascript`                                                                  |
+| **Styling**         | `tailwind`, `styled-components`, `css-modules`, `css` (Vite: all 4, Next.js: tailwind only) |
+| **State**           | `none`, `zustand`, `jotai`, `redux`                                                         |
+| **Testing**         | `full`, `unit-component`, `none`                                                            |
+| **Unit runner**     | `vitest`, `jest`                                                                            |
+| **E2E runner**      | `playwright`, `cypress`                                                                     |
+| **Data fetching**   | TanStack Query on/off                                                                       |
+| **Package manager** | `npm`, `yarn`, `pnpm`                                                                       |
+| **Git**             | init on/off                                                                                 |
 
 ## Dependency versions
 
 The CLI uses pinned, tested versions for all dependencies:
 
-| Package | Version |
-|---|---|
-| React | ^19.0.0 |
-| Vite | ^6.0.7 |
-| Next.js | ^16.1.6 |
-| Tailwind CSS | ^4.0.0 |
+| Package        | Version  |
+| -------------- | -------- |
+| React          | ^19.0.0  |
+| Vite           | ^6.0.7   |
+| Next.js        | ^16.1.6  |
+| Tailwind CSS   | ^4.0.0   |
 | TanStack Query | ^5.62.10 |
-| Vitest | ^2.1.8 |
-| Playwright | ^1.49.1 |
-| TypeScript | ^5.7.2 |
+| Vitest         | ^2.1.8   |
+| Playwright     | ^1.49.1  |
+| TypeScript     | ^5.7.2   |
 
 ## Automated dependency updates
 
-This repo now uses Renovate to auto-update dependencies (including template manifests under `src/templates/overlays/**/manifest.json`) on a weekly schedule.
+This repo now uses Renovate to auto-update dependencies (including template manifests under `src/templates/overlays/**/manifest.json`, `src/dependencies/resolver.ts`, and the dependency versions table in this README) on a weekly schedule.
 
 ### One-time setup
 
@@ -126,6 +129,7 @@ Workflow file: `.github/workflows/renovate.yml`
 Config file: `renovate.json`
 
 Behavior:
+
 - All dependency updates (major, minor, patch) auto-merge after checks pass.
 
 ## Screenshot
@@ -162,7 +166,11 @@ const templates = registry.loadTemplatesForConfig({
   runtime: 'vite',
   styling: { solution: 'styled-components' },
   stateManagement: 'zustand',
-  testing: { enabled: true, unit: { runner: 'vitest' }, e2e: { enabled: true, runner: 'playwright' } },
+  testing: {
+    enabled: true,
+    unit: { runner: 'vitest' },
+    e2e: { enabled: true, runner: 'playwright' },
+  },
   dataFetching: { enabled: true },
 });
 ```
