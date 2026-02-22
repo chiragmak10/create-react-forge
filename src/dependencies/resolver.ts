@@ -53,7 +53,7 @@ export const VERSION_REGISTRY: Record<string, string> = {
   // Type definitions
   '@types/react': '^19.0.6',
   '@types/react-dom': '^19.0.3',
-  '@types/node': '^22.10.5',
+  '@types/node': '^25.0.0',
 
   // Routing
   'react-router-dom': '^7.1.1',
