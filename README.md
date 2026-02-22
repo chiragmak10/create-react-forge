@@ -1,5 +1,6 @@
-
 <img width="1536" height="1024" alt="create-react-forge-image" src="https://github.com/user-attachments/assets/28bb7771-facd-4bee-84b1-e8de2892acbf" />
+
+----
 
 [![CodeQL Security Analysis](https://github.com/chiragmak10/create-react-forge/actions/workflows/codeql.yml/badge.svg)](https://github.com/chiragmak10/create-react-forge/actions/workflows/codeql.yml) 
 [![Release](https://github.com/chiragmak10/create-react-forge/actions/workflows/release.yml/badge.svg)](https://github.com/chiragmak10/create-react-forge/actions/workflows/release.yml)
