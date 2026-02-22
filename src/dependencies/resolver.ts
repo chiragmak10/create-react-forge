@@ -42,7 +42,7 @@ export const VERSION_REGISTRY: Record<string, string> = {
   // Testing - E2E
   'playwright': '^1.49.1',
   '@playwright/test': '^1.49.1',
-  'cypress': '^13.17.0',
+  'cypress': '^15.0.0',
 
   // Formatting
   'prettier': '^3.4.2',
