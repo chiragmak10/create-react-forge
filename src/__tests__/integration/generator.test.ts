@@ -93,6 +93,58 @@ describe('ProjectGenerator Integration', () => {
       expect(result.errors).toHaveLength(0);
       expect(existsSync(join(config.path, 'package.json'))).toBe(true);
     });
+
+    it('should write .gitignore before git initialization', async () => {
+      const config = createBaseConfig({
+        name: 'gitignore-write',
+        git: { init: true, initialCommit: false },
+      });
+      projectPaths.push(config.path);
+
+      const generator = new ProjectGenerator(config);
+      const result = await generator.generate();
+
+      expect(result.success).toBe(true);
+      expect(existsSync(join(config.path, '.gitignore'))).toBe(true);
+    });
+
+    it('should generate JavaScript projects without TypeScript-only files', async () => {
+      const config = createBaseConfig({
+        name: 'javascript-supported',
+        language: 'javascript',
+      });
+      projectPaths.push(config.path);
+
+      const generator = new ProjectGenerator(config);
+      const result = await generator.generate();
+      const pkg = readGeneratedPackageJson(config.path);
+      const devDeps = pkg.devDependencies as Record<string, string>;
+      const scripts = pkg.scripts as Record<string, string>;
+
+      expect(result.success).toBe(true);
+      expect(result.errors).toHaveLength(0);
+      expect(existsSync(join(config.path, 'src/main.jsx'))).toBe(true);
+      expect(existsSync(join(config.path, 'tsconfig.json'))).toBe(false);
+      expect(devDeps).not.toHaveProperty('typescript');
+      expect(scripts.build).not.toContain('tsc -b');
+    });
+
+    it('should generate Next.js JavaScript projects with JavaScript entry files', async () => {
+      const config = createBaseConfig({
+        name: 'javascript-nextjs',
+        runtime: 'nextjs',
+        language: 'javascript',
+      });
+      projectPaths.push(config.path);
+
+      const generator = new ProjectGenerator(config);
+      const result = await generator.generate();
+
+      expect(result.success).toBe(true);
+      expect(existsSync(join(config.path, 'src/app/page.jsx'))).toBe(true);
+      expect(existsSync(join(config.path, 'next-env.d.ts'))).toBe(false);
+      expect(existsSync(join(config.path, 'tsconfig.json'))).toBe(false);
+    });
   });
 
   describe('Package.json Validation', () => {
@@ -380,4 +432,3 @@ describe('ProjectGenerator Integration', () => {
     });
   });
 });
-

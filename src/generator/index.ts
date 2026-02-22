@@ -2,6 +2,7 @@ import chalk from 'chalk';
 import { execSync } from 'child_process';
 import { existsSync } from 'fs';
 import ora from 'ora';
+import ts from 'typescript';
 import { ProjectAssembler } from '../assembler/index.js';
 import type { ProjectConfig } from '../config/schema.js';
 import { generateArchitectureDoc, generateReadme } from '../docs/index.js';
@@ -71,7 +72,8 @@ export class ProjectGenerator {
       // Step 3: Merge all template files
       spinner.start('Assembling project files...');
       const mergedFiles = this.registry.getMergedFiles();
-      this.assembler.addFiles(mergedFiles);
+      const languageAdjustedFiles = this.adjustTemplateFilesForLanguage(mergedFiles);
+      this.assembler.addFiles(languageAdjustedFiles);
 
       // Add Architecture Documentation
       const archDoc = generateArchitectureDoc(this.config);
@@ -82,8 +84,8 @@ export class ProjectGenerator {
       this.assembler.addFile('README.md', readmeDoc);
 
       // Step 4: Merge dependencies
-      const { dependencies, devDependencies, scripts } = this.registry.getMergedDependencies();
-      this.assembler.mergeTemplateDeps({ dependencies, devDependencies, scripts });
+      const mergedDeps = this.registry.getMergedDependencies();
+      this.assembler.mergeTemplateDeps(this.adjustTemplatePackageDataForLanguage(mergedDeps));
 
       // Add TypeScript if configured
       if (this.config.language === 'typescript') {
@@ -92,7 +94,12 @@ export class ProjectGenerator {
         });
       }
 
-      spinner.succeed(`Assembled ${mergedFiles.size} files`);
+      // Add .gitignore before writing files, so it is persisted on disk.
+      if (this.config.git.init) {
+        this.assembler.addFile('.gitignore', this.getGitignoreContent());
+      }
+
+      spinner.succeed(`Assembled ${languageAdjustedFiles.size} files`);
 
       // Step 5: Write files to disk
       spinner.start('Writing files...');
@@ -138,6 +145,144 @@ export class ProjectGenerator {
     }
   }
 
+  private adjustTemplateFilesForLanguage(files: Map<string, string>): Map<string, string> {
+    if (this.config.language === 'typescript') {
+      return files;
+    }
+
+    const adjusted = new Map<string, string>();
+
+    for (const [filePath, content] of files.entries()) {
+      const adjustedPath = this.getLanguageAdjustedPath(filePath);
+      if (!adjustedPath) {
+        continue;
+      }
+
+      const adjustedContent = this.getLanguageAdjustedContent(filePath, content);
+      if (adjustedContent === null) {
+        continue;
+      }
+
+      adjusted.set(adjustedPath, adjustedContent);
+    }
+
+    return adjusted;
+  }
+
+  private getLanguageAdjustedPath(filePath: string): string | null {
+    if (this.config.language === 'typescript') {
+      return filePath;
+    }
+
+    if (this.isTypeScriptOnlyFile(filePath)) {
+      return null;
+    }
+
+    if (filePath.endsWith('.tsx')) {
+      return `${filePath.slice(0, -4)}.jsx`;
+    }
+
+    if (filePath.endsWith('.ts')) {
+      return `${filePath.slice(0, -3)}.js`;
+    }
+
+    return filePath;
+  }
+
+  private getLanguageAdjustedContent(filePath: string, content: string): string | null {
+    if (content.startsWith('__BINARY__:') || this.config.language === 'typescript') {
+      return content;
+    }
+
+    if (filePath.endsWith('.ts') || filePath.endsWith('.tsx')) {
+      const transpiled = this.transpileTemplateToJavaScript(filePath, content);
+      const normalized = this.rewriteTypeScriptFileReferences(transpiled);
+
+      // Type-only template files compile to an empty module in JavaScript projects.
+      if (normalized.trim() === 'export {};') {
+        return null;
+      }
+
+      return normalized;
+    }
+
+    return this.rewriteTypeScriptFileReferences(content);
+  }
+
+  private transpileTemplateToJavaScript(filePath: string, content: string): string {
+    const transpiled = ts.transpileModule(content, {
+      compilerOptions: {
+        target: ts.ScriptTarget.ES2021,
+        module: ts.ModuleKind.ESNext,
+        moduleResolution: ts.ModuleResolutionKind.Bundler,
+        jsx: ts.JsxEmit.Preserve,
+        allowSyntheticDefaultImports: true,
+        esModuleInterop: true,
+      },
+      fileName: filePath,
+      reportDiagnostics: false,
+    });
+
+    return transpiled.outputText;
+  }
+
+  private rewriteTypeScriptFileReferences(content: string): string {
+    return content
+      .replace(/\.tsx\b/g, '.jsx')
+      .replace(/(?<!\.d)\.ts\b/g, '.js');
+  }
+
+  private isTypeScriptOnlyFile(filePath: string): boolean {
+    return filePath.endsWith('.d.ts') || /(^|\/)tsconfig(\..+)?\.json$/.test(filePath);
+  }
+
+  private adjustTemplatePackageDataForLanguage(data: {
+    dependencies: Record<string, string>;
+    devDependencies: Record<string, string>;
+    scripts: Record<string, string>;
+  }): {
+    dependencies: Record<string, string>;
+    devDependencies: Record<string, string>;
+    scripts: Record<string, string>;
+  } {
+    if (this.config.language === 'typescript') {
+      return data;
+    }
+
+    const dependencies = { ...data.dependencies };
+    const devDependencies = { ...data.devDependencies };
+    const scripts = { ...data.scripts };
+
+    for (const dep of Object.keys(dependencies)) {
+      if (this.isTypeScriptOnlyDependency(dep)) {
+        delete dependencies[dep];
+      }
+    }
+
+    for (const dep of Object.keys(devDependencies)) {
+      if (this.isTypeScriptOnlyDependency(dep)) {
+        delete devDependencies[dep];
+      }
+    }
+
+    for (const [name, command] of Object.entries(scripts)) {
+      scripts[name] = this.rewriteTypeScriptFileReferences(command).replace(
+        /^tsc\s+-b\s*&&\s*/,
+        ''
+      );
+    }
+
+    return { dependencies, devDependencies, scripts };
+  }
+
+  private isTypeScriptOnlyDependency(packageName: string): boolean {
+    return (
+      packageName === 'typescript' ||
+      packageName === 'ts-jest' ||
+      packageName.startsWith('@types/')
+    );
+  }
+
   /**
    * Initialize git repository
    */
@@ -147,8 +292,24 @@ export class ProjectGenerator {
       stdio: 'ignore',
     });
 
-    // Create .gitignore if it doesn't exist
-    const gitignoreContent = `# Dependencies
+    if (this.config.git.initialCommit) {
+      try {
+        execSync('git add -A', {
+          cwd: this.config.path,
+          stdio: 'ignore',
+        });
+        execSync('git commit -m "Initial commit from create-react-forge"', {
+          cwd: this.config.path,
+          stdio: 'ignore',
+        });
+      } catch {
+        // Git commit may fail if git user is not configured
+      }
+    }
+  }
+
+  private getGitignoreContent(): string {
+    return `# Dependencies
 node_modules/
 
 # Build output
@@ -185,23 +346,6 @@ yarn-error.log*
 test-results/
 playwright-report/
 `;
-
-    this.assembler.addFile('.gitignore', gitignoreContent);
-
-    if (this.config.git.initialCommit) {
-      try {
-        execSync('git add -A', {
-          cwd: this.config.path,
-          stdio: 'ignore',
-        });
-        execSync('git commit -m "Initial commit from create-react-forge"', {
-          cwd: this.config.path,
-          stdio: 'ignore',
-        });
-      } catch {
-        // Git commit may fail if git user is not configured
-      }
-    }
   }
 
   /**
@@ -236,4 +380,3 @@ export async function generateProject(config: ProjectConfig): Promise<Generation
   const generator = new ProjectGenerator(config);
   return generator.generate();
 }
-

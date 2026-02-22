@@ -2,6 +2,10 @@ import type { ProjectConfig } from '../config/schema.js';
 
 export function generateArchitectureDoc(config: ProjectConfig): string {
   const { runtime, language, styling, stateManagement, dataFetching, testing } = config;
+  const typesLine =
+    language === 'typescript'
+      ? '├── types/               # TypeScript type definitions\n'
+      : '';
 
   return `# Project Architecture
 
@@ -25,7 +29,7 @@ src/
 ├── features/            # Feature-based modules
 ├── hooks/               # Custom React hooks
 ${dataFetching.enabled ? '├── lib/                 # Third-party library configs\n' : ''}├── providers/           # React context providers
-${stateManagement !== 'none' ? '├── stores/              # State management stores\n' : ''}├── types/               # TypeScript type definitions
+${stateManagement !== 'none' ? '├── stores/              # State management stores\n' : ''}${typesLine}
 └── utils/               # Utility functions
 \`\`\`
 
@@ -73,4 +77,3 @@ We use **${stateManagement}** for global client state.
 ` : 'Local state (`useState`) is preferred. Global state is managed via Context API if needed.'}
 `;
 }
-

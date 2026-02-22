@@ -464,6 +464,38 @@ describe('Real-World Scenarios', () => {
     });
   });
 
+  describe('JavaScript Configuration', () => {
+    it('should not include tsconfig files for JavaScript projects', async () => {
+      const config = createConfig('js-config', {
+        language: 'javascript',
+      });
+      projectPaths.push(config.path);
+
+      const generator = new ProjectGenerator(config);
+      await generator.generate();
+
+      expect(existsSync(join(config.path, 'tsconfig.json'))).toBe(false);
+      expect(existsSync(join(config.path, 'tsconfig.node.json'))).toBe(false);
+      expect(existsSync(join(config.path, 'src/main.jsx'))).toBe(true);
+    });
+
+    it('should not include TypeScript as devDependency in JavaScript projects', async () => {
+      const config = createConfig('js-dep', {
+        language: 'javascript',
+      });
+      projectPaths.push(config.path);
+
+      const generator = new ProjectGenerator(config);
+      await generator.generate();
+
+      const pkg = readGeneratedPackageJson(config.path);
+      const devDeps = pkg.devDependencies as Record<string, string>;
+
+      expect(devDeps).not.toHaveProperty('typescript');
+      expect(Object.keys(devDeps).some((dep) => dep.startsWith('@types/'))).toBe(false);
+    });
+  });
+
   describe('No Conflicts Between Templates', () => {
     it('should not have conflicting scripts when multiple templates loaded', async () => {
       const config = createConfig('no-conflicts', {
@@ -522,4 +554,3 @@ describe('Real-World Scenarios', () => {
     });
   });
 });
-

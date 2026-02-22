@@ -99,7 +99,7 @@ export async function promptForProjectDetails(
   })) as 'full' | 'unit-component' | 'none';
 
   let unitRunner: 'vitest' | 'jest' = 'vitest';
-  let e2eRunner: 'playwright' | 'cypress' | 'none' = 'playwright';
+  let e2eRunner: 'playwright' | 'cypress' | 'none' = 'none';
 
   if (testing !== 'none') {
     unitRunner = (await select({
@@ -171,7 +171,4 @@ export async function confirmProceed(message: string = 'Proceed?'): Promise<bool
     default: true,
   });
 }
-
-
-
 

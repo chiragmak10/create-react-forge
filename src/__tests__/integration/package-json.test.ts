@@ -364,6 +364,29 @@ describe('Package.json Generation', () => {
 
       expect(devDeps).toHaveProperty('typescript');
     });
+
+    it('should exclude TypeScript-only dependencies for javascript projects', async () => {
+      const config = createConfig('javascript-deps', {
+        language: 'javascript',
+        testing: {
+          enabled: true,
+          unit: { enabled: true, runner: 'jest' },
+          component: { enabled: true, library: 'testing-library' },
+          e2e: { enabled: false, runner: 'none' },
+        },
+      });
+      projectPaths.push(config.path);
+
+      const generator = new ProjectGenerator(config);
+      await generator.generate();
+
+      const pkg = readGeneratedPackageJson(config.path);
+      const devDeps = pkg.devDependencies as Record<string, string>;
+
+      expect(devDeps).not.toHaveProperty('typescript');
+      expect(devDeps).not.toHaveProperty('ts-jest');
+      expect(Object.keys(devDeps).some((dep) => dep.startsWith('@types/'))).toBe(false);
+    });
   });
 
   describe('Scripts', () => {
@@ -379,6 +402,22 @@ describe('Package.json Generation', () => {
 
       expect(scripts.dev).toContain('vite');
       expect(scripts.build).toContain('vite');
+    });
+
+    it('should not include TypeScript build step for javascript Vite projects', async () => {
+      const config = createConfig('vite-js-scripts', {
+        runtime: 'vite',
+        language: 'javascript',
+      });
+      projectPaths.push(config.path);
+
+      const generator = new ProjectGenerator(config);
+      await generator.generate();
+
+      const pkg = readGeneratedPackageJson(config.path);
+      const scripts = pkg.scripts as Record<string, string>;
+
+      expect(scripts.build).toBe('vite build');
     });
 
     it('should have dev script for Next.js', async () => {
@@ -468,4 +507,3 @@ describe('Package.json Generation', () => {
     });
   });
 });
-
