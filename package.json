@@ -88,10 +88,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/chiragmak10/react-setup"
+    "url": "git+https://github.com/chiragmak10/create-react-forge.git"
   },
   "bugs": {
-    "url": "https://github.com/chiragmak10/react-setup/issues"
+    "url": "https://github.com/chiragmak10/create-react-forge/issues"
   },
-  "homepage": "https://github.com/chiragmak10/react-setup#readme"
+  "homepage": "https://github.com/chiragmak10/create-react-forge#readme"
 }

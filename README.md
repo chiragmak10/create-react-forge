@@ -75,12 +75,14 @@ my-app/
 │   ├── stores/           # State management (if selected)
 │   ├── styles/           # Global styles
 │   ├── testing/          # Test utilities, mocks (if selected)
-│   └── types/            # Shared types
+│   └── types/            # Shared types (TypeScript projects)
 ├── tests/                # E2E tests (if selected)
 ├── README.md             # Auto-generated project README
 ├── ARCHITECTURE.md       # Auto-generated architecture docs
 └── [config files]
 ```
+
+For JavaScript projects, TypeScript-only files are omitted automatically.
 
 ## Configuration options
 
@@ -114,7 +116,7 @@ The CLI uses pinned, tested versions for all dependencies:
 
 ## Automated dependency updates
 
-This repo now uses Renovate to auto-update dependencies (including template manifests under `src/templates/overlays/**/manifest.json`) on a weekly schedule.
+This repo now uses Renovate to auto-update dependencies (including template manifests under `src/templates/overlays/**/manifest.json`, `src/dependencies/resolver.ts`, and the dependency versions table in this README) on a weekly schedule.
 
 ### One-time setup
 
