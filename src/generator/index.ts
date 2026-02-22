@@ -5,6 +5,7 @@ import ora from 'ora';
 import ts from 'typescript';
 import { ProjectAssembler } from '../assembler/index.js';
 import type { ProjectConfig } from '../config/schema.js';
+import { VERSION_REGISTRY } from '../dependencies/resolver.js';
 import { generateArchitectureDoc, generateReadme } from '../docs/index.js';
 import { TemplateRegistry } from '../templates/registry.js';
 
@@ -90,7 +91,7 @@ export class ProjectGenerator {
       // Add TypeScript if configured
       if (this.config.language === 'typescript') {
         this.assembler.addDevDependencies({
-          'typescript': '^5.3.0',
+          typescript: VERSION_REGISTRY.typescript,
         });
       }
 
@@ -108,7 +109,9 @@ export class ProjectGenerator {
 
       if (writeResult.errors.length > 0) {
         result.errors.push(...writeResult.errors);
-        spinner.warn(`Written ${writeResult.filesWritten} files with ${writeResult.errors.length} errors`);
+        spinner.warn(
+          `Written ${writeResult.filesWritten} files with ${writeResult.errors.length} errors`
+        );
       } else {
         spinner.succeed(`Written ${writeResult.filesWritten} files`);
       }
@@ -227,9 +230,7 @@ export class ProjectGenerator {
   }
 
   private rewriteTypeScriptFileReferences(content: string): string {
-    return content
-      .replace(/\.tsx\b/g, '.jsx')
-      .replace(/(?<!\.d)\.ts\b/g, '.js');
+    return content.replace(/\.tsx\b/g, '.jsx').replace(/(?<!\.d)\.ts\b/g, '.js');
   }
 
   private isTypeScriptOnlyFile(filePath: string): boolean {
@@ -277,9 +278,7 @@ export class ProjectGenerator {
 
   private isTypeScriptOnlyDependency(packageName: string): boolean {
     return (
-      packageName === 'typescript' ||
-      packageName === 'ts-jest' ||
-      packageName.startsWith('@types/')
+      packageName === 'typescript' || packageName === 'ts-jest' || packageName.startsWith('@types/')
     );
   }
 

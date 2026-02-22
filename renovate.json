@@ -2,7 +2,6 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["config:recommended"],
   "labels": ["dependencies"],
-  "schedule": ["before 6am on monday"],
   "rangeStrategy": "bump",
   "dependencyDashboard": true,
   "lockFileMaintenance": {
@@ -14,9 +13,10 @@
   "customManagers": [
     {
       "customType": "regex",
+      "description": "Keep template manifest dependency versions in sync",
       "managerFilePatterns": ["/^src\\/templates\\/overlays\\/.*\\/manifest\\.json$/"],
       "matchStrings": [
-        "(?m)^\\s{4}\"(?<depName>[^\"\\s]+)\":\\s*\"(?<currentValue>[~^]?\\d+\\.\\d+\\.\\d(?:[-+][0-9A-Za-z.-]+)?)\",?$"
+        "\\s{4}\"(?<depName>[^\"\\s]+)\"\\s*:\\s*\"(?<currentValue>[~^]?\\d+\\.\\d+\\.\\d+(?:[-+][0-9A-Za-z.-]+)?)\""
       ],
       "datasourceTemplate": "npm",
       "versioningTemplate": "npm"
@@ -26,7 +26,7 @@
       "description": "Keep dependency version registry in sync",
       "managerFilePatterns": ["/^src\\/dependencies\\/resolver\\.ts$/"],
       "matchStrings": [
-        "(?m)^\\s*'(?<depName>[^'\\s]+)'\\s*:\\s*'(?<currentValue>[~^]?\\d+\\.\\d+\\.\\d(?:[-+][0-9A-Za-z.-]+)?)',?$"
+        "['\"](?<depName>[^'\"\\s]+)['\"]\\s*:\\s*['\"](?<currentValue>[~^]?\\d+\\.\\d+\\.\\d+(?:[-+][0-9A-Za-z.-]+)?)['\"]"
       ],
       "datasourceTemplate": "npm",
       "versioningTemplate": "npm"
@@ -36,7 +36,7 @@
       "description": "Keep README React version row in sync",
       "managerFilePatterns": ["/^README\\.md$/"],
       "matchStrings": [
-        "(?m)^\\|\\s*React\\s*\\|\\s*(?<currentValue>[~^]?\\d+\\.\\d+\\.\\d(?:[-+][0-9A-Za-z.-]+)?)\\s*\\|$"
+        "\\|\\s*React\\s*\\|\\s*(?<currentValue>[~^]?\\d+\\.\\d+\\.\\d+(?:[-+][0-9A-Za-z.-]+)?)\\s*\\|"
       ],
       "depNameTemplate": "react",
       "datasourceTemplate": "npm",
@@ -47,7 +47,7 @@
       "description": "Keep README Vite version row in sync",
       "managerFilePatterns": ["/^README\\.md$/"],
       "matchStrings": [
-        "(?m)^\\|\\s*Vite\\s*\\|\\s*(?<currentValue>[~^]?\\d+\\.\\d+\\.\\d(?:[-+][0-9A-Za-z.-]+)?)\\s*\\|$"
+        "\\|\\s*Vite\\s*\\|\\s*(?<currentValue>[~^]?\\d+\\.\\d+\\.\\d+(?:[-+][0-9A-Za-z.-]+)?)\\s*\\|"
       ],
       "depNameTemplate": "vite",
       "datasourceTemplate": "npm",
@@ -58,7 +58,7 @@
       "description": "Keep README Next.js version row in sync",
       "managerFilePatterns": ["/^README\\.md$/"],
       "matchStrings": [
-        "(?m)^\\|\\s*Next\\.js\\s*\\|\\s*(?<currentValue>[~^]?\\d+\\.\\d+\\.\\d(?:[-+][0-9A-Za-z.-]+)?)\\s*\\|$"
+        "\\|\\s*Next\\.js\\s*\\|\\s*(?<currentValue>[~^]?\\d+\\.\\d+\\.\\d+(?:[-+][0-9A-Za-z.-]+)?)\\s*\\|"
       ],
       "depNameTemplate": "next",
       "datasourceTemplate": "npm",
@@ -69,7 +69,7 @@
       "description": "Keep README Tailwind CSS version row in sync",
       "managerFilePatterns": ["/^README\\.md$/"],
       "matchStrings": [
-        "(?m)^\\|\\s*Tailwind CSS\\s*\\|\\s*(?<currentValue>[~^]?\\d+\\.\\d+\\.\\d(?:[-+][0-9A-Za-z.-]+)?)\\s*\\|$"
+        "\\|\\s*Tailwind CSS\\s*\\|\\s*(?<currentValue>[~^]?\\d+\\.\\d+\\.\\d+(?:[-+][0-9A-Za-z.-]+)?)\\s*\\|"
       ],
       "depNameTemplate": "tailwindcss",
       "datasourceTemplate": "npm",
@@ -80,7 +80,7 @@
       "description": "Keep README TanStack Query version row in sync",
       "managerFilePatterns": ["/^README\\.md$/"],
       "matchStrings": [
-        "(?m)^\\|\\s*TanStack Query\\s*\\|\\s*(?<currentValue>[~^]?\\d+\\.\\d+\\.\\d(?:[-+][0-9A-Za-z.-]+)?)\\s*\\|$"
+        "\\|\\s*TanStack Query\\s*\\|\\s*(?<currentValue>[~^]?\\d+\\.\\d+\\.\\d+(?:[-+][0-9A-Za-z.-]+)?)\\s*\\|"
       ],
       "depNameTemplate": "@tanstack/react-query",
       "datasourceTemplate": "npm",
@@ -91,7 +91,7 @@
       "description": "Keep README Vitest version row in sync",
       "managerFilePatterns": ["/^README\\.md$/"],
       "matchStrings": [
-        "(?m)^\\|\\s*Vitest\\s*\\|\\s*(?<currentValue>[~^]?\\d+\\.\\d+\\.\\d(?:[-+][0-9A-Za-z.-]+)?)\\s*\\|$"
+        "\\|\\s*Vitest\\s*\\|\\s*(?<currentValue>[~^]?\\d+\\.\\d+\\.\\d+(?:[-+][0-9A-Za-z.-]+)?)\\s*\\|"
       ],
       "depNameTemplate": "vitest",
       "datasourceTemplate": "npm",
@@ -102,7 +102,7 @@
       "description": "Keep README Playwright version row in sync",
       "managerFilePatterns": ["/^README\\.md$/"],
       "matchStrings": [
-        "(?m)^\\|\\s*Playwright\\s*\\|\\s*(?<currentValue>[~^]?\\d+\\.\\d+\\.\\d(?:[-+][0-9A-Za-z.-]+)?)\\s*\\|$"
+        "\\|\\s*Playwright\\s*\\|\\s*(?<currentValue>[~^]?\\d+\\.\\d+\\.\\d+(?:[-+][0-9A-Za-z.-]+)?)\\s*\\|"
       ],
       "depNameTemplate": "@playwright/test",
       "datasourceTemplate": "npm",
@@ -113,7 +113,7 @@
       "description": "Keep README TypeScript version row in sync",
       "managerFilePatterns": ["/^README\\.md$/"],
       "matchStrings": [
-        "(?m)^\\|\\s*TypeScript\\s*\\|\\s*(?<currentValue>[~^]?\\d+\\.\\d+\\.\\d(?:[-+][0-9A-Za-z.-]+)?)\\s*\\|$"
+        "\\|\\s*TypeScript\\s*\\|\\s*(?<currentValue>[~^]?\\d+\\.\\d+\\.\\d+(?:[-+][0-9A-Za-z.-]+)?)\\s*\\|"
       ],
       "depNameTemplate": "typescript",
       "datasourceTemplate": "npm",
