@@ -3,7 +3,11 @@
   "extends": ["config:recommended"],
   "labels": ["dependencies"],
   "rangeStrategy": "bump",
+  "onboarding": false,
   "dependencyDashboard": true,
+  "dependencyDashboardApproval": false,
+  "prCreation": "immediate",
+  "prHourlyLimit": 0,
   "lockFileMaintenance": {
     "enabled": true,
     "automerge": true,
