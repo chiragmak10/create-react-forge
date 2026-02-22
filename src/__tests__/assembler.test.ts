@@ -5,10 +5,6 @@ import { describe, expect, it } from 'vitest';
 import type { ProjectConfig } from '../config/schema';
 import { ProjectAssembler } from '../assembler';
 
-const TSX_VERSION = '^4.19.2'; // renovate: depName=tsx
-const REACT_VERSION = '^19.0.0'; // renovate: depName=react
-const TYPESCRIPT_VERSION = '^5.7.2'; // renovate: depName=typescript
-
 function createConfig(overrides: Partial<ProjectConfig> = {}): ProjectConfig {
   return {
     name: 'test-app',
@@ -44,9 +40,7 @@ describe('ProjectAssembler', () => {
     );
     const files = assembler.getFiles();
 
-    expect(files.get('README.md')).toBe(
-      'awesome-app | A production-ready React application |  | MIT'
-    );
+    expect(files.get('README.md')).toBe('awesome-app | A production-ready React application |  | MIT');
 
     files.set('another.md', 'changed');
     expect(assembler.getFiles().has('another.md')).toBe(false);
@@ -70,11 +64,11 @@ describe('ProjectAssembler', () => {
     );
 
     assembler.addDependencies({ zeta: '^1.0.0', alpha: '^1.0.0' });
-    assembler.addDevDependencies({ tsx: TSX_VERSION });
+    assembler.addDevDependencies({ tsx: '^4.0.0' });
     assembler.addScripts({ dev: 'vite', build: 'vite build' });
     assembler.mergeTemplateDeps({
-      dependencies: { react: REACT_VERSION },
-      devDependencies: { typescript: TYPESCRIPT_VERSION },
+      dependencies: { react: '^19.0.0' },
+      devDependencies: { typescript: '^5.0.0' },
       scripts: { test: 'vitest' },
     });
 
@@ -97,8 +91,8 @@ describe('ProjectAssembler', () => {
 
     expect(Object.keys(pkg.dependencies)).toEqual(['alpha', 'react', 'zeta']);
     expect(pkg.devDependencies).toMatchObject({
-      tsx: TSX_VERSION,
-      typescript: TYPESCRIPT_VERSION,
+      tsx: '^4.0.0',
+      typescript: '^5.0.0',
     });
     expect(pkg.scripts).toMatchObject({
       dev: 'vite',
