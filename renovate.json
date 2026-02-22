@@ -14,12 +14,108 @@
   "customManagers": [
     {
       "customType": "regex",
-      "managerFilePatterns": [
-        "/^src\\/templates\\/overlays\\/.*\\/manifest\\.json$/"
-      ],
+      "managerFilePatterns": ["/^src\\/templates\\/overlays\\/.*\\/manifest\\.json$/"],
       "matchStrings": [
         "(?m)^\\s{4}\"(?<depName>[^\"\\s]+)\":\\s*\"(?<currentValue>[~^]?\\d+\\.\\d+\\.\\d(?:[-+][0-9A-Za-z.-]+)?)\",?$"
       ],
+      "datasourceTemplate": "npm",
+      "versioningTemplate": "npm"
+    },
+    {
+      "customType": "regex",
+      "description": "Keep dependency version registry in sync",
+      "managerFilePatterns": ["/^src\\/dependencies\\/resolver\\.ts$/"],
+      "matchStrings": [
+        "(?m)^\\s*'(?<depName>[^'\\s]+)'\\s*:\\s*'(?<currentValue>[~^]?\\d+\\.\\d+\\.\\d(?:[-+][0-9A-Za-z.-]+)?)',?$"
+      ],
+      "datasourceTemplate": "npm",
+      "versioningTemplate": "npm"
+    },
+    {
+      "customType": "regex",
+      "description": "Keep README React version row in sync",
+      "managerFilePatterns": ["/^README\\.md$/"],
+      "matchStrings": [
+        "(?m)^\\|\\s*React\\s*\\|\\s*(?<currentValue>[~^]?\\d+\\.\\d+\\.\\d(?:[-+][0-9A-Za-z.-]+)?)\\s*\\|$"
+      ],
+      "depNameTemplate": "react",
+      "datasourceTemplate": "npm",
+      "versioningTemplate": "npm"
+    },
+    {
+      "customType": "regex",
+      "description": "Keep README Vite version row in sync",
+      "managerFilePatterns": ["/^README\\.md$/"],
+      "matchStrings": [
+        "(?m)^\\|\\s*Vite\\s*\\|\\s*(?<currentValue>[~^]?\\d+\\.\\d+\\.\\d(?:[-+][0-9A-Za-z.-]+)?)\\s*\\|$"
+      ],
+      "depNameTemplate": "vite",
+      "datasourceTemplate": "npm",
+      "versioningTemplate": "npm"
+    },
+    {
+      "customType": "regex",
+      "description": "Keep README Next.js version row in sync",
+      "managerFilePatterns": ["/^README\\.md$/"],
+      "matchStrings": [
+        "(?m)^\\|\\s*Next\\.js\\s*\\|\\s*(?<currentValue>[~^]?\\d+\\.\\d+\\.\\d(?:[-+][0-9A-Za-z.-]+)?)\\s*\\|$"
+      ],
+      "depNameTemplate": "next",
+      "datasourceTemplate": "npm",
+      "versioningTemplate": "npm"
+    },
+    {
+      "customType": "regex",
+      "description": "Keep README Tailwind CSS version row in sync",
+      "managerFilePatterns": ["/^README\\.md$/"],
+      "matchStrings": [
+        "(?m)^\\|\\s*Tailwind CSS\\s*\\|\\s*(?<currentValue>[~^]?\\d+\\.\\d+\\.\\d(?:[-+][0-9A-Za-z.-]+)?)\\s*\\|$"
+      ],
+      "depNameTemplate": "tailwindcss",
+      "datasourceTemplate": "npm",
+      "versioningTemplate": "npm"
+    },
+    {
+      "customType": "regex",
+      "description": "Keep README TanStack Query version row in sync",
+      "managerFilePatterns": ["/^README\\.md$/"],
+      "matchStrings": [
+        "(?m)^\\|\\s*TanStack Query\\s*\\|\\s*(?<currentValue>[~^]?\\d+\\.\\d+\\.\\d(?:[-+][0-9A-Za-z.-]+)?)\\s*\\|$"
+      ],
+      "depNameTemplate": "@tanstack/react-query",
+      "datasourceTemplate": "npm",
+      "versioningTemplate": "npm"
+    },
+    {
+      "customType": "regex",
+      "description": "Keep README Vitest version row in sync",
+      "managerFilePatterns": ["/^README\\.md$/"],
+      "matchStrings": [
+        "(?m)^\\|\\s*Vitest\\s*\\|\\s*(?<currentValue>[~^]?\\d+\\.\\d+\\.\\d(?:[-+][0-9A-Za-z.-]+)?)\\s*\\|$"
+      ],
+      "depNameTemplate": "vitest",
+      "datasourceTemplate": "npm",
+      "versioningTemplate": "npm"
+    },
+    {
+      "customType": "regex",
+      "description": "Keep README Playwright version row in sync",
+      "managerFilePatterns": ["/^README\\.md$/"],
+      "matchStrings": [
+        "(?m)^\\|\\s*Playwright\\s*\\|\\s*(?<currentValue>[~^]?\\d+\\.\\d+\\.\\d(?:[-+][0-9A-Za-z.-]+)?)\\s*\\|$"
+      ],
+      "depNameTemplate": "@playwright/test",
+      "datasourceTemplate": "npm",
+      "versioningTemplate": "npm"
+    },
+    {
+      "customType": "regex",
+      "description": "Keep README TypeScript version row in sync",
+      "managerFilePatterns": ["/^README\\.md$/"],
+      "matchStrings": [
+        "(?m)^\\|\\s*TypeScript\\s*\\|\\s*(?<currentValue>[~^]?\\d+\\.\\d+\\.\\d(?:[-+][0-9A-Za-z.-]+)?)\\s*\\|$"
+      ],
+      "depNameTemplate": "typescript",
       "datasourceTemplate": "npm",
       "versioningTemplate": "npm"
     }
