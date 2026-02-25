@@ -1,5 +1,5 @@
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { execSync, spawn } from 'node:child_process';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { execSync } from 'node:child_process';
 import { promises as fs } from 'node:fs';
 import { join, sep } from 'node:path';
 import os from 'node:os';
@@ -151,7 +151,7 @@ describe('Cross-Platform CLI E2E Tests', () => {
     it('should use correct package manager detection', () => {
       // Should detect available package manager on platform
       const hasNpm = checkCommandExists('npm');
-      const hasYarn = checkCommandExists('yarn');
+      // const hasYarn = checkCommandExists('yarn');
 
       // At least npm should be available
       expect(hasNpm).toBe(true);

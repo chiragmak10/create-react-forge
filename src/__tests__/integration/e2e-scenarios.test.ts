@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, afterEach } from 'vitest';
 import { existsSync, mkdtempSync, rmSync, readFileSync } from 'fs';
 import { tmpdir } from 'os';
 import { join } from 'path';
@@ -203,7 +203,7 @@ describe('E2E Scenarios - Real-World Project Configurations', () => {
       expect(result.success).toBe(true);
 
       // Should not have TypeScript config
-      const hasTypeScript = existsSync(join(tempDir, 'tsconfig.json'));
+      // const hasTypeScript = existsSync(join(tempDir, 'tsconfig.json'));
       // Note: Depending on implementation, TS config might still exist as base
       expect(existsSync(join(tempDir, 'package.json'))).toBe(true);
 

@@ -43,7 +43,7 @@ describe('E2E CLI Command Tests', () => {
 
     it('should display help information', async () => {
       const { stdout } = await execa('node', ['dist/index.js', '--help']);
-      expect(stdout).toContain('create-react-forge') || expect(stdout).toContain('Usage');
+      expect(stdout).toContain('create-react-forge') || void expect(stdout).toContain('Usage');
     });
 
     it('should handle help flag on different platforms', async () => {
