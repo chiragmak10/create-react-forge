@@ -17,11 +17,10 @@ describe('Cross-Platform CLI E2E Tests', () => {
 
   beforeEach(async () => {
     // Create unique test directory for each test using a secure temp directory
-      testDir = mkdtempSync(join(os.tmpdir(), 'crf-test-'));
       testDir = await fs.mkdtemp(join(os.tmpdir(), 'crf-test-'));
-      console.error(`Failed to create test directory`, err);
+      testDir = await fs.mkdtemp(join(os.tmpdir(), 'crf-test-'));
       console.error(`Failed to create test directory in temp dir`, err);
-    }
+      console.error(`Failed to create test directory in temp dir`, err);
   });
 
   afterEach(async () => {
