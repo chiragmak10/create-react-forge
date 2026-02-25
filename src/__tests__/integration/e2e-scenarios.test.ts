@@ -11,7 +11,10 @@ import type { ProjectConfig } from '../../config/schema';
  */
 
 function getTempDir(): string {
-  return mkdtempSync(join(tmpdir(), 'crf-e2e-scenario-'));
+  return join(
+    tmpdir(),
+    `crf-e2e-scenario-${Date.now()}-${Math.random().toString(36).substring(7)}`
+  );
 }
 
 function createConfig(overrides: Partial<ProjectConfig> = {}): ProjectConfig {
@@ -31,7 +34,7 @@ function createConfig(overrides: Partial<ProjectConfig> = {}): ProjectConfig {
     },
     linting: { prettier: true },
     packageManager: 'npm',
-    git: { init: false },
+    git: { init: false, initialCommit: false },
   };
   return { ...defaults, ...overrides };
 }
@@ -59,7 +62,7 @@ describe('E2E Scenarios - Real-World Project Configurations', () => {
         },
         dataFetching: { enabled: true, library: 'tanstack-query' },
         packageManager: 'npm',
-        git: { init: true },
+        git: { init: true, initialCommit: false },
       });
 
       const generator = new ProjectGenerator(config);
@@ -130,11 +133,11 @@ describe('E2E Scenarios - Real-World Project Configurations', () => {
           enabled: true,
           unit: { enabled: true, runner: 'jest' },
           component: { enabled: true, library: 'testing-library' },
-          e2e: { enabled: true, runner: 'cypress' },
+          e2e: { enabled: true, runner: 'playwright' },
         },
         dataFetching: { enabled: true, library: 'tanstack-query' },
         packageManager: 'pnpm',
-        git: { init: true },
+        git: { init: true, initialCommit: false },
       });
 
       const generator = new ProjectGenerator(config);
@@ -153,7 +156,7 @@ describe('E2E Scenarios - Real-World Project Configurations', () => {
       expect(pkg.dependencies.next).toBeDefined();
       expect(pkg.dependencies['@reduxjs/toolkit']).toBeDefined();
       expect(pkg.devDependencies.jest).toBeDefined();
-      expect(pkg.devDependencies.cypress).toBeDefined();
+      expect(pkg.devDependencies['@playwright/test']).toBeDefined();
 
       rmSync(tempDir, { recursive: true, force: true });
     });
@@ -478,7 +481,10 @@ describe('E2E Scenarios - Real-World Project Configurations', () => {
 
     it('should generate documentation files', async () => {
       const tempDir = getTempDir();
-      const config = createConfig({ path: tempDir });
+      const config = createConfig({
+        path: tempDir,
+        git: { init: true, initialCommit: false },
+      });
 
       const generator = new ProjectGenerator(config);
       await generator.generate();
