@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { execa } from 'execa';
+import { execa, type ExecaError } from 'execa';
 import { promises as fs } from 'node:fs';
 import { join } from 'node:path';
 import os from 'node:os';
@@ -40,10 +40,10 @@ describe('E2E CLI Command Tests', () => {
         console.warn('Version check:', err);
       }
     });
-
     it('should display help information', async () => {
       const { stdout } = await execa('node', ['dist/index.js', '--help']);
-      expect(stdout).toContain('create-react-forge') || void expect(stdout).toContain('Usage');
+      const hasHelpContent = stdout.includes('create-react-forge') || stdout.includes('Usage');
+      expect(hasHelpContent).toBe(true);
     });
 
     it('should handle help flag on different platforms', async () => {
@@ -167,7 +167,7 @@ describe('E2E CLI Command Tests', () => {
       try {
         await execa('node', ['dist/index.js', '--nonexistent-flag']);
       } catch (err) {
-        const error = err as any;
+        const error = err as ExecaError;
         expect(error.exitCode || error.code).toBeTruthy();
       }
     });

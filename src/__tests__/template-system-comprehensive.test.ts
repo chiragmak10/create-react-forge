@@ -132,11 +132,16 @@ describe('TemplateRegistry - Template System', () => {
     });
 
     it('should load all styling solutions', () => {
-      const styles = ['tailwind', 'styled-components', 'css-modules', 'css'];
+      const styles: Array<'tailwind' | 'styled-components' | 'css-modules' | 'css'> = [
+        'tailwind',
+        'styled-components',
+        'css-modules',
+        'css',
+      ];
 
       styles.forEach((style) => {
         const config = createTestConfig({
-          styling: { solution: style as any },
+          styling: { solution: style },
         });
 
         const templates = registry.loadTemplatesForConfig(config);
@@ -183,11 +188,16 @@ describe('TemplateRegistry - Template System', () => {
     });
 
     it('should load all state management options', () => {
-      const stateOptions = ['none', 'zustand', 'redux', 'jotai'];
+      const stateOptions: Array<'none' | 'zustand' | 'redux' | 'jotai'> = [
+        'none',
+        'zustand',
+        'redux',
+        'jotai',
+      ];
 
       stateOptions.forEach((state) => {
         const config = createTestConfig({
-          stateManagement: state as any,
+          stateManagement: state,
         });
 
         const templates = registry.loadTemplatesForConfig(config);

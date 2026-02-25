@@ -398,13 +398,18 @@ describe('E2E Scenarios - Real-World Project Configurations', () => {
     });
 
     it('should handle all styling solutions', async () => {
-      const styles = ['tailwind', 'styled-components', 'css-modules', 'css'];
+      const styles: Array<'tailwind' | 'styled-components' | 'css-modules' | 'css'> = [
+        'tailwind',
+        'styled-components',
+        'css-modules',
+        'css',
+      ];
 
       for (const style of styles) {
         const tempDir = getTempDir();
         const config = createConfig({
           path: tempDir,
-          styling: { solution: style as any },
+          styling: { solution: style },
         });
 
         const generator = new ProjectGenerator(config);
@@ -417,13 +422,18 @@ describe('E2E Scenarios - Real-World Project Configurations', () => {
     });
 
     it('should handle all state management options', async () => {
-      const states = ['none', 'zustand', 'redux', 'jotai'];
+      const states: Array<'none' | 'zustand' | 'redux' | 'jotai'> = [
+        'none',
+        'zustand',
+        'redux',
+        'jotai',
+      ];
 
       for (const state of states) {
         const tempDir = getTempDir();
         const config = createConfig({
           path: tempDir,
-          stateManagement: state as any,
+          stateManagement: state,
         });
 
         const generator = new ProjectGenerator(config);
