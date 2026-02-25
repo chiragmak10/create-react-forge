@@ -3,7 +3,7 @@ import { execa, type ExecaError } from 'execa';
 import { promises as fs } from 'node:fs';
 import { join } from 'node:path';
 import os from 'node:os';
-import { existsSync, mkdtempSync } from 'node:fs';
+import { existsSync } from 'node:fs';
 
 /**
  * E2E CLI Command Tests
