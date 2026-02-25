@@ -3,7 +3,7 @@ import { execSync } from 'node:child_process';
 import { promises as fs } from 'node:fs';
 import { join, sep } from 'node:path';
 import os from 'node:os';
-import { existsSync, mkdtempSync } from 'node:fs';
+import { existsSync } from 'node:fs';
 
 /**
  * Cross-platform CLI E2E tests
