@@ -174,7 +174,7 @@ describe('E2E CLI Command Tests', () => {
   describe('Platform Path Handling', () => {
     it('should handle paths correctly on all platforms', async () => {
       const testFile = join(testDir, 'test.txt');
-      await fs.writeFile(testFile, 'test');
+      await fs.writeFile(testFile, 'test', { mode: 0o600 });
 
       expect(existsSync(testFile)).toBe(true);
     });

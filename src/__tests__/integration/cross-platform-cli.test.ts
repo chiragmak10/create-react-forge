@@ -117,7 +117,7 @@ describe('Cross-Platform CLI E2E Tests', () => {
       const testFile = join(testDir, 'test.txt');
       const content = 'line1\nline2\nline3';
 
-      await fs.writeFile(testFile, content);
+      await fs.writeFile(testFile, content, { mode: 0o600 });
       const read = await fs.readFile(testFile, 'utf-8');
 
       // Should preserve content regardless of platform
@@ -132,7 +132,7 @@ describe('Cross-Platform CLI E2E Tests', () => {
       const file1 = join(testDir, 'test.txt');
       const file2 = join(testDir, 'TEST.txt');
 
-      await fs.writeFile(file1, 'test1');
+      await fs.writeFile(file1, 'test1', { mode: 0o600 });
 
       if (platform === 'win32' || platform === 'darwin') {
         // Windows and macOS are case-insensitive
@@ -157,7 +157,7 @@ describe('Cross-Platform CLI E2E Tests', () => {
     it('should handle permissions correctly on Unix systems', async () => {
       if (platform !== 'win32') {
         const scriptPath = join(testDir, 'test.sh');
-        await fs.writeFile(scriptPath, '#!/bin/bash\necho "test"');
+        await fs.writeFile(scriptPath, '#!/bin/bash\necho "test"', { mode: 0o600 });
 
         // File should be created successfully
         expect(existsSync(scriptPath)).toBe(true);
