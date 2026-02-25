@@ -3,7 +3,7 @@ import { execSync } from 'node:child_process';
 import { promises as fs } from 'node:fs';
 import { join, sep } from 'node:path';
 import os from 'node:os';
-import { existsSync } from 'node:fs';
+import { existsSync, mkdtempSync } from 'node:fs';
 
 /**
  * Cross-platform CLI E2E tests
@@ -16,12 +16,12 @@ describe('Cross-Platform CLI E2E Tests', () => {
   const platform = os.platform(); // 'win32', 'darwin', 'linux'
 
   beforeEach(async () => {
-    // Create unique test directory for each test
-    testDir = join(os.tmpdir(), `crf-test-${Date.now()}-${Math.random().toString(36).slice(2)}`);
+    // Create unique test directory for each test using secure mkdtemp
     try {
-      await fs.mkdir(testDir, { recursive: true });
+      testDir = mkdtempSync(join(os.tmpdir(), 'crf-test-'));
     } catch (err) {
-      console.error(`Failed to create test directory: ${testDir}`, err);
+      console.error(`Failed to create test directory`, err);
+      throw err;
     }
   });
 

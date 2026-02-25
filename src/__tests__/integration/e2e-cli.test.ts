@@ -3,7 +3,7 @@ import { execa, type ExecaError } from 'execa';
 import { promises as fs } from 'node:fs';
 import { join } from 'node:path';
 import os from 'node:os';
-import { existsSync } from 'node:fs';
+import { existsSync, mkdtempSync } from 'node:fs';
 
 /**
  * E2E CLI Command Tests
@@ -15,8 +15,7 @@ describe('E2E CLI Command Tests', () => {
   let testDir: string;
 
   beforeEach(async () => {
-    testDir = join(os.tmpdir(), `crf-e2e-${Date.now()}-${Math.random().toString(36).slice(2)}`);
-    await fs.mkdir(testDir, { recursive: true });
+    testDir = mkdtempSync(join(os.tmpdir(), 'crf-e2e-'));
   });
 
   afterEach(async () => {
