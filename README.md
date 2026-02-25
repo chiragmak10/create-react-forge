@@ -7,7 +7,6 @@
 [![Dependency Review](https://github.com/chiragmak10/create-react-forge/actions/workflows/dependency-review.yml/badge.svg)](https://github.com/chiragmak10/create-react-forge/actions/workflows/dependency-review.yml)
 [![CI](https://github.com/chiragmak10/create-react-forge/actions/workflows/ci.yml/badge.svg)](https://github.com/chiragmak10/create-react-forge/actions/workflows/ci.yml)
 
-  
 # create-react-forge
 
 Production-ready React scaffolding CLI with first-class testing, flexible runtimes (Vite/Next.js), and a composable template system inspired by [bulletproof-react](https://github.com/alan2207/bulletproof-react).
@@ -176,11 +175,18 @@ const templates = registry.loadTemplatesForConfig({
 });
 ```
 
+## Cross-Platform Support
+
+This project is tested across **Windows, macOS, and Linux** using GitHub Actions CI/CD pipeline. Every pull request runs on all three platforms with Node 20.x and 22.x to ensure consistent user experience.
+
+See [CROSS_PLATFORM_TESTING.md](./CROSS_PLATFORM_TESTING.md) for detailed testing strategy and local testing instructions.
+
 ## Troubleshooting
 
 - **"Directory already exists"**: pick a new project directory (or delete the existing folder).
 - **Node version issues**: ensure `node -v` is **20.9.0+**.
-- **Install step**: dependencies are not installed automatically — run your package manager install in the generated folder.
+- **Install step**: dependencies are not installed automatically — you'll run your package manager install after generation.
+- **Module resolution errors**: if you see "Cannot find package" errors, try `npm install` to reinstall dependencies and clear npm cache.
 
 ## Architecture & development
 
@@ -190,6 +196,8 @@ See [ARCHITECTURE.md](./ARCHITECTURE.md) for internal design details.
 npm install
 npm run dev       # Run CLI in development
 npm run test      # Run tests
+npm run test:watch   # Run tests in watch mode
+npm run test:coverage # Run with coverage report
 npm run build     # Build to dist/
 ```
 
