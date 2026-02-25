@@ -16,12 +16,11 @@ describe('Cross-Platform CLI E2E Tests', () => {
   const platform = os.platform(); // 'win32', 'darwin', 'linux'
 
   beforeEach(async () => {
-    // Create unique test directory for each test using secure mkdtemp
-    try {
+    // Create unique test directory for each test using a secure temp directory
       testDir = mkdtempSync(join(os.tmpdir(), 'crf-test-'));
-    } catch (err) {
+      testDir = await fs.mkdtemp(join(os.tmpdir(), 'crf-test-'));
       console.error(`Failed to create test directory`, err);
-      throw err;
+      console.error(`Failed to create test directory in temp dir`, err);
     }
   });
 
