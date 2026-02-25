@@ -16,6 +16,7 @@ describe('E2E CLI Command Tests', () => {
 
   beforeEach(async () => {
     testDir = await fs.mkdtemp(join(os.tmpdir(), 'crf-e2e-'));
+  });
 
   afterEach(async () => {
     if (existsSync(testDir)) {
