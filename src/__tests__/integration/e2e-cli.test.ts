@@ -11,7 +11,7 @@ import { existsSync } from 'node:fs';
  * across different platforms
  */
 
-describe.skip('E2E CLI Command Tests', () => {
+describe('E2E CLI Command Tests', () => {
   let testDir: string;
 
   beforeEach(async () => {
