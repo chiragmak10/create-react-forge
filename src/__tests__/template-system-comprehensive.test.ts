@@ -2,8 +2,8 @@ import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { existsSync, mkdtempSync, rmSync } from 'fs';
 import { tmpdir } from 'os';
 import { join } from 'path';
-import { TemplateRegistry } from '../../templates/registry';
-import type { ProjectConfig } from '../../config/schema';
+import { TemplateRegistry } from '../templates/registry';
+import type { ProjectConfig } from '../config/schema';
 
 /**
  * Template System Comprehensive Tests

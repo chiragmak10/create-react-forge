@@ -2,8 +2,8 @@ import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { existsSync, mkdtempSync, rmSync, readFileSync } from 'fs';
 import { tmpdir } from 'os';
 import { join } from 'path';
-import { ProjectGenerator } from '../../generator/index';
-import type { ProjectConfig } from '../../config/schema';
+import { ProjectGenerator } from '../generator/index';
+import type { ProjectConfig } from '../config/schema';
 
 /**
  * Project Generator Comprehensive Tests

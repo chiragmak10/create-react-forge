@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { ConfigBuilder } from '../../config/builder';
-import type { ProjectConfig } from '../../config/schema';
-import { ProjectConfigSchema } from '../../config/schema';
+import { ConfigBuilder } from '../config/builder';
+import type { ProjectConfig } from '../config/schema';
+import { ProjectConfigSchema } from '../config/schema';
 
 /**
  * ConfigBuilder Comprehensive Tests
