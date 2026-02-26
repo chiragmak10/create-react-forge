@@ -67,7 +67,7 @@ describe('Package.json Generation', () => {
       await generator.generate();
 
       const pkg = readGeneratedPackageJson(config.path);
-      
+
       expect(pkg).toHaveProperty('name');
       expect(pkg).toHaveProperty('version');
       expect(pkg).toHaveProperty('scripts');
@@ -165,7 +165,7 @@ describe('Package.json Generation', () => {
       expect(devDeps).toHaveProperty('autoprefixer');
     });
 
-    it.skip('should not include tailwind when none styling selected', async () => {
+    it('should not include tailwind when none styling selected', async () => {
       const config = createConfig('none-styling-deps', {
         runtime: 'nextjs',
         styling: { solution: 'none' },
