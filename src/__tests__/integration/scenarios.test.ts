@@ -82,7 +82,7 @@ describe('Real-World Scenarios', () => {
       const result = await generator.generate();
 
       expect(result.success).toBe(true);
-      
+
       const pkg = readGeneratedPackageJson(config.path);
       const deps = pkg.dependencies as Record<string, string>;
       const devDeps = pkg.devDependencies as Record<string, string>;
@@ -91,7 +91,7 @@ describe('Real-World Scenarios', () => {
       expect(deps).toHaveProperty('react');
       expect(deps).toHaveProperty('react-dom');
       expect(devDeps).toHaveProperty('vite');
-      
+
       // Should NOT have optional deps
       expect(deps).not.toHaveProperty('zustand');
       expect(deps).not.toHaveProperty('@tanstack/react-query');
@@ -229,7 +229,7 @@ describe('Real-World Scenarios', () => {
     });
   });
 
-  describe.skip('Scenario: Next.js with Redux', () => {
+  describe('Scenario: Next.js with Redux', () => {
     it('should generate Next.js + None styling + Redux', async () => {
       const config = createConfig('nextjs-redux', {
         runtime: 'nextjs',
@@ -343,7 +343,7 @@ describe('Real-World Scenarios', () => {
       await generator.generate();
 
       const viteConfig = readFile(config.path, 'vite.config.ts');
-      
+
       expect(viteConfig).toContain('import');
       expect(viteConfig).toContain('defineConfig');
       expect(viteConfig).toContain('react');
@@ -359,7 +359,7 @@ describe('Real-World Scenarios', () => {
       await generator.generate();
 
       const nextConfig = readFile(config.path, 'next.config.js');
-      
+
       expect(nextConfig).toContain('nextConfig');
     });
 
@@ -373,7 +373,7 @@ describe('Real-World Scenarios', () => {
       await generator.generate();
 
       const tailwindConfig = readFile(config.path, 'tailwind.config.js');
-      
+
       expect(tailwindConfig).toContain('content');
       expect(tailwindConfig).toContain('theme');
     });
@@ -393,7 +393,7 @@ describe('Real-World Scenarios', () => {
       await generator.generate();
 
       const vitestConfig = readFile(config.path, 'vitest.config.ts');
-      
+
       expect(vitestConfig).toContain('defineConfig');
       expect(vitestConfig).toContain('test');
     });
@@ -413,7 +413,7 @@ describe('Real-World Scenarios', () => {
       await generator.generate();
 
       const pwConfig = readFile(config.path, 'playwright.config.ts');
-      
+
       expect(pwConfig).toContain('defineConfig');
       expect(pwConfig).toContain('projects');
     });
@@ -441,7 +441,7 @@ describe('Real-World Scenarios', () => {
       await generator.generate();
 
       expect(existsSync(join(config.path, 'tsconfig.json'))).toBe(true);
-      
+
       // tsconfig.json may contain comments, so check content as string
       const tsConfigContent = readFile(config.path, 'tsconfig.json');
       expect(tsConfigContent).toContain('compilerOptions');
@@ -459,7 +459,7 @@ describe('Real-World Scenarios', () => {
 
       const pkg = readGeneratedPackageJson(config.path);
       const devDeps = pkg.devDependencies as Record<string, string>;
-      
+
       expect(devDeps).toHaveProperty('typescript');
     });
   });
@@ -549,7 +549,7 @@ describe('Real-World Scenarios', () => {
       const devDeps = Object.keys(pkg.devDependencies as Record<string, string>);
 
       // Check no package appears in both deps and devDeps
-      const overlap = deps.filter(d => devDeps.includes(d));
+      const overlap = deps.filter((d) => devDeps.includes(d));
       expect(overlap, 'Packages should not appear in both deps and devDeps').toHaveLength(0);
     });
   });

@@ -29,6 +29,9 @@
     "test:watch": "vitest",
     "test:ui": "vitest --ui",
     "test:coverage": "vitest run --coverage",
+    "test:cross-platform": "vitest run src/__tests__/integration/cross-platform-cli.test.ts",
+    "test:e2e": "vitest run src/__tests__/integration/e2e-cli.test.ts",
+    "test:local": "bash scripts/test-local.sh",
     "lint": "eslint src --ext .ts,.tsx",
     "format": "prettier --write src",
     "clean": "rm -rf dist",
@@ -55,6 +58,7 @@
     "node": ">=20.9.0"
   },
   "dependencies": {
+    "@inquirer/core": "^9.1.0",
     "@inquirer/prompts": "^8.2.0",
     "chalk": "^5.4.1",
     "commander": "^12.1.0",

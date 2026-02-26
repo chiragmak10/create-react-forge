@@ -80,9 +80,9 @@ describe('ProjectGenerator Integration', () => {
     });
 
     it('should generate a minimal Next.js project', async () => {
-      const config = createBaseConfig({ 
+      const config = createBaseConfig({
         name: 'minimal-nextjs',
-        runtime: 'nextjs' 
+        runtime: 'nextjs',
       });
       projectPaths.push(config.path);
 
@@ -171,9 +171,9 @@ describe('ProjectGenerator Integration', () => {
     });
 
     it('should have sorted dependencies', async () => {
-      const config = createBaseConfig({ 
+      const config = createBaseConfig({
         name: 'sorted-deps',
-        dataFetching: { enabled: true, library: 'tanstack-query' }
+        dataFetching: { enabled: true, library: 'tanstack-query' },
       });
       projectPaths.push(config.path);
 
@@ -183,7 +183,7 @@ describe('ProjectGenerator Integration', () => {
       const pkg = readGeneratedPackageJson(config.path);
       const deps = Object.keys(pkg.dependencies as Record<string, string>);
       const sortedDeps = [...deps].sort((a, b) => a.localeCompare(b));
-      
+
       expect(deps).toEqual(sortedDeps);
     });
 
@@ -196,7 +196,7 @@ describe('ProjectGenerator Integration', () => {
 
       const pkg = readGeneratedPackageJson(config.path);
       const scripts = pkg.scripts as Record<string, string>;
-      
+
       expect(scripts).toHaveProperty('dev');
       expect(scripts).toHaveProperty('build');
     });
@@ -223,28 +223,28 @@ describe('ProjectGenerator Integration', () => {
       const result = await generator.generate();
 
       expect(result.success).toBe(true);
-      
+
       const pkg = readGeneratedPackageJson(config.path);
       const deps = pkg.dependencies as Record<string, string>;
       const devDeps = pkg.devDependencies as Record<string, string>;
-      
+
       // Check Zustand
       expect(deps).toHaveProperty('zustand');
-      
+
       // Check TanStack Query
       expect(deps).toHaveProperty('@tanstack/react-query');
-      
+
       // Check Tailwind
       expect(devDeps).toHaveProperty('tailwindcss');
-      
+
       // Check Vitest
       expect(devDeps).toHaveProperty('vitest');
-      
+
       // Check Playwright (uses @playwright/test package)
       expect(devDeps).toHaveProperty('@playwright/test');
     });
 
-    it.skip('should generate Next.js + None styling + Redux', async () => {
+    it('should generate Next.js + None styling + Redux', async () => {
       const config = createBaseConfig({
         name: 'nextjs-redux',
         runtime: 'nextjs',
@@ -263,23 +263,23 @@ describe('ProjectGenerator Integration', () => {
       const result = await generator.generate();
 
       expect(result.success).toBe(true);
-      
+
       const pkg = readGeneratedPackageJson(config.path);
       const deps = pkg.dependencies as Record<string, string>;
       const devDeps = pkg.devDependencies as Record<string, string>;
-      
+
       // Check Next.js
       expect(deps).toHaveProperty('next');
-      
+
       // Check Redux
       expect(deps).toHaveProperty('@reduxjs/toolkit');
       expect(deps).toHaveProperty('react-redux');
-      
+
       // Check Vitest
       expect(devDeps).toHaveProperty('vitest');
     });
 
-    it.skip('should generate Vite + Jest + Playwright', async () => {
+    it('should generate Vite + Jest + Playwright', async () => {
       const config = createBaseConfig({
         name: 'vite-jest-pw',
         runtime: 'vite',
@@ -297,13 +297,13 @@ describe('ProjectGenerator Integration', () => {
       const result = await generator.generate();
 
       expect(result.success).toBe(true);
-      
+
       const pkg = readGeneratedPackageJson(config.path);
       const devDeps = pkg.devDependencies as Record<string, string>;
-      
+
       // Check Jest
       expect(devDeps).toHaveProperty('jest');
-      
+
       // Check Playwright (uses @playwright/test package)
       expect(devDeps).toHaveProperty('@playwright/test');
     });
@@ -323,9 +323,9 @@ describe('ProjectGenerator Integration', () => {
     });
 
     it('should create app directory structure for Next.js', async () => {
-      const config = createBaseConfig({ 
+      const config = createBaseConfig({
         name: 'nextjs-structure',
-        runtime: 'nextjs' 
+        runtime: 'nextjs',
       });
       projectPaths.push(config.path);
 

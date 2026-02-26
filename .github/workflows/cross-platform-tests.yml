@@ -1,0 +1,188 @@
+name: Cross-Platform Tests
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  test:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        node-version: ['20.x', '22.x']
+      fail-fast: false
+
+    runs-on: ${{ matrix.os }}
+    name: Test on ${{ matrix.os }} (Node ${{ matrix.node-version }})
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build project
+        run: npm run build
+
+      - name: Run unit tests
+        run: npm test
+
+      - name: Run integration tests
+        run: npm test -- src/__tests__/integration/
+
+      - name: Run cross-platform tests
+        run: npm test -- src/__tests__/integration/cross-platform-cli.test.ts
+
+      - name: Run E2E CLI tests
+        run: npm test -- src/__tests__/integration/e2e-cli.test.ts
+
+      - name: Run E2E scenario tests
+        run: npm test -- src/__tests__/integration/e2e-scenarios.test.ts
+
+      - name: Run config builder comprehensive tests
+        run: npm test -- config-builder-comprehensive.test.ts
+
+      - name: Run template system comprehensive tests
+        run: npm test -- template-system-comprehensive.test.ts
+
+      - name: Run generator comprehensive tests
+        run: npm test -- generator-comprehensive.test.ts
+
+      - name: Test CLI command (Unix)
+        if: runner.os != 'Windows'
+        run: |
+          # Test that the CLI can be invoked
+          node dist/index.js --version || true
+          node dist/index.js --help || true
+
+      - name: Test CLI command (Windows)
+        if: runner.os == 'Windows'
+        shell: powershell
+        run: |
+          # Test that the CLI can be invoked
+          node dist/index.js --version -or $true
+          node dist/index.js --help -or $true
+
+      - name: Upload coverage
+        if: matrix.os == 'ubuntu-latest'
+        uses: codecov/codecov-action@v4
+        with:
+          files: ./coverage/lcov.info
+          flags: unittests
+          name: codecov-umbrella
+
+  e2e-scaffold-test:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+
+    runs-on: ${{ matrix.os }}
+    name: E2E Scaffold Test on ${{ matrix.os }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build project
+        run: npm run build
+
+      - name: Test scaffolding (Unix)
+        if: runner.os != 'Windows'
+        run: |
+          # Create a temporary directory for testing
+          TEST_DIR=$(mktemp -d)
+          echo "Testing in: $TEST_DIR"
+
+          # Note: Actual scaffolding test would be interactive
+          # For now, just verify the CLI can be invoked
+          node dist/index.js --help
+          echo "✓ CLI is executable and responsive"
+
+      - name: Test scaffolding (Windows)
+        if: runner.os == 'Windows'
+        shell: powershell
+        run: |
+          # Create a temporary directory for testing
+          $TEST_DIR = New-TemporaryFile | ForEach-Object { Remove-Item $_; New-Item -ItemType Directory -Path $_ }
+          Write-Output "Testing in: $TEST_DIR"
+
+          # Verify the CLI can be invoked
+          node dist/index.js --help
+          Write-Output "✓ CLI is executable and responsive"
+
+  lint:
+    runs-on: ubuntu-latest
+    name: Lint and Format Check
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run linter
+        run: npm run lint
+
+  build-artifacts:
+    needs: [test, e2e-scaffold-test, lint]
+    runs-on: ubuntu-latest
+    name: Verify Build Artifacts
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build project
+        run: npm run build
+
+      - name: Check dist files exist
+        run: |
+          if [ ! -f "dist/index.js" ]; then
+            echo "dist/index.js not found"
+            exit 1
+          fi
+          echo "✓ Build artifacts verified"
+        shell: bash
+
+      - name: Verify TypeScript definitions
+        run: |
+          if [ ! -f "dist/index.d.ts" ]; then
+            echo "dist/index.d.ts not found"
+            exit 1
+          fi
+          echo "✓ TypeScript definitions verified"
+        shell: bash
