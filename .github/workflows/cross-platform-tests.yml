@@ -48,13 +48,13 @@ jobs:
         run: npm test -- src/__tests__/integration/e2e-scenarios.test.ts
 
       - name: Run config builder comprehensive tests
-        run: npm test -- config-builder-comprehensive.test.ts
+        run: npm test -- src/__tests__/config-builder.test.ts
 
       - name: Run template system comprehensive tests
-        run: npm test -- template-system-comprehensive.test.ts
+        run: npm test -- src/__tests__/integration/template-loading.test.ts
 
       - name: Run generator comprehensive tests
-        run: npm test -- generator-comprehensive.test.ts
+        run: npm test -- src/__tests__/integration/generator.test.ts
 
       - name: Test CLI command (Unix)
         if: runner.os != 'Windows'
