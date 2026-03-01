@@ -142,6 +142,11 @@
       "allowedVersions": "<10.0.0"
     },
     {
+      "description": "Keep ESLint on v9 until typescript-eslint adds ESLint v10 support",
+      "matchPackageNames": ["eslint"],
+      "allowedVersions": "<10.0.0"
+    },
+    {
       "description": "Group non-major updates to reduce PR volume and conflict churn",
       "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
       "groupName": "non-major dependencies",
