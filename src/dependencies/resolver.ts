@@ -37,7 +37,7 @@ export const VERSION_REGISTRY: Record<string, string> = {
   '@testing-library/react': '^16.1.0',
   '@testing-library/jest-dom': '^6.6.3',
   '@testing-library/user-event': '^14.5.2',
-  'jsdom': '^25.0.1',
+  'jsdom': '^27.0.0',
 
   // Testing - E2E
   'playwright': '^1.49.1',
