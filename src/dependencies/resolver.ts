@@ -29,8 +29,8 @@ export const VERSION_REGISTRY: Record<string, string> = {
   '@tanstack/react-query-devtools': '^5.62.10',
 
   // Testing - Unit
-  'vitest': '^2.1.8',
-  '@vitest/ui': '^2.1.8',
+  'vitest': '^4.0.0',
+  '@vitest/ui': '^4.0.0',
   'jest': '^29.7.0',
 
   // Testing - Component
