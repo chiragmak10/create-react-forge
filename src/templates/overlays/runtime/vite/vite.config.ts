@@ -22,5 +22,10 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     sourcemap: true,
+    rollupOptions: {
+      // Keep Rollup input anchored to the same canonical root path on Windows.
+      // This avoids short-path (RUNNER~1) vs long-path (runneradmin) mismatches.
+      input: path.resolve(projectRoot, 'index.html'),
+    },
   },
 });
