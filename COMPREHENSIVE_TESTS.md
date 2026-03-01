@@ -30,7 +30,7 @@ Tests the configuration builder and validation system.
 **Test Cases**: 50+
 
 ```bash
-npm test -- config-builder-comprehensive.test.ts
+npm test -- src/__tests__/config-builder.test.ts
 ```
 
 ---
@@ -56,7 +56,7 @@ Tests the template registry and template composition system.
 **Test Cases**: 40+
 
 ```bash
-npm test -- template-system-comprehensive.test.ts
+npm test -- src/__tests__/integration/template-loading.test.ts
 ```
 
 ---
@@ -86,7 +86,7 @@ Tests the project generator for actual project creation.
 **Test Cases**: 50+
 
 ```bash
-npm test -- generator-comprehensive.test.ts
+npm test -- src/__tests__/integration/generator.test.ts
 ```
 
 ---
@@ -189,18 +189,18 @@ npm test -- src/__tests__/integration/e2e-scenarios.test.ts
 6. **Config Builder Comprehensive**
 
    ```
-   npm test -- config-builder-comprehensive.test.ts
+   npm test -- src/__tests__/config-builder.test.ts
    ```
 
 7. **Template System Comprehensive**
 
    ```
-   npm test -- template-system-comprehensive.test.ts
+   npm test -- src/__tests__/integration/template-loading.test.ts
    ```
 
 8. **Generator Comprehensive**
    ```
-   npm test -- generator-comprehensive.test.ts
+   npm test -- src/__tests__/integration/generator.test.ts
    ```
 
 ### CI Matrix
@@ -223,9 +223,9 @@ npm test
 ### Specific Test Suite
 
 ```bash
-npm test -- config-builder-comprehensive.test.ts
-npm test -- template-system-comprehensive.test.ts
-npm test -- generator-comprehensive.test.ts
+npm test -- src/__tests__/config-builder.test.ts
+npm test -- src/__tests__/integration/template-loading.test.ts
+npm test -- src/__tests__/integration/generator.test.ts
 npm test -- src/__tests__/integration/e2e-scenarios.test.ts
 ```
 
