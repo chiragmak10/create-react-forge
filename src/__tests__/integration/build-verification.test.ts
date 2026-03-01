@@ -1,4 +1,4 @@
-import { existsSync, rmSync } from 'fs';
+import { existsSync, realpathSync, rmSync } from 'fs';
 import { tmpdir } from 'os';
 import { join } from 'path';
 import { afterEach, describe, expect, it } from 'vitest';
@@ -52,16 +52,24 @@ const TEST_HOOK_TIMEOUT_MS = Number(process.env.CRF_TEST_HOOK_TIMEOUT_MS ?? 3000
 
 async function installDependencies(projectPath: string) {
   return execa('npm', ['install', '--no-audit', '--no-fund'], {
-    cwd: projectPath,
+    cwd: getCommandCwd(projectPath),
     timeout: NPM_INSTALL_TIMEOUT_MS,
   });
 }
 
 async function buildProject(projectPath: string) {
   return execa('npm', ['run', 'build'], {
-    cwd: projectPath,
+    cwd: getCommandCwd(projectPath),
     timeout: NPM_BUILD_TIMEOUT_MS,
   });
+}
+
+function getCommandCwd(projectPath: string): string {
+  try {
+    return realpathSync(projectPath);
+  } catch {
+    return projectPath;
+  }
 }
 
 describe('Build Verification Tests', () => {

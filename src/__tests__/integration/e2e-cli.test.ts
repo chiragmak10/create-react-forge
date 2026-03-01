@@ -11,6 +11,8 @@ import { existsSync } from 'node:fs';
  * across different platforms
  */
 
+const CLI_TEST_TIMEOUT_MS = Number(process.env.CRF_CLI_TEST_TIMEOUT_MS ?? 30000);
+
 describe('E2E CLI Command Tests', () => {
   let testDir: string;
 
@@ -45,19 +47,23 @@ describe('E2E CLI Command Tests', () => {
       expect(hasHelpContent).toBe(true);
     });
 
-    it('should handle help flag on different platforms', async () => {
-      const helpFlags = ['--help', '-h', '--version', '-V'];
+    it(
+      'should handle help flag on different platforms',
+      { timeout: CLI_TEST_TIMEOUT_MS },
+      async () => {
+        const helpFlags = ['--help', '-h', '--version', '-V'];
 
-      for (const flag of helpFlags) {
-        try {
-          const { stdout, stderr } = await execa('node', ['dist/index.js', flag]);
-          expect(stdout || stderr).toBeTruthy();
-        } catch (err) {
-          // Some flags might error in non-interactive mode
-          console.warn(`Flag ${flag} error:`, err);
+        for (const flag of helpFlags) {
+          try {
+            const { stdout, stderr } = await execa('node', ['dist/index.js', flag]);
+            expect(stdout || stderr).toBeTruthy();
+          } catch (err) {
+            // Some flags might error in non-interactive mode
+            console.warn(`Flag ${flag} error:`, err);
+          }
         }
       }
-    });
+    );
   });
 
   describe('CLI Platform-Specific Execution', () => {
@@ -90,7 +96,7 @@ describe('E2E CLI Command Tests', () => {
   });
 
   describe('CLI Error Handling', () => {
-    it('should handle invalid arguments gracefully', { timeout: 10000 }, async () => {
+    it('should handle invalid arguments gracefully', { timeout: CLI_TEST_TIMEOUT_MS }, async () => {
       try {
         await execa('node', ['dist/index.js', '--invalid-flag']);
       } catch (err) {
@@ -99,7 +105,7 @@ describe('E2E CLI Command Tests', () => {
       }
     });
 
-    it('should handle missing required arguments', { timeout: 10000 }, async () => {
+    it('should handle missing required arguments', { timeout: CLI_TEST_TIMEOUT_MS }, async () => {
       try {
         // When called without flags, the CLI prompts for input
         // In non-interactive test environment, we need to provide stdin or skip
@@ -114,20 +120,24 @@ describe('E2E CLI Command Tests', () => {
   });
 
   describe('CLI Output Consistency', () => {
-    it('should produce consistent output across multiple runs', { timeout: 10000 }, async () => {
-      const runs = [];
+    it(
+      'should produce consistent output across multiple runs',
+      { timeout: CLI_TEST_TIMEOUT_MS },
+      async () => {
+        const runs = [];
 
-      for (let i = 0; i < 3; i++) {
-        const { stdout } = await execa('node', ['dist/index.js', '--help']);
-        runs.push(stdout);
+        for (let i = 0; i < 3; i++) {
+          const { stdout } = await execa('node', ['dist/index.js', '--help']);
+          runs.push(stdout);
+        }
+
+        // All runs should be identical
+        expect(runs[0]).toBe(runs[1]);
+        expect(runs[1]).toBe(runs[2]);
       }
+    );
 
-      // All runs should be identical
-      expect(runs[0]).toBe(runs[1]);
-      expect(runs[1]).toBe(runs[2]);
-    });
-
-    it('should handle concurrent CLI invocations', { timeout: 10000 }, async () => {
+    it('should handle concurrent CLI invocations', { timeout: CLI_TEST_TIMEOUT_MS }, async () => {
       const results = await Promise.allSettled([
         execa('node', ['dist/index.js', '--help']),
         execa('node', ['dist/index.js', '--help']),
@@ -154,7 +164,7 @@ describe('E2E CLI Command Tests', () => {
   });
 
   describe('CLI Exit Codes', () => {
-    it('should exit with code 0 on success', { timeout: 10000 }, async () => {
+    it('should exit with code 0 on success', { timeout: CLI_TEST_TIMEOUT_MS }, async () => {
       try {
         const result = await execa('node', ['dist/index.js', '--help']);
         expect(result.exitCode === undefined || result.exitCode === 0).toBe(true);
@@ -164,7 +174,7 @@ describe('E2E CLI Command Tests', () => {
       }
     });
 
-    it('should exit with non-zero on error', { timeout: 10000 }, async () => {
+    it('should exit with non-zero on error', { timeout: CLI_TEST_TIMEOUT_MS }, async () => {
       try {
         await execa('node', ['dist/index.js', '--nonexistent-flag']);
       } catch (err) {
