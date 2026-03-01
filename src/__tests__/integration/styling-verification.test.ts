@@ -1,6 +1,5 @@
 import { execa } from 'execa';
-import { existsSync, realpathSync, rmSync } from 'fs';
-import { tmpdir } from 'os';
+import { existsSync, mkdirSync, realpathSync, rmSync } from 'fs';
 import { join } from 'path';
 import { afterEach, describe, expect, it } from 'vitest';
 import { ProjectConfig } from '../../config/schema.js';
@@ -12,7 +11,14 @@ import { ProjectGenerator } from '../../generator/index.js';
  */
 
 function getTempProjectPath(name: string): string {
-  return join(tmpdir(), `react-setup-styling-${name}-${Date.now()}`);
+  const baseDir = join(process.cwd(), '.tmp-test-projects');
+  if (!existsSync(baseDir)) {
+    mkdirSync(baseDir, { recursive: true });
+  }
+  return join(
+    baseDir,
+    `react-setup-styling-${name}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`
+  );
 }
 
 function cleanupProject(path: string): void {
