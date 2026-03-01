@@ -15,14 +15,14 @@ jobs:
     name: Run Renovate Bot
     runs-on: ubuntu-latest
     env:
-      RENOVATE_TOKEN: ${{ secrets.RENOVATE_TOKEN }}
+      RENOVATE_TOKEN: ${{ secrets.RENOVATE_TOKE }}
 
     steps:
       - name: Validate Renovate token
         if: ${{ env.RENOVATE_TOKEN == '' }}
         run: |
-          echo "RENOVATE_TOKEN is not configured."
-          echo "Set repository secret RENOVATE_TOKEN (fine-grained token with Contents: Read/Write and Pull requests: Read/Write)."
+          echo "RENOVATE_TOKE is not configured."
+          echo "Set repository secret RENOVATE_TOKE (fine-grained token with Contents: Read/Write and Pull requests: Read/Write)."
           exit 1
 
       - name: Checkout repository
