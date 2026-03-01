@@ -14,17 +14,8 @@ jobs:
   renovate:
     name: Run Renovate Bot
     runs-on: ubuntu-latest
-    env:
-      RENOVATE_TOKEN: ${{ secrets.RENOVATE_TOKE }}
 
     steps:
-      - name: Validate Renovate token
-        if: ${{ env.RENOVATE_TOKEN == '' }}
-        run: |
-          echo "RENOVATE_TOKE is not configured."
-          echo "Set repository secret RENOVATE_TOKE (fine-grained token with Contents: Read/Write and Pull requests: Read/Write)."
-          exit 1
-
       - name: Checkout repository
         uses: actions/checkout@v4
 
@@ -32,7 +23,7 @@ jobs:
         uses: renovatebot/github-action@v44.0.3
         with:
           configurationFile: renovate.json
-          token: ${{ secrets.RENOVATE_TOKE || github.token }}
+          token: ${{ github.token }}
         env:
           LOG_LEVEL: debug
           RENOVATE_REPOSITORIES: ${{ github.repository }}
