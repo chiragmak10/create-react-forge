@@ -125,7 +125,7 @@ This repo now uses Renovate to auto-update dependencies (including template mani
    - Contents: Read and write
    - Pull requests: Read and write
 3. Enable repository auto-merge in GitHub settings.
-4. Protect `master` and require CI checks before merge.
+4. Protect `master`, require CI checks before merge, and enable merge queue.
 
 Why: PRs created with `GITHUB_TOKEN` do not trigger downstream `pull_request` workflows. Using `RENOVATE_TOKEN` ensures CI checks run and automerge can complete.
 
@@ -134,7 +134,10 @@ Config file: `renovate.json`
 
 Behavior:
 
-- All dependency updates (major, minor, patch) auto-merge after checks pass.
+- Renovate runs with controlled concurrency (`prConcurrentLimit` and `branchConcurrentLimit` set to `3`) to reduce conflicts.
+- Major updates are never auto-merged and require manual review.
+- Minor, patch, pin, and digest updates are grouped into fewer PRs and auto-merge after checks pass.
+- Renovate automatically rebases dependency PRs when they fall behind `master`.
 - Custom regex managers keep template manifests, the resolver registry, and README dependency rows in sync.
 
 ## Screenshot
