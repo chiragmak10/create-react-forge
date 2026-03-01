@@ -4,7 +4,6 @@ on:
   push:
     branches: [main, develop]
   pull_request:
-    branches: [main, develop]
 
 jobs:
   test:
@@ -49,13 +48,13 @@ jobs:
         run: npm test -- src/__tests__/integration/e2e-scenarios.test.ts
 
       - name: Run config builder comprehensive tests
-        run: npm test -- config-builder-comprehensive.test.ts
+        run: npm test -- src/__tests__/config-builder.test.ts
 
       - name: Run template system comprehensive tests
-        run: npm test -- template-system-comprehensive.test.ts
+        run: npm test -- src/__tests__/integration/template-loading.test.ts
 
       - name: Run generator comprehensive tests
-        run: npm test -- generator-comprehensive.test.ts
+        run: npm test -- src/__tests__/integration/generator.test.ts
 
       - name: Test CLI command (Unix)
         if: runner.os != 'Windows'
@@ -114,7 +113,7 @@ jobs:
           # Note: Actual scaffolding test would be interactive
           # For now, just verify the CLI can be invoked
           node dist/index.js --help
-          echo "✓ CLI is executable and responsive"
+          echo "[OK] CLI is executable and responsive"
 
       - name: Test scaffolding (Windows)
         if: runner.os == 'Windows'
@@ -126,7 +125,7 @@ jobs:
 
           # Verify the CLI can be invoked
           node dist/index.js --help
-          Write-Output "✓ CLI is executable and responsive"
+          Write-Output "[OK] CLI is executable and responsive"
 
   lint:
     runs-on: ubuntu-latest
@@ -175,7 +174,7 @@ jobs:
             echo "dist/index.js not found"
             exit 1
           fi
-          echo "✓ Build artifacts verified"
+          echo "[OK] Build artifacts verified"
         shell: bash
 
       - name: Verify TypeScript definitions
@@ -184,5 +183,5 @@ jobs:
             echo "dist/index.d.ts not found"
             exit 1
           fi
-          echo "✓ TypeScript definitions verified"
+          echo "[OK] TypeScript definitions verified"
         shell: bash
