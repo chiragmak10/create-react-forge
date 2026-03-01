@@ -130,9 +130,16 @@
   ],
   "packageRules": [
     {
-      "description": "Never automerge major updates",
+      "description": "Automerge major updates after checks pass",
       "matchUpdateTypes": ["major"],
-      "automerge": false
+      "automerge": true,
+      "automergeType": "pr",
+      "platformAutomerge": true
+    },
+    {
+      "description": "Keep ESLint on v9 until typescript-eslint adds ESLint v10 support",
+      "matchPackageNames": ["eslint"],
+      "allowedVersions": "<10.0.0"
     },
     {
       "description": "Keep ESLint on v9 until typescript-eslint adds ESLint v10 support",
