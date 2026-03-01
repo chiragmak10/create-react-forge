@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { basename } from 'path';
 import type { PromptAnswers } from '../cli/prompts';
 
 const { promptForProjectDetailsMock, generateProjectMock } = vi.hoisted(() => ({
@@ -55,7 +56,7 @@ describe('CLI Index', () => {
     );
 
     expect(config.name).toBe('test-app');
-    expect(config.path).toContain('/test-app');
+    expect(basename(config.path)).toBe('test-app');
     expect(config.runtime).toBe('nextjs');
     expect(config.language).toBe('javascript');
     expect(config.styling.solution).toBe('styled-components');
@@ -120,11 +121,9 @@ describe('CLI Index', () => {
   it('should exit with code 1 when generation fails', async () => {
     const logSpy = vi.spyOn(console, 'log').mockImplementation(() => undefined);
     const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
-    const exitSpy = vi
-      .spyOn(process, 'exit')
-      .mockImplementation(((code?: number) => {
-        throw new Error(`exit ${code}`);
-      }) as never);
+    const exitSpy = vi.spyOn(process, 'exit').mockImplementation(((code?: number) => {
+      throw new Error(`exit ${code}`);
+    }) as never);
 
     promptForProjectDetailsMock.mockResolvedValue(createAnswers());
     generateProjectMock.mockResolvedValue({
@@ -145,11 +144,9 @@ describe('CLI Index', () => {
 
   it('should exit with code 0 when user cancels prompt', async () => {
     const logSpy = vi.spyOn(console, 'log').mockImplementation(() => undefined);
-    const exitSpy = vi
-      .spyOn(process, 'exit')
-      .mockImplementation(((code?: number) => {
-        throw new Error(`exit ${code}`);
-      }) as never);
+    const exitSpy = vi.spyOn(process, 'exit').mockImplementation(((code?: number) => {
+      throw new Error(`exit ${code}`);
+    }) as never);
 
     promptForProjectDetailsMock.mockRejectedValue(new Error('User force closed the prompt'));
 

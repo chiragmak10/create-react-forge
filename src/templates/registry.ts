@@ -40,13 +40,13 @@ function getTemplatesDir(): string {
   // Handle both ESM and compiled scenarios
   const currentFile = fileURLToPath(import.meta.url);
   const currentDir = dirname(currentFile);
-  
+
   // Check if we're in dist or src
   if (currentDir.includes('/dist/')) {
     // Running from compiled dist, templates are in src
     return join(currentDir, '../../src/templates/overlays');
   }
-  
+
   return join(currentDir, 'overlays');
 }
 
@@ -54,11 +54,30 @@ function getTemplatesDir(): string {
  * Binary file extensions to skip
  */
 const BINARY_EXTENSIONS = new Set([
-  '.png', '.jpg', '.jpeg', '.gif', '.webp', '.ico', '.svg',
-  '.woff', '.woff2', '.ttf', '.eot', '.otf',
-  '.mp3', '.mp4', '.wav', '.ogg', '.webm',
-  '.zip', '.tar', '.gz', '.rar',
-  '.pdf', '.doc', '.docx',
+  '.png',
+  '.jpg',
+  '.jpeg',
+  '.gif',
+  '.webp',
+  '.ico',
+  '.svg',
+  '.woff',
+  '.woff2',
+  '.ttf',
+  '.eot',
+  '.otf',
+  '.mp3',
+  '.mp4',
+  '.wav',
+  '.ogg',
+  '.webm',
+  '.zip',
+  '.tar',
+  '.gz',
+  '.rar',
+  '.pdf',
+  '.doc',
+  '.docx',
 ]);
 
 /**
@@ -89,9 +108,14 @@ function readDirectoryRecursively(
     const entryName = entry.name;
     const fullPath = join(dirPath, entryName);
     const relativePath = relative(basePath, fullPath);
+    const normalizedRelativePath = relativePath.replace(/\\/g, '/');
 
     // Skip excluded files
-    if (exclude.includes(entryName) || exclude.includes(relativePath)) {
+    if (
+      exclude.includes(entryName) ||
+      exclude.includes(relativePath) ||
+      exclude.includes(normalizedRelativePath)
+    ) {
       continue;
     }
 
@@ -113,10 +137,10 @@ function readDirectoryRecursively(
         // Read file content (skip binary files)
         if (!isBinaryFile(fullPath)) {
           const content = readFileSync(fd, 'utf-8');
-          files.set(relativePath, content);
+          files.set(normalizedRelativePath, content);
         } else {
           // For binary files, store a marker to copy them
-          files.set(relativePath, `__BINARY__:${fullPath}`);
+          files.set(normalizedRelativePath, `__BINARY__:${fullPath}`);
         }
       } catch {
         // Skip files that can't be opened/read
@@ -227,8 +251,9 @@ export class TemplateRegistry {
    * Get templates by category
    */
   getByCategory(category: 'base' | 'runtime' | 'feature' | 'testing'): TemplateOverlay[] {
-    return Array.from(this.loadedTemplates.values()).filter((t) =>
-      t.path.includes(`/${category}/`) || t.path.startsWith(`${category}/`) || t.path === category
+    return Array.from(this.loadedTemplates.values()).filter(
+      (t) =>
+        t.path.includes(`/${category}/`) || t.path.startsWith(`${category}/`) || t.path === category
     );
   }
 
@@ -239,7 +264,11 @@ export class TemplateRegistry {
     runtime: 'vite' | 'nextjs';
     styling: { solution: string };
     stateManagement: string;
-    testing: { enabled: boolean; unit?: { runner: string }; e2e?: { enabled: boolean; runner: string } };
+    testing: {
+      enabled: boolean;
+      unit?: { runner: string };
+      e2e?: { enabled: boolean; runner: string };
+    };
     dataFetching: { enabled: boolean };
   }): TemplateOverlay[] {
     const templates: TemplateOverlay[] = [];
@@ -271,10 +300,18 @@ export class TemplateRegistry {
     // Load testing templates
     if (config.testing.enabled) {
       if (config.testing.unit?.runner) {
-        templates.push(this.loadAndRegister(`testing/${config.testing.unit.runner}`, config.runtime));
+        templates.push(
+          this.loadAndRegister(`testing/${config.testing.unit.runner}`, config.runtime)
+        );
       }
-      if (config.testing.e2e?.enabled && config.testing.e2e.runner && config.testing.e2e.runner !== 'none') {
-        templates.push(this.loadAndRegister(`testing/${config.testing.e2e.runner}`, config.runtime));
+      if (
+        config.testing.e2e?.enabled &&
+        config.testing.e2e.runner &&
+        config.testing.e2e.runner !== 'none'
+      ) {
+        templates.push(
+          this.loadAndRegister(`testing/${config.testing.e2e.runner}`, config.runtime)
+        );
       }
     }
 
