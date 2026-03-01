@@ -57,7 +57,7 @@ export const VERSION_REGISTRY: Record<string, string> = {
 
   // Routing
   'react-router-dom': '^7.1.1',
-  'react-error-boundary': '^4.1.2',
+  'react-error-boundary': '^6.0.0',
 };
 
 /**
