@@ -11,6 +11,7 @@
   "branchConcurrentLimit": 3,
   "rebaseWhen": "behind-base-branch",
   "recreateWhen": "always",
+  "minimumReleaseAge": "30 days",
   "lockFileMaintenance": {
     "enabled": true,
     "automerge": true,
