@@ -31,7 +31,7 @@ export const VERSION_REGISTRY: Record<string, string> = {
   // Testing - Unit
   'vitest': '^2.1.8',
   '@vitest/ui': '^2.1.8',
-  'jest': '^29.7.0',
+  'jest': '^30.0.0',
 
   // Testing - Component
   '@testing-library/react': '^16.1.0',
