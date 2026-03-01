@@ -113,7 +113,7 @@ jobs:
           # Note: Actual scaffolding test would be interactive
           # For now, just verify the CLI can be invoked
           node dist/index.js --help
-          echo "✓ CLI is executable and responsive"
+          echo "[OK] CLI is executable and responsive"
 
       - name: Test scaffolding (Windows)
         if: runner.os == 'Windows'
@@ -125,7 +125,7 @@ jobs:
 
           # Verify the CLI can be invoked
           node dist/index.js --help
-          Write-Output "✓ CLI is executable and responsive"
+          Write-Output "[OK] CLI is executable and responsive"
 
   lint:
     runs-on: ubuntu-latest
@@ -174,7 +174,7 @@ jobs:
             echo "dist/index.js not found"
             exit 1
           fi
-          echo "✓ Build artifacts verified"
+          echo "[OK] Build artifacts verified"
         shell: bash
 
       - name: Verify TypeScript definitions
@@ -183,5 +183,5 @@ jobs:
             echo "dist/index.d.ts not found"
             exit 1
           fi
-          echo "✓ TypeScript definitions verified"
+          echo "[OK] TypeScript definitions verified"
         shell: bash
