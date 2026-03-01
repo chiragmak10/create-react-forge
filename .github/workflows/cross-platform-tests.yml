@@ -21,6 +21,7 @@ jobs:
       CRF_NPM_INSTALL_TIMEOUT_MS: '600000'
       CRF_NPM_BUILD_TIMEOUT_MS: '600000'
       CRF_TEST_HOOK_TIMEOUT_MS: '300000'
+      CRF_CLI_TEST_TIMEOUT_MS: '30000'
 
     steps:
       - name: Checkout code

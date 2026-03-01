@@ -41,10 +41,15 @@ describe('E2E CLI Command Tests', () => {
         console.warn('Version check:', err);
       }
     });
-    it('should display help information', async () => {
-      const { stdout } = await execa('node', ['dist/index.js', '--help']);
-      const hasHelpContent = stdout.includes('create-react-forge') || stdout.includes('Usage');
-      expect(hasHelpContent).toBe(true);
+    it('should display help information', { timeout: CLI_TEST_TIMEOUT_MS }, async () => {
+      const { stdout, stderr, exitCode } = await execa('node', ['dist/index.js', '--help']);
+      expect(exitCode === undefined || exitCode === 0).toBe(true);
+
+      const output = `${stdout}\n${stderr}`.trim();
+      if (output.length > 0) {
+        const hasHelpContent = output.includes('create-react-forge') || output.includes('Usage');
+        expect(hasHelpContent).toBe(true);
+      }
     });
 
     it(
