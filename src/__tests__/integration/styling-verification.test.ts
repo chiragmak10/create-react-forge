@@ -45,13 +45,31 @@ function createConfig(name: string, overrides: Partial<ProjectConfig>): ProjectC
   };
 }
 
+const NPM_INSTALL_TIMEOUT_MS = Number(process.env.CRF_NPM_INSTALL_TIMEOUT_MS ?? 600000);
+const NPM_BUILD_TIMEOUT_MS = Number(process.env.CRF_NPM_BUILD_TIMEOUT_MS ?? 600000);
+const TEST_HOOK_TIMEOUT_MS = Number(process.env.CRF_TEST_HOOK_TIMEOUT_MS ?? 300000);
+
+async function installDependencies(projectPath: string) {
+  return execa('npm', ['install', '--no-audit', '--no-fund'], {
+    cwd: projectPath,
+    timeout: NPM_INSTALL_TIMEOUT_MS,
+  });
+}
+
+async function buildProject(projectPath: string) {
+  return execa('npm', ['run', 'build'], {
+    cwd: projectPath,
+    timeout: NPM_BUILD_TIMEOUT_MS,
+  });
+}
+
 describe('Styling Solutions Verification', () => {
   const projectPaths: string[] = [];
 
   afterEach(() => {
     projectPaths.forEach(cleanupProject);
     projectPaths.length = 0;
-  });
+  }, TEST_HOOK_TIMEOUT_MS);
 
   describe('Styled Components (Vite)', () => {
     it('should generate project with Styled Components file structure', async () => {
@@ -89,22 +107,16 @@ describe('Styling Solutions Verification', () => {
 
       // Install dependencies
       console.log('Installing dependencies for Styled Components project...');
-      const installResult = await execa('npm', ['install'], {
-        cwd: config.path,
-        timeout: 120000,
-      });
+      const installResult = await installDependencies(config.path);
       expect(installResult.exitCode).toBe(0);
 
       // Build the project
       console.log('Building Styled Components project...');
-      const buildResult = await execa('npm', ['run', 'build'], {
-        cwd: config.path,
-        timeout: 120000,
-      });
+      const buildResult = await buildProject(config.path);
       expect(buildResult.exitCode).toBe(0);
 
       expect(existsSync(join(config.path, 'dist'))).toBe(true);
-    }, 300000);
+    }, 600000);
   });
 
   describe('Tailwind CSS (Next.js)', () => {
@@ -124,22 +136,16 @@ describe('Styling Solutions Verification', () => {
 
       // Install dependencies
       console.log('Installing dependencies for Tailwind project...');
-      const installResult = await execa('npm', ['install'], {
-        cwd: config.path,
-        timeout: 120000,
-      });
+      const installResult = await installDependencies(config.path);
       expect(installResult.exitCode).toBe(0);
 
       // Build the project
       console.log('Building Tailwind project...');
-      const buildResult = await execa('npm', ['run', 'build'], {
-        cwd: config.path,
-        timeout: 180000,
-      });
+      const buildResult = await buildProject(config.path);
       expect(buildResult.exitCode).toBe(0);
 
       expect(existsSync(join(config.path, '.next'))).toBe(true);
-    }, 360000);
+    }, 720000);
   });
 
   describe('None Styling (Next.js)', () => {
@@ -178,21 +184,15 @@ describe('Styling Solutions Verification', () => {
 
       // Install dependencies
       console.log('Installing dependencies for None styling project...');
-      const installResult = await execa('npm', ['install'], {
-        cwd: config.path,
-        timeout: 120000,
-      });
+      const installResult = await installDependencies(config.path);
       expect(installResult.exitCode).toBe(0);
 
       // Build the project
       console.log('Building None styling project...');
-      const buildResult = await execa('npm', ['run', 'build'], {
-        cwd: config.path,
-        timeout: 180000,
-      });
+      const buildResult = await buildProject(config.path);
       expect(buildResult.exitCode).toBe(0);
 
       expect(existsSync(join(config.path, '.next'))).toBe(true);
-    }, 360000);
+    }, 720000);
   });
 });

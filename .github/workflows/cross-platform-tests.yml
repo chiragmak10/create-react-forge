@@ -7,14 +7,20 @@ on:
 
 jobs:
   test:
+    timeout-minutes: 90
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
         node-version: ['20.x', '22.x']
-      fail-fast: false
+      fail-fast: true
 
     runs-on: ${{ matrix.os }}
     name: Test on ${{ matrix.os }} (Node ${{ matrix.node-version }})
+    env:
+      CI: true
+      CRF_NPM_INSTALL_TIMEOUT_MS: '600000'
+      CRF_NPM_BUILD_TIMEOUT_MS: '600000'
+      CRF_TEST_HOOK_TIMEOUT_MS: '300000'
 
     steps:
       - name: Checkout code
@@ -33,28 +39,36 @@ jobs:
         run: npm run build
 
       - name: Run unit tests
-        run: npm test
+        timeout-minutes: 20
+        run: npm test -- --bail=1 src/__tests__/ --exclude "src/__tests__/integration/**"
 
       - name: Run integration tests
-        run: npm test -- src/__tests__/integration/
+        timeout-minutes: 45
+        run: npm test -- --bail=1 src/__tests__/integration/
 
       - name: Run cross-platform tests
-        run: npm test -- src/__tests__/integration/cross-platform-cli.test.ts
+        timeout-minutes: 15
+        run: npm test -- --bail=1 src/__tests__/integration/cross-platform-cli.test.ts
 
       - name: Run E2E CLI tests
-        run: npm test -- src/__tests__/integration/e2e-cli.test.ts
+        timeout-minutes: 15
+        run: npm test -- --bail=1 src/__tests__/integration/e2e-cli.test.ts
 
       - name: Run E2E scenario tests
-        run: npm test -- src/__tests__/integration/e2e-scenarios.test.ts
+        timeout-minutes: 20
+        run: npm test -- --bail=1 src/__tests__/integration/e2e-scenarios.test.ts
 
       - name: Run config builder comprehensive tests
-        run: npm test -- src/__tests__/config-builder.test.ts
+        timeout-minutes: 15
+        run: npm test -- --bail=1 src/__tests__/config-builder.test.ts
 
       - name: Run template system comprehensive tests
-        run: npm test -- src/__tests__/integration/template-loading.test.ts
+        timeout-minutes: 15
+        run: npm test -- --bail=1 src/__tests__/integration/template-loading.test.ts
 
       - name: Run generator comprehensive tests
-        run: npm test -- src/__tests__/integration/generator.test.ts
+        timeout-minutes: 15
+        run: npm test -- --bail=1 src/__tests__/integration/generator.test.ts
 
       - name: Test CLI command (Unix)
         if: runner.os != 'Windows'
@@ -68,8 +82,8 @@ jobs:
         shell: powershell
         run: |
           # Test that the CLI can be invoked
-          node dist/index.js --version -or $true
-          node dist/index.js --help -or $true
+          try { node dist/index.js --version } catch { $true | Out-Null }
+          try { node dist/index.js --help } catch { $true | Out-Null }
 
       - name: Upload coverage
         if: matrix.os == 'ubuntu-latest'
@@ -80,6 +94,7 @@ jobs:
           name: codecov-umbrella
 
   e2e-scaffold-test:
+    timeout-minutes: 30
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
@@ -129,6 +144,7 @@ jobs:
 
   lint:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     name: Lint and Format Check
 
     steps:
@@ -150,6 +166,7 @@ jobs:
   build-artifacts:
     needs: [test, e2e-scaffold-test, lint]
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     name: Verify Build Artifacts
 
     steps:
