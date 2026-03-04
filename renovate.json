@@ -1,19 +1,24 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:recommended"],
+  "extends": ["config:recommended", "mergeConfidence:age-confidence-badges"],
   "labels": ["dependencies"],
   "rangeStrategy": "bump",
   "dependencyDashboard": true,
-  "dependencyDashboardApproval": false,
-  "prCreation": "immediate",
+  "dependencyDashboardApproval": true,
+  "prCreation": "not-pending",
   "prHourlyLimit": 0,
-  "prConcurrentLimit": 3,
-  "branchConcurrentLimit": 3,
+  "prConcurrentLimit": 1,
+  "branchConcurrentLimit": 1,
   "rebaseWhen": "behind-base-branch",
   "recreateWhen": "always",
   "minimumReleaseAge": "30 days",
+  "internalChecksFilter": "strict",
+  "separateMajorMinor": false,
+  "separateMinorPatch": false,
+  "separateMultipleMajor": false,
   "lockFileMaintenance": {
     "enabled": true,
+    "schedule": ["before 4am on monday"],
     "automerge": true,
     "automergeType": "pr",
     "platformAutomerge": true
@@ -33,6 +38,28 @@
       "customType": "regex",
       "description": "Keep dependency version registry in sync",
       "managerFilePatterns": ["/^src\\/dependencies\\/resolver\\.ts$/"],
+      "matchStrings": [
+        "['\"](?<depName>[^'\"\\s]+)['\"]\\s*:\\s*['\"](?<currentValue>[~^]?\\d+\\.\\d+\\.\\d+(?:[-+][0-9A-Za-z.-]+)?)['\"]"
+      ],
+      "datasourceTemplate": "npm",
+      "versioningTemplate": "npm"
+    },
+    {
+      "customType": "regex",
+      "description": "Keep dependency version fixtures in tests in sync",
+      "managerFilePatterns": [
+        "/^src\\/__tests__\\/(assembler|dependency-resolver|config-merger)\\.test\\.ts$/"
+      ],
+      "matchStrings": [
+        "['\"](?<depName>(?:react|react-dom|typescript|vitest|tsx|@testing-library\\/react))['\"]\\s*:\\s*['\"](?<currentValue>[~^]?\\d+\\.\\d+\\.\\d+(?:[-+][0-9A-Za-z.-]+)?)['\"]"
+      ],
+      "datasourceTemplate": "npm",
+      "versioningTemplate": "npm"
+    },
+    {
+      "customType": "regex",
+      "description": "Keep ARCHITECTURE dependency version snippet in sync",
+      "managerFilePatterns": ["/^ARCHITECTURE\\.md$/"],
       "matchStrings": [
         "['\"](?<depName>[^'\"\\s]+)['\"]\\s*:\\s*['\"](?<currentValue>[~^]?\\d+\\.\\d+\\.\\d+(?:[-+][0-9A-Za-z.-]+)?)['\"]"
       ],
@@ -130,34 +157,56 @@
   ],
   "packageRules": [
     {
-      "description": "Automerge major updates after checks pass",
+      "description": "Keep ESLint on v9 until typescript-eslint adds ESLint v10 support",
+      "matchPackageNames": ["eslint"],
+      "allowedVersions": "<10.0.0"
+    },
+    {
+      "description": "Group all npm updates into a single dependency PR stream",
+      "matchDatasources": ["npm"],
+      "matchUpdateTypes": ["major", "minor", "patch", "pin", "digest"],
+      "groupName": "all npm dependencies",
+      "groupSlug": "all-npm-dependencies"
+    },
+    {
+      "description": "Only create PRs for high-confidence npm updates",
+      "matchDatasources": ["npm"],
+      "matchConfidence": ["high", "very high"],
+      "dependencyDashboardApproval": false
+    },
+    {
+      "description": "Automerge high-confidence non-major npm updates",
+      "matchDatasources": ["npm"],
+      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
+      "matchConfidence": ["high", "very high"],
+      "automerge": true,
+      "automergeType": "pr",
+      "platformAutomerge": true
+    },
+    {
+      "description": "Automerge lock file maintenance updates",
+      "matchUpdateTypes": ["lockFileMaintenance"],
+      "dependencyDashboardApproval": false,
+      "automerge": true,
+      "automergeType": "pr",
+      "platformAutomerge": true
+    },
+    {
+      "description": "Automerge high-confidence major npm updates",
+      "matchDatasources": ["npm"],
       "matchUpdateTypes": ["major"],
+      "matchConfidence": ["high", "very high"],
+      "dependencyDashboardApproval": false,
       "automerge": true,
       "automergeType": "pr",
       "platformAutomerge": true
     },
     {
-      "description": "Keep ESLint on v9 until typescript-eslint adds ESLint v10 support",
-      "matchPackageNames": ["eslint"],
-      "allowedVersions": "<10.0.0"
-    },
-    {
-      "description": "Keep ESLint on v9 until typescript-eslint adds ESLint v10 support",
-      "matchPackageNames": ["eslint"],
-      "allowedVersions": "<10.0.0"
-    },
-    {
-      "description": "Group non-major updates to reduce PR volume and conflict churn",
-      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
-      "groupName": "non-major dependencies",
-      "groupSlug": "non-major-dependencies"
-    },
-    {
-      "description": "Automerge non-major dependency updates after checks pass",
-      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
-      "automerge": true,
-      "automergeType": "pr",
-      "platformAutomerge": true
+      "description": "Keep low/neutral confidence npm updates in dashboard for manual approval",
+      "matchDatasources": ["npm"],
+      "matchConfidence": ["low", "neutral"],
+      "dependencyDashboardApproval": true,
+      "automerge": false
     }
   ]
 }
