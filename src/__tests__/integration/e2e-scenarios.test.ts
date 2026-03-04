@@ -1,9 +1,12 @@
-import { describe, it, expect, afterEach } from 'vitest';
+import { describe, it, expect, afterEach, vi } from 'vitest';
 import { existsSync, rmSync, readFileSync } from 'fs';
 import { tmpdir } from 'os';
 import { join } from 'path';
 import { ProjectGenerator } from '../../generator/index';
 import type { ProjectConfig } from '../../config/schema';
+
+// E2E generators do a full project scaffold; allow more time than the default 5s per test
+vi.setConfig({ testTimeout: 30000 });
 
 /**
  * End-to-End Real-World Scenario Tests
