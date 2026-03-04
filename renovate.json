@@ -160,6 +160,7 @@
     },
     {
       "description": "Group all dependency updates into a single PR stream",
+      "matchPackageNames": ["*"],
       "groupName": "all dependencies",
       "groupSlug": "all-dependencies"
     }
