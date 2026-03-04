@@ -1,6 +1,6 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:recommended"],
+  "extends": ["config:recommended", "mergeConfidence:age-confidence-badges"],
   "labels": ["dependencies"],
   "rangeStrategy": "bump",
   "ignoreUnstable": true,
@@ -192,6 +192,31 @@
       "automerge": true,
       "automergeType": "pr",
       "platformAutomerge": true
+    },
+    {
+      "description": "Automerge lock file maintenance updates",
+      "matchUpdateTypes": ["lockFileMaintenance"],
+      "dependencyDashboardApproval": false,
+      "automerge": true,
+      "automergeType": "pr",
+      "platformAutomerge": true
+    },
+    {
+      "description": "Automerge high-confidence major npm updates",
+      "matchDatasources": ["npm"],
+      "matchUpdateTypes": ["major"],
+      "matchConfidence": ["high", "very high"],
+      "dependencyDashboardApproval": false,
+      "automerge": true,
+      "automergeType": "pr",
+      "platformAutomerge": true
+    },
+    {
+      "description": "Keep low/neutral confidence npm updates in dashboard for manual approval",
+      "matchDatasources": ["npm"],
+      "matchConfidence": ["low", "neutral"],
+      "dependencyDashboardApproval": true,
+      "automerge": false
     }
   ]
 }
