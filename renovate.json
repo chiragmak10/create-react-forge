@@ -46,6 +46,18 @@
     },
     {
       "customType": "regex",
+      "description": "Keep dependency version fixtures in tests in sync",
+      "managerFilePatterns": [
+        "/^src\\/__tests__\\/(assembler|dependency-resolver|config-merger)\\.test\\.ts$/"
+      ],
+      "matchStrings": [
+        "['\"](?<depName>(?:react|react-dom|typescript|vitest|tsx|@testing-library\\/react))['\"]\\s*:\\s*['\"](?<currentValue>[~^]?\\d+\\.\\d+\\.\\d+(?:[-+][0-9A-Za-z.-]+)?)['\"]"
+      ],
+      "datasourceTemplate": "npm",
+      "versioningTemplate": "npm"
+    },
+    {
+      "customType": "regex",
       "description": "Keep ARCHITECTURE dependency version snippet in sync",
       "managerFilePatterns": ["/^ARCHITECTURE\\.md$/"],
       "matchStrings": [

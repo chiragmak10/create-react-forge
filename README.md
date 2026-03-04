@@ -116,7 +116,7 @@ The CLI uses pinned, tested versions for all dependencies:
 
 ## Automated dependency updates
 
-This repo now uses Renovate to auto-update dependencies (including template manifests under `src/templates/overlays/**/manifest.json`, `src/dependencies/resolver.ts`, the dependency versions table in this README, and the dependency registry snippet in `ARCHITECTURE.md`). The workflow runs weekly and can also be run manually.
+This repo now uses Renovate to auto-update dependencies (including template manifests under `src/templates/overlays/**/manifest.json`, `src/dependencies/resolver.ts`, selected dependency fixtures in `src/__tests__/*.test.ts`, the dependency versions table in this README, and the dependency registry snippet in `ARCHITECTURE.md`). The workflow runs weekly and can also be run manually.
 
 ### One-time setup
 
@@ -146,7 +146,7 @@ Behavior:
 - Low/neutral confidence updates stay in the dependency dashboard for manual approval.
 - Lock file maintenance runs weekly and auto-merges after checks pass.
 - Renovate automatically rebases dependency PRs when they fall behind `master`.
-- Custom regex managers keep template manifests, the resolver registry, README dependency rows, and ARCHITECTURE dependency rows in sync.
+- Custom regex managers keep template manifests, the resolver registry, selected test dependency fixtures, README dependency rows, and ARCHITECTURE dependency rows in sync.
 
 ## Screenshot
 
