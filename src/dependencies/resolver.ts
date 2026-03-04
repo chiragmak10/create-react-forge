@@ -3,7 +3,7 @@
  */
 export const VERSION_REGISTRY: Record<string, string> = {
   // Runtime
-  'vite': '^6.0.7',
+  'vite': '^7.0.0',
   '@vitejs/plugin-react': '^5.0.0',
   'next': '^16.1.6',
   'react': '^19.0.0',
@@ -29,15 +29,15 @@ export const VERSION_REGISTRY: Record<string, string> = {
   '@tanstack/react-query-devtools': '^5.62.10',
 
   // Testing - Unit
-  'vitest': '^2.1.8',
-  '@vitest/ui': '^2.1.8',
-  'jest': '^29.7.0',
+  'vitest': '^4.0.0',
+  '@vitest/ui': '^4.0.0',
+  'jest': '^30.0.0',
 
   // Testing - Component
   '@testing-library/react': '^16.1.0',
   '@testing-library/jest-dom': '^6.6.3',
   '@testing-library/user-event': '^14.5.2',
-  'jsdom': '^25.0.1',
+  'jsdom': '^28.0.0',
 
   // Testing - E2E
   'playwright': '^1.49.1',
@@ -57,7 +57,7 @@ export const VERSION_REGISTRY: Record<string, string> = {
 
   // Routing
   'react-router-dom': '^7.1.1',
-  'react-error-boundary': '^4.1.2',
+  'react-error-boundary': '^6.0.0',
 };
 
 /**

@@ -106,11 +106,11 @@ The CLI uses pinned, tested versions for all dependencies:
 | Package        | Version  |
 | -------------- | -------- |
 | React          | ^19.0.0  |
-| Vite           | ^6.0.7   |
+| Vite           | ^7.0.0   |
 | Next.js        | ^16.1.6  |
 | Tailwind CSS   | ^4.0.0   |
 | TanStack Query | ^5.62.10 |
-| Vitest         | ^2.1.8   |
+| Vitest         | ^4.0.0   |
 | Playwright     | ^1.49.1  |
 | TypeScript     | ^5.7.2   |
 
