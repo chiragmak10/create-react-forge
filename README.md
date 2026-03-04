@@ -124,11 +124,8 @@ This repo now uses Renovate to auto-update dependencies (including template mani
 2. Use a fine-grained GitHub token scoped to this repository with:
    - Contents: Read and write
    - Pull requests: Read and write
-3. Create a repository secret named `MEND_RNV_MC_TOKEN` (Merge Confidence API token) so confidence-based PR gating can work.
-4. Enable repository auto-merge in GitHub settings.
-5. Protect `master`, require CI checks before merge, and enable merge queue.
-
-If `MEND_RNV_MC_TOKEN` is not configured, updates remain in the dependency dashboard for manual approval.
+3. Enable repository auto-merge in GitHub settings.
+4. Protect `master`, require CI checks before merge, and enable merge queue.
 
 Why: PRs created with `GITHUB_TOKEN` do not trigger downstream `pull_request` workflows. Using `RENOVATE_TOKEN` ensures CI checks run and automerge can complete.
 
