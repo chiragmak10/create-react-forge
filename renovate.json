@@ -6,7 +6,10 @@
   "ignoreUnstable": true,
   "dependencyDashboard": true,
   "dependencyDashboardApproval": false,
-  "prCreation": "not-pending",
+  "prCreation": "immediate",
+  "automerge": true,
+  "automergeType": "pr",
+  "platformAutomerge": true,
   "prHourlyLimit": 0,
   "prConcurrentLimit": 1,
   "branchConcurrentLimit": 1,
@@ -162,7 +165,10 @@
       "description": "Group all dependency updates into a single PR stream",
       "matchPackageNames": ["*"],
       "groupName": "all dependencies",
-      "groupSlug": "all-dependencies"
+      "groupSlug": "all-dependencies",
+      "automerge": true,
+      "automergeType": "pr",
+      "platformAutomerge": true
     }
   ]
 }
