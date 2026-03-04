@@ -3,6 +3,7 @@
   "extends": ["config:recommended", "mergeConfidence:age-confidence-badges"],
   "labels": ["dependencies"],
   "rangeStrategy": "bump",
+  "ignoreUnstable": true,
   "dependencyDashboard": true,
   "dependencyDashboardApproval": true,
   "prCreation": "not-pending",
@@ -169,16 +170,25 @@
       "groupSlug": "all-npm-dependencies"
     },
     {
-      "description": "Only create PRs for high-confidence npm updates",
+      "description": "Major npm updates require manual dashboard approval",
       "matchDatasources": ["npm"],
-      "matchConfidence": ["high", "very high"],
-      "dependencyDashboardApproval": false
+      "matchUpdateTypes": ["major"],
+      "dependencyDashboardApproval": true,
+      "automerge": false
     },
     {
-      "description": "Automerge high-confidence non-major npm updates",
+      "description": "Automerge non-major npm updates after stability window and checks",
       "matchDatasources": ["npm"],
       "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
-      "matchConfidence": ["high", "very high"],
+      "dependencyDashboardApproval": false,
+      "automerge": true,
+      "automergeType": "pr",
+      "platformAutomerge": true
+    },
+    {
+      "description": "Automerge lock file maintenance updates",
+      "matchUpdateTypes": ["lockFileMaintenance"],
+      "dependencyDashboardApproval": false,
       "automerge": true,
       "automergeType": "pr",
       "platformAutomerge": true
