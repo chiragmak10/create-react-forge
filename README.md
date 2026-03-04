@@ -135,10 +135,12 @@ Config file: `renovate.json`
 Behavior:
 
 - Renovate runs with strict concurrency (`prConcurrentLimit` and `branchConcurrentLimit` set to `1`) so only one dependency PR is active at a time.
+- Renovate creates PRs immediately when update branches are generated.
 - Renovate disables major/minor/patch stream separation so updates stay in a single grouped PR flow.
 - Renovate waits for release-age stability checks (`minimumReleaseAge: 30 days`) before opening PRs and ignores unstable pre-release versions.
 - All dependency updates are grouped into a single PR stream.
 - Renovate opens the grouped PR automatically (dashboard approval is not required).
+- Renovate auto-merges the grouped PR once required checks pass.
 - Dedicated lock file maintenance PRs are disabled.
 - Renovate automatically rebases dependency PRs when they fall behind `master`.
 - Custom regex managers keep template manifests, the resolver registry, selected test dependency fixtures, README dependency rows, and ARCHITECTURE dependency rows in sync.
