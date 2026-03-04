@@ -28,4 +28,3 @@ jobs:
         env:
           LOG_LEVEL: debug
           RENOVATE_REPOSITORIES: ${{ github.repository }}
-          MEND_RNV_MC_TOKEN: ${{ secrets.MEND_RNV_MC_TOKEN }}
