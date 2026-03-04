@@ -116,7 +116,7 @@ The CLI uses pinned, tested versions for all dependencies:
 
 ## Automated dependency updates
 
-This repo now uses Renovate to auto-update dependencies (including template manifests under `src/templates/overlays/**/manifest.json`, `src/dependencies/resolver.ts`, and the dependency versions table in this README). The workflow runs weekly and can also be run manually.
+This repo now uses Renovate to auto-update dependencies (including template manifests under `src/templates/overlays/**/manifest.json`, `src/dependencies/resolver.ts`, the dependency versions table in this README, and the dependency registry snippet in `ARCHITECTURE.md`). The workflow runs weekly and can also be run manually.
 
 ### One-time setup
 
@@ -124,8 +124,11 @@ This repo now uses Renovate to auto-update dependencies (including template mani
 2. Use a fine-grained GitHub token scoped to this repository with:
    - Contents: Read and write
    - Pull requests: Read and write
-3. Enable repository auto-merge in GitHub settings.
-4. Protect `master`, require CI checks before merge, and enable merge queue.
+3. Create a repository secret named `MEND_RNV_MC_TOKEN` (Merge Confidence API token) so confidence-based PR gating can work.
+4. Enable repository auto-merge in GitHub settings.
+5. Protect `master`, require CI checks before merge, and enable merge queue.
+
+If `MEND_RNV_MC_TOKEN` is not configured, updates remain in the dependency dashboard for manual approval.
 
 Why: PRs created with `GITHUB_TOKEN` do not trigger downstream `pull_request` workflows. Using `RENOVATE_TOKEN` ensures CI checks run and automerge can complete.
 
@@ -134,11 +137,14 @@ Config file: `renovate.json`
 
 Behavior:
 
-- Renovate runs with controlled concurrency (`prConcurrentLimit` and `branchConcurrentLimit` set to `3`) to reduce conflicts.
-- Major updates are never auto-merged and require manual review.
-- Minor, patch, pin, and digest updates are grouped into fewer PRs and auto-merge after checks pass.
+- Renovate runs with strict concurrency (`prConcurrentLimit` and `branchConcurrentLimit` set to `1`) so only one dependency PR is active at a time.
+- Renovate waits for release-age stability checks (`minimumReleaseAge: 30 days`) before opening PRs.
+- Npm updates are grouped into a single dependency PR stream and PRs are created only when merge confidence is `high` or `very high`.
+- High-confidence minor/patch/pin/digest updates are auto-merged after checks pass.
+- High-confidence major updates still require manual merge.
+- Low/neutral confidence updates stay in the dependency dashboard for manual approval.
 - Renovate automatically rebases dependency PRs when they fall behind `master`.
-- Custom regex managers keep template manifests, the resolver registry, and README dependency rows in sync.
+- Custom regex managers keep template manifests, the resolver registry, README dependency rows, and ARCHITECTURE dependency rows in sync.
 
 ## Screenshot
 

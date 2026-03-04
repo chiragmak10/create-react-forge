@@ -278,7 +278,7 @@ interface TemplateManifest {
 {
   // Runtime
   'vite': '^6.0.7',
-  '@vitejs/plugin-react': '^4.3.4',
+  '@vitejs/plugin-react': '^5.0.0',
   'next': '^16.1.6',
   'react': '^19.0.0',
   'react-dom': '^19.0.0',
@@ -679,12 +679,14 @@ npm run test:coverage    # Coverage report
 Options are conditional based on runtime:
 
 **Vite (4 options)**:
+
 - `tailwind` — Tailwind CSS v4 (recommended)
 - `styled-components` — CSS-in-JS
 - `css-modules` — Scoped CSS
 - `css` — Plain CSS
 
 **Next.js**:
+
 - `tailwind` — Auto-selected (recommended for App Router)
 
 ### State Management
