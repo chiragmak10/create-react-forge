@@ -127,7 +127,7 @@ This repo now uses Renovate to auto-update dependencies (including template mani
 3. Enable repository auto-merge in GitHub settings.
 4. Protect `master`, require CI checks before merge, and enable merge queue.
 
-Why: PRs created with `GITHUB_TOKEN` do not trigger downstream `pull_request` workflows. Using `RENOVATE_TOKEN` ensures CI checks run and automerge can complete.
+Why: PRs created with `GITHUB_TOKEN` do not trigger downstream `pull_request` workflows. Using `RENOVATE_TOKEN` ensures CI checks run for Renovate PRs.
 
 Workflow file: `.github/workflows/renovate.yml`  
 Config file: `renovate.json`
@@ -137,10 +137,9 @@ Behavior:
 - Renovate runs with strict concurrency (`prConcurrentLimit` and `branchConcurrentLimit` set to `1`) so only one dependency PR is active at a time.
 - Renovate disables major/minor/patch stream separation so updates stay in a single grouped PR flow.
 - Renovate waits for release-age stability checks (`minimumReleaseAge: 30 days`) before opening PRs and ignores unstable pre-release versions.
-- Npm updates are grouped into a single dependency PR stream.
-- Minor/patch/pin/digest npm updates auto-merge after checks pass.
-- Major npm updates require manual approval from the dependency dashboard.
-- Lock file maintenance runs weekly and auto-merges after checks pass.
+- All dependency updates are grouped into a single PR stream.
+- Renovate opens the grouped PR automatically (dashboard approval is not required).
+- Dedicated lock file maintenance PRs are disabled.
 - Renovate automatically rebases dependency PRs when they fall behind `master`.
 - Custom regex managers keep template manifests, the resolver registry, selected test dependency fixtures, README dependency rows, and ARCHITECTURE dependency rows in sync.
 

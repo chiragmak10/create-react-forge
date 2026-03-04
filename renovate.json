@@ -5,7 +5,7 @@
   "rangeStrategy": "bump",
   "ignoreUnstable": true,
   "dependencyDashboard": true,
-  "dependencyDashboardApproval": true,
+  "dependencyDashboardApproval": false,
   "prCreation": "not-pending",
   "prHourlyLimit": 0,
   "prConcurrentLimit": 1,
@@ -18,11 +18,7 @@
   "separateMinorPatch": false,
   "separateMultipleMajor": false,
   "lockFileMaintenance": {
-    "enabled": true,
-    "schedule": ["before 4am on monday"],
-    "automerge": true,
-    "automergeType": "pr",
-    "platformAutomerge": true
+    "enabled": false
   },
   "customManagers": [
     {
@@ -163,35 +159,9 @@
       "allowedVersions": "<10.0.0"
     },
     {
-      "description": "Group all npm updates into a single dependency PR stream",
-      "matchDatasources": ["npm"],
-      "matchUpdateTypes": ["major", "minor", "patch", "pin", "digest"],
-      "groupName": "all npm dependencies",
-      "groupSlug": "all-npm-dependencies"
-    },
-    {
-      "description": "Major npm updates require manual dashboard approval",
-      "matchDatasources": ["npm"],
-      "matchUpdateTypes": ["major"],
-      "dependencyDashboardApproval": true,
-      "automerge": false
-    },
-    {
-      "description": "Automerge non-major npm updates after stability window and checks",
-      "matchDatasources": ["npm"],
-      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
-      "dependencyDashboardApproval": false,
-      "automerge": true,
-      "automergeType": "pr",
-      "platformAutomerge": true
-    },
-    {
-      "description": "Automerge lock file maintenance updates",
-      "matchUpdateTypes": ["lockFileMaintenance"],
-      "dependencyDashboardApproval": false,
-      "automerge": true,
-      "automergeType": "pr",
-      "platformAutomerge": true
+      "description": "Group all dependency updates into a single PR stream",
+      "groupName": "all dependencies",
+      "groupSlug": "all-dependencies"
     }
   ]
 }
