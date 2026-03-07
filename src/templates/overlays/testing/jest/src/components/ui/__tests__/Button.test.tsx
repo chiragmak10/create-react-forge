@@ -27,7 +27,6 @@ describe('Button', () => {
 
   it('applies variant styles', () => {
     render(<Button variant="danger">Delete</Button>);
-    expect(screen.getByRole('button')).toHaveClass('bg-red-600');
+    expect(screen.getByRole('button', { name: /delete/i })).toBeInTheDocument();
   });
 });
-

@@ -54,6 +54,7 @@ function createConfig(name: string, overrides: Partial<ProjectConfig>): ProjectC
 
 const NPM_INSTALL_TIMEOUT_MS = Number(process.env.CRF_NPM_INSTALL_TIMEOUT_MS ?? 600000);
 const NPM_BUILD_TIMEOUT_MS = Number(process.env.CRF_NPM_BUILD_TIMEOUT_MS ?? 600000);
+const NPM_TEST_TIMEOUT_MS = Number(process.env.CRF_NPM_TEST_TIMEOUT_MS ?? 300000);
 const TEST_HOOK_TIMEOUT_MS = Number(process.env.CRF_TEST_HOOK_TIMEOUT_MS ?? 300000);
 
 async function installDependencies(projectPath: string) {
@@ -67,6 +68,17 @@ async function buildProject(projectPath: string) {
   return execa('npm', ['run', 'build'], {
     cwd: getCommandCwd(projectPath),
     timeout: NPM_BUILD_TIMEOUT_MS,
+  });
+}
+
+async function testProject(projectPath: string) {
+  return execa('npm', ['run', 'test'], {
+    cwd: getCommandCwd(projectPath),
+    timeout: NPM_TEST_TIMEOUT_MS,
+    env: {
+      ...process.env,
+      CI: 'true',
+    },
   });
 }
 
@@ -245,5 +257,69 @@ describe('Build Verification Tests', () => {
 
       expect(existsSync(join(config.path, 'dist'))).toBe(true);
     }, 600000);
+  });
+
+  describe('Generated app lifecycle (install + build + test)', () => {
+    it('should scaffold, install, build, and test a Vite app with Vitest', async () => {
+      const config = createConfig('vite-lifecycle-vitest', {
+        runtime: 'vite',
+        styling: { solution: 'tailwind' },
+        testing: {
+          enabled: true,
+          unit: { enabled: true, runner: 'vitest' },
+          component: { enabled: true, library: 'testing-library' },
+          e2e: { enabled: false, runner: 'none' },
+        },
+      });
+      projectPaths.push(config.path);
+
+      const generator = new ProjectGenerator(config);
+      const result = await generator.generate();
+      expect(result.success).toBe(true);
+
+      console.log('Installing dependencies for generated Vite lifecycle project...');
+      const installResult = await installDependencies(config.path);
+      expect(installResult.exitCode).toBe(0);
+
+      console.log('Building generated Vite lifecycle project...');
+      const buildResult = await buildProject(config.path);
+      expect(buildResult.exitCode).toBe(0);
+
+      console.log('Testing generated Vite lifecycle project...');
+      const testResult = await testProject(config.path);
+      expect(testResult.exitCode).toBe(0);
+      expect(existsSync(join(config.path, 'dist'))).toBe(true);
+    }, 720000);
+
+    it('should scaffold, install, build, and test a Next.js app with Vitest', async () => {
+      const config = createConfig('nextjs-lifecycle-vitest', {
+        runtime: 'nextjs',
+        styling: { solution: 'tailwind' },
+        testing: {
+          enabled: true,
+          unit: { enabled: true, runner: 'vitest' },
+          component: { enabled: true, library: 'testing-library' },
+          e2e: { enabled: false, runner: 'none' },
+        },
+      });
+      projectPaths.push(config.path);
+
+      const generator = new ProjectGenerator(config);
+      const result = await generator.generate();
+      expect(result.success).toBe(true);
+
+      console.log('Installing dependencies for generated Next.js lifecycle project...');
+      const installResult = await installDependencies(config.path);
+      expect(installResult.exitCode).toBe(0);
+
+      console.log('Building generated Next.js lifecycle project...');
+      const buildResult = await buildProject(config.path);
+      expect(buildResult.exitCode).toBe(0);
+
+      console.log('Testing generated Next.js lifecycle project...');
+      const testResult = await testProject(config.path);
+      expect(testResult.exitCode).toBe(0);
+      expect(existsSync(join(config.path, '.next'))).toBe(true);
+    }, 720000);
   });
 });

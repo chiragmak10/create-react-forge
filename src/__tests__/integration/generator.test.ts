@@ -2,6 +2,8 @@ import { existsSync, readFileSync, rmSync } from 'fs';
 import { tmpdir } from 'os';
 import { join } from 'path';
 import { afterEach, describe, expect, it } from 'vitest';
+import { execa } from 'execa';
+import { ConfigBuilder } from '../../config/builder.js';
 import { ProjectConfig } from '../../config/schema.js';
 import { ProjectGenerator } from '../../generator/index.js';
 
@@ -429,6 +431,106 @@ describe('ProjectGenerator Integration', () => {
       expect(result.success).toBe(false);
       expect(result.errors.length).toBeGreaterThan(0);
       expect(result.errors[0]).toContain('already exists');
+    });
+
+    it('should reject invalid project names before generation', () => {
+      const validation = new ConfigBuilder()
+        .setName('Invalid Name With Spaces')
+        .setPath(getTempProjectPath('invalid-name'))
+        .validate();
+
+      expect(validation.success).toBe(false);
+      expect(validation.errors?.join(' ')).toMatch(/name|validation/i);
+    });
+
+    it('should continue project generation when git is unavailable', async () => {
+      const config = createBaseConfig({
+        name: 'no-git-available',
+        git: { init: true, initialCommit: false },
+      });
+      projectPaths.push(config.path);
+
+      const originalPath = process.env.PATH;
+      process.env.PATH =
+        process.platform === 'win32' ? 'C:\\nonexistent-git-bin' : '/nonexistent-git-bin';
+
+      try {
+        const generator = new ProjectGenerator(config);
+        const result = await generator.generate();
+
+        expect(result.success).toBe(true);
+        expect(result.warnings.join(' ')).toMatch(/Git initialization failed/i);
+        expect(existsSync(join(config.path, 'package.json'))).toBe(true);
+      } finally {
+        if (originalPath === undefined) {
+          delete process.env.PATH;
+        } else {
+          process.env.PATH = originalPath;
+        }
+      }
+    });
+
+    it('should fail fast when npm registry is unreachable', { timeout: 60000 }, async () => {
+      const config = createBaseConfig({ name: 'network-timeout-test' });
+      projectPaths.push(config.path);
+
+      const generator = new ProjectGenerator(config);
+      const generation = await generator.generate();
+      expect(generation.success).toBe(true);
+
+      const install = await execa(
+        'npm',
+        [
+          'install',
+          '--registry=http://127.0.0.1:9',
+          `--cache=${join(config.path, '.npm-cache-network-failure')}`,
+          '--prefer-offline=false',
+          '--fetch-retries=0',
+          '--fetch-timeout=1',
+          '--fetch-retry-mintimeout=1',
+          '--fetch-retry-maxtimeout=1',
+          '--no-audit',
+          '--no-fund',
+        ],
+        {
+          cwd: config.path,
+          reject: false,
+          timeout: 30000,
+        }
+      );
+
+      expect(install.exitCode).not.toBe(0);
+      expect(`${install.stdout}\n${install.stderr}`).toMatch(
+        /ECONNREFUSED|ETIMEDOUT|EAI_AGAIN|ENOTFOUND|network|fetch/i
+      );
+    });
+
+    it('should handle Windows path edge cases gracefully', async () => {
+      if (process.platform !== 'win32') {
+        expect(true).toBe(true);
+        return;
+      }
+
+      const windowsStylePath = join(
+        tmpdir(),
+        `crf win edge ${Date.now()}`,
+        'nested path',
+        'app'
+      ).replace(/\//g, '\\');
+      const config = createBaseConfig({
+        name: 'windows-path-edge',
+        path: windowsStylePath,
+        git: { init: false, initialCommit: false },
+      });
+      projectPaths.push(config.path);
+
+      const generator = new ProjectGenerator(config);
+      const result = await generator.generate();
+
+      expect(config.path).toContain('\\');
+      expect(result.success).toBe(true);
+      expect(result.errors).toHaveLength(0);
+      expect(existsSync(join(config.path, 'package.json'))).toBe(true);
     });
   });
 });

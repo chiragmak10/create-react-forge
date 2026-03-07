@@ -1,0 +1,102 @@
+name: Post-Deploy Validation
+
+on:
+  workflow_run:
+    workflows: ['Release']
+    types: [completed]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  published-cli-smoke:
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+    name: Published CLI Smoke Test (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+
+    steps:
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Run published create-react-forge command
+        run: |
+          npx --yes create-react-forge@latest --version
+          npx --yes create-react-forge@latest --help
+
+  create-smoke-failure-issue:
+    name: Create issue if post-deploy smoke test fails
+    needs: published-cli-smoke
+    if: ${{ always() && needs.published-cli-smoke.result == 'failure' }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Create or update failure issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const title = "Post-deploy validation failed: published create-react-forge smoke test";
+            const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            const sourceRunUrl = context.eventName === "workflow_run"
+              ? context.payload.workflow_run?.html_url
+              : null;
+            const sourceRunConclusion = context.eventName === "workflow_run"
+              ? context.payload.workflow_run?.conclusion
+              : null;
+            const sourceRunHeadSha = context.eventName === "workflow_run"
+              ? context.payload.workflow_run?.head_sha
+              : context.sha;
+            const sourceRunHeadBranch = context.eventName === "workflow_run"
+              ? context.payload.workflow_run?.head_branch
+              : context.ref;
+            const triggerLabel = context.eventName === "workflow_run"
+              ? "Automatic run after Release workflow"
+              : "Manual workflow_dispatch run";
+
+            const body = [
+              "The published CLI smoke test failed.",
+              "",
+              `- Trigger: ${triggerLabel}`,
+              `- Validation workflow run: ${runUrl}`,
+              `- Source release run: ${sourceRunUrl ?? "n/a"}`,
+              `- Source release conclusion: ${sourceRunConclusion ?? "n/a"}`,
+              `- Commit: ${sourceRunHeadSha}`,
+              `- Branch/Ref: ${sourceRunHeadBranch}`,
+              `- Triggered by: ${context.actor}`,
+              "",
+              "Check failed matrix leg(s) for Ubuntu, macOS, and Windows."
+            ].join("\n");
+
+            const { data: issues } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: "open",
+              per_page: 100
+            });
+
+            const existing = issues.find((issue) => issue.title === title);
+
+            if (existing) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: existing.number,
+                body: `Another failure occurred on ${new Date().toISOString()}.\n\n${body}`
+              });
+              return;
+            }
+
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title,
+              body
+            });

@@ -1,7 +1,6 @@
 import { ReactElement, ReactNode } from 'react';
 import { render, RenderOptions } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { BrowserRouter } from 'react-router-dom';
 
 /**
  * Custom render function that includes providers
@@ -13,18 +12,11 @@ type WrapperProps = {
 };
 
 function AllProviders({ children }: WrapperProps) {
-  return (
-    <BrowserRouter>
-      {/* Add other providers here (React Query, Theme, etc.) */}
-      {children}
-    </BrowserRouter>
-  );
+  // Keep this runtime-agnostic for both Vite and Next.js templates.
+  return <>{children}</>;
 }
 
-function customRender(
-  ui: ReactElement,
-  options?: Omit<RenderOptions, 'wrapper'>
-) {
+function customRender(ui: ReactElement, options?: Omit<RenderOptions, 'wrapper'>) {
   return {
     user: userEvent.setup(),
     ...render(ui, { wrapper: AllProviders, ...options }),
@@ -36,4 +28,3 @@ export * from '@testing-library/react';
 
 // Override render method
 export { customRender as render };
-
