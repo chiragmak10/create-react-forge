@@ -3,52 +3,52 @@
  */
 export const VERSION_REGISTRY: Record<string, string> = {
   // Runtime
-  'vite': '^7.0.0',
+  vite: '^6.0.7',
   '@vitejs/plugin-react': '^5.0.0',
-  'next': '^16.1.6',
-  'react': '^19.0.0',
+  next: '^16.1.6',
+  react: '^19.0.0',
   'react-dom': '^19.0.0',
 
   // Language
-  'typescript': '^5.7.2',
+  typescript: '^5.7.2',
 
   // Styling
-  'tailwindcss': '^4.0.0',
+  tailwindcss: '^4.0.0',
   '@tailwindcss/postcss': '^4.0.0',
-  'postcss': '^8.4.49',
-  'autoprefixer': '^10.4.20',
+  postcss: '^8.4.49',
+  autoprefixer: '^10.4.20',
   'styled-components': '^6.1.14',
 
   // State Management
   '@reduxjs/toolkit': '^2.5.0',
   'react-redux': '^9.2.0',
-  'zustand': '^5.0.3',
+  zustand: '^5.0.3',
 
   // Data Fetching
   '@tanstack/react-query': '^5.62.10',
   '@tanstack/react-query-devtools': '^5.62.10',
 
   // Testing - Unit
-  'vitest': '^4.0.0',
-  '@vitest/ui': '^4.0.0',
-  'jest': '^30.0.0',
+  vitest: '^2.1.8',
+  '@vitest/ui': '^2.1.8',
+  jest: '^29.7.0',
 
   // Testing - Component
   '@testing-library/react': '^16.1.0',
   '@testing-library/jest-dom': '^6.6.3',
   '@testing-library/user-event': '^14.5.2',
-  'jsdom': '^28.0.0',
+  jsdom: '^25.0.1',
 
   // Testing - E2E
-  'playwright': '^1.49.1',
+  playwright: '^1.49.1',
   '@playwright/test': '^1.49.1',
-  'cypress': '^15.0.0',
+  cypress: '^15.0.0',
 
   // Formatting
-  'prettier': '^3.4.2',
+  prettier: '^3.4.2',
 
   // Build & Dev
-  'tsx': '^4.19.2',
+  tsx: '^4.19.2',
 
   // Type definitions
   '@types/react': '^19.0.6',
@@ -57,7 +57,7 @@ export const VERSION_REGISTRY: Record<string, string> = {
 
   // Routing
   'react-router-dom': '^7.1.1',
-  'react-error-boundary': '^6.0.0',
+  'react-error-boundary': '^4.1.2',
 };
 
 /**
@@ -125,9 +125,7 @@ export class DependencyResolver {
    */
   private pinVersion(version: string): string {
     // Check if version is in registry
-    const pkg = Object.keys(VERSION_REGISTRY).find(
-      (key) => VERSION_REGISTRY[key] === version
-    );
+    const pkg = Object.keys(VERSION_REGISTRY).find((key) => VERSION_REGISTRY[key] === version);
     if (pkg) {
       return VERSION_REGISTRY[pkg];
     }
