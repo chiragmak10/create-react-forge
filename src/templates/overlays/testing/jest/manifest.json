@@ -5,8 +5,8 @@
   "compatibleWith": ["runtime-vite", "runtime-nextjs"],
   "dependencies": {},
   "devDependencies": {
-    "jest": "^29.7.0",
-    "jest-environment-jsdom": "^29.7.0",
+    "jest": "^30.0.0",
+    "jest-environment-jsdom": "^30.0.0",
     "@types/jest": "^30.0.0",
     "@testing-library/react": "^16.1.0",
     "@testing-library/jest-dom": "^6.6.3",

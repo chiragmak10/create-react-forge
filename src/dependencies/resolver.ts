@@ -30,7 +30,7 @@ export const VERSION_REGISTRY: Record<string, string> = {
 
   // Testing - Unit
   vitest: '^2.1.8',
-  '@vitest/ui': '^2.1.8',
+  '@vitest/ui': '^4.0.0',
   jest: '^29.7.0',
 
   // Testing - Component
@@ -57,7 +57,7 @@ export const VERSION_REGISTRY: Record<string, string> = {
 
   // Routing
   'react-router-dom': '^7.1.1',
-  'react-error-boundary': '^4.1.2',
+  'react-error-boundary': '^6.0.0',
 };
 
 /**
