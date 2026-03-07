@@ -511,10 +511,15 @@ describe('ProjectGenerator Integration', () => {
         return;
       }
 
-      const reservedPath = join(tmpdir(), `crf-win-edge-${Date.now()}`, 'CON');
+      const windowsStylePath = join(
+        tmpdir(),
+        `crf win edge ${Date.now()}`,
+        'nested path',
+        'app'
+      ).replace(/\//g, '\\');
       const config = createBaseConfig({
         name: 'windows-path-edge',
-        path: reservedPath,
+        path: windowsStylePath,
         git: { init: false, initialCommit: false },
       });
       projectPaths.push(config.path);
@@ -522,10 +527,10 @@ describe('ProjectGenerator Integration', () => {
       const generator = new ProjectGenerator(config);
       const result = await generator.generate();
 
-      expect(result.success).toBe(false);
-      expect(result.errors.join('\n')).toMatch(
-        /Generation error|Failed to write|EPERM|EINVAL|ENOENT/i
-      );
+      expect(config.path).toContain('\\');
+      expect(result.success).toBe(true);
+      expect(result.errors).toHaveLength(0);
+      expect(existsSync(join(config.path, 'package.json'))).toBe(true);
     });
   });
 });
