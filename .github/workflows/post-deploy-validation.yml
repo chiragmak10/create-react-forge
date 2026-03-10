@@ -11,31 +11,36 @@ permissions:
   issues: write
 
 jobs:
-  published-cli-smoke:
+  published-package-validation:
     if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
-    name: Published CLI Smoke Test (${{ matrix.os }})
+    name: Published Package Validation (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 10
+    timeout-minutes: 20
     strategy:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
 
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
 
-      - name: Run published create-react-forge command
+      - name: Run published npx validation and file checks
+        env:
+          CRF_PACKAGE_NAME: create-react-forge
+          CRF_PACKAGE_SPEC: create-react-forge@latest
         run: |
-          npx --yes create-react-forge@latest --version
-          npx --yes create-react-forge@latest --help
+          node scripts/post-deploy-validation.mjs
 
   create-smoke-failure-issue:
-    name: Create issue if post-deploy smoke test fails
-    needs: published-cli-smoke
-    if: ${{ always() && needs.published-cli-smoke.result == 'failure' }}
+    name: Create issue if post-deploy validation fails
+    needs: published-package-validation
+    if: ${{ always() && needs.published-package-validation.result == 'failure' }}
     runs-on: ubuntu-latest
 
     steps:
@@ -43,7 +48,7 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
-            const title = "Post-deploy validation failed: published create-react-forge smoke test";
+            const title = "Post-deploy validation failed: published create-react-forge validation suite";
             const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
             const sourceRunUrl = context.eventName === "workflow_run"
               ? context.payload.workflow_run?.html_url
@@ -62,7 +67,7 @@ jobs:
               : "Manual workflow_dispatch run";
 
             const body = [
-              "The published CLI smoke test failed.",
+              "The published package validation suite failed.",
               "",
               `- Trigger: ${triggerLabel}`,
               `- Validation workflow run: ${runUrl}`,

@@ -40,9 +40,10 @@ function getTemplatesDir(): string {
   // Handle both ESM and compiled scenarios
   const currentFile = fileURLToPath(import.meta.url);
   const currentDir = dirname(currentFile);
+  const isDistBuild = /(^|[\\/])dist([\\/]|$)/.test(currentDir);
 
   // Check if we're in dist or src
-  if (currentDir.includes('/dist/')) {
+  if (isDistBuild) {
     // Running from compiled dist, templates are in src
     return join(currentDir, '../../src/templates/overlays');
   }
