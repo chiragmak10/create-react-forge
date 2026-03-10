@@ -31,6 +31,15 @@ function formatResult(result) {
   return `${stdout}${stderr}`;
 }
 
+function shouldUseShellForCommand(command) {
+  if (process.platform !== 'win32') {
+    return false;
+  }
+
+  const normalized = command.toLowerCase();
+  return normalized.endsWith('.cmd') || normalized.endsWith('.bat');
+}
+
 function runCommand(command, args, options = {}) {
   const { cwd, env, allowFailure = false, timeoutMs = 5 * 60 * 1000 } = options;
 
@@ -42,6 +51,7 @@ function runCommand(command, args, options = {}) {
         ...env,
       },
       stdio: ['ignore', 'pipe', 'pipe'],
+      shell: shouldUseShellForCommand(command),
     });
 
     let stdout = '';
@@ -214,6 +224,7 @@ function runInteractiveNpxCreate({ workspace, steps, timeoutMs = 3 * 60 * 1000 }
         ...process.env,
       },
       stdio: ['pipe', 'pipe', 'pipe'],
+      shell: shouldUseShellForCommand(npxCommand),
     });
 
     let stdout = '';
