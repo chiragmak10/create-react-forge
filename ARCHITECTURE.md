@@ -277,14 +277,14 @@ interface TemplateManifest {
 ```typescript
 {
   // Runtime
-  'vite': '^6.0.7',
-  '@vitejs/plugin-react': '^5.0.0',
+  'vite': '^8.0.0',
+  '@vitejs/plugin-react': '^6.0.0',
   'next': '^16.1.6',
   'react': '^19.0.0',
   'react-dom': '^19.0.0',
 
   // Language
-  'typescript': '^5.7.2',
+  'typescript': '^7.0.0',
 
   // Styling
   'tailwindcss': '^4.0.0',
@@ -302,14 +302,14 @@ interface TemplateManifest {
   '@tanstack/react-query-devtools': '^5.62.10',
 
   // Testing
-  'vitest': '^2.1.8',
-  '@vitest/ui': '^2.1.8',
+  'vitest': '^4.0.0',
+  '@vitest/ui': '^4.0.0',
   '@testing-library/react': '^16.1.0',
   '@playwright/test': '^1.49.1',
 
   // Routing
   'react-router-dom': '^7.1.1',
-  'react-error-boundary': '^4.1.2',
+  'react-error-boundary': '^6.0.0',
 }
 ```
 
