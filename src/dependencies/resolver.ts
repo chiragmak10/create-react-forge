@@ -4,7 +4,7 @@
 export const VERSION_REGISTRY: Record<string, string> = {
   // Runtime
   vite: '^6.0.7',
-  '@vitejs/plugin-react': '^5.0.0',
+  '@vitejs/plugin-react': '^6.0.0',
   next: '^16.1.6',
   react: '^19.0.0',
   'react-dom': '^19.0.0',
@@ -30,12 +30,12 @@ export const VERSION_REGISTRY: Record<string, string> = {
 
   // Testing - Unit
   vitest: '^2.1.8',
-  '@vitest/ui': '^2.1.8',
+  '@vitest/ui': '^4.0.0',
   jest: '^29.7.0',
 
   // Testing - Component
   '@testing-library/react': '^16.1.0',
-  '@testing-library/jest-dom': '^6.6.3',
+  '@testing-library/jest-dom': '^7.0.0',
   '@testing-library/user-event': '^14.5.2',
   jsdom: '^25.0.1',
 
@@ -53,11 +53,11 @@ export const VERSION_REGISTRY: Record<string, string> = {
   // Type definitions
   '@types/react': '^19.0.6',
   '@types/react-dom': '^19.0.3',
-  '@types/node': '^25.0.0',
+  '@types/node': '^26.0.0',
 
   // Routing
   'react-router-dom': '^7.1.1',
-  'react-error-boundary': '^4.1.2',
+  'react-error-boundary': '^6.0.0',
 };
 
 /**
