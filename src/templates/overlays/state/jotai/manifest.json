@@ -4,7 +4,7 @@
   "description": "Jotai state management with primitive and flexible atoms",
   "compatibleWith": ["runtime-vite", "runtime-nextjs"],
   "dependencies": {
-    "jotai": "^2.10.0"
+    "jotai": "^3.0.0"
   },
   "devDependencies": {},
   "scripts": {},
